@@ -1,0 +1,5 @@
+*.pyc
+BACKUP/
+THESIS/
+TEST/
+*test*.py
