@@ -1,5 +1,8 @@
 '''
     Module file ....
+    
+    
+    3/8/2019 - ported from 
 '''
 import sys,os,getpass,re
 import subprocess as sp
@@ -9,10 +12,12 @@ from pylab import *
 import matplotlib.ticker as ticker
 import matplotlib as mpl
 from scipy import interpolate as SI
+import pdb
+import house_keeping as hk
 import impact_norms as INN
 #-----------------------------------------------------------------------
 userid = getpass.getuser()
-
+paths = hk.directory_paths()
 
 class MidPointNorm(Normalize):    
     def __init__(self, midpoint=0, vmin=None, vmax=None, clip=False):
@@ -117,6 +122,7 @@ class DraggableLegend:
         if self.gotLegend:
             self.gotLegend = False
 
+    
 class constants(object):
     q_e = 1.602e-19
     m_e = 9.11e-31
@@ -133,219 +139,13 @@ class cd5_switches(object):
     separate_plots_on = True
     marker_on = False
 
-class conv_factors_cd5(object):
+#-----------------------------------------------------------------------
 
-    SI_on = cd5_switches.SI_on
-    norm_name='/Users/' + userid + '/Dropbox/IMPACT_dir/chfoil_d5/chfoil_default5_norm.txt'
-    [T0,n0,logLambda] = np.loadtxt(norm_name)
-
-    v_te = 1.93e7 # ms^-1
-    tau_ei = 7.44e-14 # s
-    nu_ei = 1.0/tau_ei # s^-1
-    lambda_mfp = 1.437e-6 # m
-    Z =  6.51
-    c_index = 100
-    yi = 10
-    lineout_list = [20,40,50,73]
-    lineout_list = [20,47,73]
-    color_lineout = cm.bone(np.linspace(0.0,1,len(lineout_list)+1))
-    color_lineout = color_lineout[:-1]
-    #brg
-    #color_lineout = cm.gnuplot(np.linspace(0.0,1,len(lineout_list)))
-    color_lineout = ['b','g','r']
-    lh_style = '--'#'None'#'--'
-    dashes=(4,2)
-    double_plot_scale_ratio = 0.8
-    
-    if SI_on:
-        xstep_factor = lambda_mfp*1e6
-        tstep_factor = tau_ei*1e12
-        xlab = r'$x$ [ $\si{\micro\meter}$ ]'
-        xlab_rel = r'$x-x_{abl}$ [ $\si{\micro\meter}$ ]'
-
-        ylab = r'$y$ [ $\si{\micro\meter}$ ]'
-        leg_title = r'time [ $\si{\pico\second}$ ]'
-        #divq_unit = r'[$\si{\eV\per\pico\second}$]'
-        divq_unit = r'[$\si{\eV}/\si{\pico\second}$]'
-        
-        divq_factor = (T0/(tau_ei*1e12))
-        t_unit = r'[ $\si{\pico\second}$ ]'
-        tlab = r't ' + t_unit
-        
-    else:
-        xstep_factor = 1.0
-        tstep_factor = 1.0
-        xlab = r'\textit{x-x_{abl} [ $\lambda_{mfp}$ ]}'
-        ylab = r'\textit{x [ $\lambda_{mfp}$ ]}'
-        leg_title = r'\text{$time$ [t$_{col}$ ]}'
-        divq_factor = 1.0
-        divq_unit = r' [$T_n/ t_{col}$ ]'
-        t_unit = r'[ $t_{col}$ ]'
-        tlab = r't ' + t_unit
-    def __init__(self):
-        return
-
-class conv_factors_premag(object):
-    ##print 'os.getcwd = ', os.getcwd()
-    SI_on = cd5_switches.SI_on
-    #norm_name='/Users/' + userid + '/Dropbox/IMPACT_dir/EOSNEW/eosnew_norm.txt'
-    
-    def search_path_class(regexp,path):
-        '''
-            out_name = search_path(regexp,path)
-        '''
-        out_name = ''
-        for pp in os.listdir(path):
-            rr = re.search(regexp,pp)
-            if rr:
-                print 'path = ', pp
-                out_name = pp
-                break
-        return out_name
-    try:
-        norm_name = search_path_class('norm.txt',os.getcwd())
-        [T0,n0,logLambda] = np.loadtxt(norm_name)
-
-    except IOError:
-        norm_name='/Users/' + userid + '/Dropbox/IMPACT_dir/EOSNEW7/eos_norm.txt'
-        [T0,n0,logLambda] = np.loadtxt(norm_name)
-
-
-    print norm_name, 'os.getcwd = ', os.getcwd()
-
-    Ar = 6.51
-    T0 = 7.374708862304687500e+02
-    n0 = 1.624702135284042564e+21
-    Z = 5.954127788543701172e+00
-    dict_norm = INN.impact_inputs(n0,T0,Z,1.0,Ar)
-    v_te = dict_norm['vte']#     m/s  #1.93e7 # ms^-1
-    tau_ei = dict_norm['tau_ei'] # s   7.44e-14 # s
-    nu_ei = 1.0/tau_ei # s^-1
-    lambda_mfp = dict_norm['lambda_mfp'] # m
-    
-    #c_index = 100
-    yi = 10
-    lineout_list = [20,40,50,73]
-    lineout_list = [20,47,73]
-    color_lineout = cm.bone(np.linspace(0.0,1,len(lineout_list)+1))
-    color_lineout = color_lineout[:-1]
-    color_lineout = ['b','g','r']
-
-    xmin_ax,xmax_ax = -5.0,25.0
-    cl_index,c_index = 20,450
-
-    lh_style = 'None'
-    dashes=(4,2)
-    double_plot_scale_ratio = 0.8
-    
-    if SI_on:
-        xstep_factor = lambda_mfp*1e6
-        tstep_factor = tau_ei*1e12
-        xlab = r'$x$ [ $\si{\micro\meter}$ ]'
-        xlab_rel = r'$x-x_{abl}$ [ $\si{\micro\meter}$ ]'
-
-
-        ylab = r'$y$ [ $\si{\micro\meter}$ ]'
-        leg_title = r'time [ $\si{\pico\second}$ ]'
-        divq_unit = r'[$\si{\eV}/\si{\pico\second}$]'
-        
-        divq_factor = (T0/(tau_ei*1e12))
-        t_unit = r'[ $\si{\pico\second}$ ]'
-        tlab = r't ' + t_unit
-        
-    else:
-        xstep_factor = 1.0
-        tstep_factor = 1.0
-        xlab = r'\textit{x-x_{abl} [ $\lambda_{mfp}$ ]}'
-        ylab = r'\textit{x [ $\lambda_{mfp}$ ]}'
-        leg_title = r'\text{$time$ [t$_{col}$ ]}'
-        divq_factor = 1.0
-        divq_unit = r' [$T_n/ t_{col}$ ]'
-        t_unit = r'[ $t_{col}$ ]'
-        tlab = r't ' + t_unit
-    def __init__(self):
-        return
-
-
-
-class conv_factors_eos(object):
-    ##print 'os.getcwd = ', os.getcwd()
-    SI_on = cd5_switches.SI_on
-    #norm_name='/Users/' + userid + '/Dropbox/IMPACT_dir/EOSNEW/eosnew_norm.txt'
-    
-    def search_path_class(regexp,path):
-        '''
-            out_name = search_path(regexp,path)
-        '''
-        out_name = ''
-        for pp in os.listdir(path):
-            rr = re.search(regexp,pp)
-            if rr:
-                print 'path = ', pp
-                out_name = pp
-                break
-        return out_name
-    try:
-        norm_name = search_path_class('norm.txt',os.getcwd())
-        [T0,n0,logLambda] = np.loadtxt(norm_name)
-
-    except IOError:
-        norm_name='/Users/' + userid + '/Dropbox/IMPACT_dir/EOSNEW7/eos_norm.txt'
-        [T0,n0,logLambda] = np.loadtxt(norm_name)
-
-    print norm_name, 'os.getcwd = ', os.getcwd()
-    Z,Ar = 3.5,6.51
-    dict_norm = INN.impact_inputs(n0,T0,Z,1.0,Ar)
-    v_te = dict_norm['vte']#     m/s  #1.93e7 # ms^-1
-    tau_ei = dict_norm['tau_ei'] # s   7.44e-14 # s
-    nu_ei = 1.0/tau_ei # s^-1
-    lambda_mfp = dict_norm['lambda_mfp'] # m
-    
-    c_index = 100
-    yi = 10
-    lineout_list = [20,40,50,73]
-    lineout_list = [20,47,73]
-    color_lineout = cm.bone(np.linspace(0.0,1,len(lineout_list)+1))
-    color_lineout = color_lineout[:-1]
-    color_lineout = ['b','g','r']
-
-    lh_style = 'None'
-    dashes=(4,2)
-    double_plot_scale_ratio = 0.8
-    
-    if SI_on:
-        xstep_factor = lambda_mfp*1e6
-        tstep_factor = tau_ei*1e12
-        xlab = r'$x$ [ $\si{\micro\meter}$ ]'
-        xlab_rel = r'$x-x_{abl}$ [ $\si{\micro\meter}$ ]'
-
-
-        ylab = r'$y$ [ $\si{\micro\meter}$ ]'
-        leg_title = r'time [ $\si{\pico\second}$ ]'
-        divq_unit = r'[$\si{\eV}/\si{\pico\second}$]'
-        
-        divq_factor = (T0/(tau_ei*1e12))
-        t_unit = r'[ $\si{\pico\second}$ ]'
-        tlab = r't ' + t_unit
-        
-    else:
-        xstep_factor = 1.0
-        tstep_factor = 1.0
-        xlab = r'\textit{x-x_{abl} [ $\lambda_{mfp}$ ]}'
-        ylab = r'\textit{x [ $\lambda_{mfp}$ ]}'
-        leg_title = r'\text{$time$ [t$_{col}$ ]}'
-        divq_factor = 1.0
-        divq_unit = r' [$T_n/ t_{col}$ ]'
-        t_unit = r'[ $t_{col}$ ]'
-        tlab = r't ' + t_unit
-    def __init__(self):
-        return
-
+#-----------------------------------------------------------------------
 class conv_factors_custom(object):
     # --- arguments given to the class are passed straight to init...
     #
-    #def __init__(self,norm_path,Z=3.5,Ar=6.51):
-    def __init__(self,norm_path,Z=5.954127788543701172,Ar=6.51):
+    def __init__(self,norm_path=paths.norm_dir,Z=5.954127788543701172,Ar=6.51):
         self.norm_name = self.search_path_class('norm.txt',norm_path)
         print 'self.norm_name = ', self.norm_name,norm_path
         if norm_path[-1] != '/':
@@ -356,7 +156,7 @@ class conv_factors_custom(object):
             self.c_index = int(icu)#207#
         else:
             self.cl_index = 0
-            self.c_index = 100
+            self.c_index = 500
         print ' norm_name =', self.norm_name, norm_path
         print 'indices = ', self.cl_index,self.c_index
         #Z,Ar = 3.5,6.51
@@ -367,11 +167,13 @@ class conv_factors_custom(object):
         self.Ar = Ar
         [self.T0,self.n0,self.logLambda] = np.loadtxt(norm_path + self.norm_name)
         dict_norm = INN.impact_inputs(self.n0,self.T0,Z,1.0,Ar)
-        self.v_te = dict_norm['vte']#     m/s  #1.93e7 # ms^-1
+        self.v_te = dict_norm['vte']      #     m/s  #1.93e7 # ms^-1
         self.tau_ei = dict_norm['tau_ei'] # s   7.44e-14 # s
         self.nu_ei = 1.0/self.tau_ei # s^-1
         self.lambda_mfp = dict_norm['lambda_mfp'] # m
         self.Bz_ref = dict_norm['Bz_norm']
+        self.Bz0 = dict_norm['Bz_norm']
+
         self.yi = 10
         self.lineout_list = [20,40,50,73]
         #self.lineout_list = [20,47,73]
@@ -416,6 +218,17 @@ class conv_factors_custom(object):
             self.divq_unit = r' [$T_n/ t_{col}$ ]'
             self.t_unit = r'[ $t_{col}$ ]'
             self.tlab = r't ' + self.t_unit
+        #----> switches --->
+        self.SI_on = True
+        self.save_on = True
+        self.hlines_on = True
+        self.grid_on = True
+        self.horizontal_on = True
+        self.separate_plots_on = True
+        self.marker_on = False       
+        self.MSIZE = 4
+        #<----
+        
         return
     #-------------------------------------------------------------------
     def search_path_class(self,regexp,path):
@@ -431,6 +244,8 @@ class conv_factors_custom(object):
                 break
         return out_name
 #-------------------------------------------------------------------====
+def fpre(path):
+    return path.split('/')[-1]
 
 #-----------------------------------------------------------------------
 
@@ -488,12 +303,9 @@ def construct_label(fname,k_on=True):
     
     premag = re.search('_B(?P<premag>[0-9_]+)', fname)
     if premag:
-        #print premag.group()
-        #print premag.group('premag')
         mag = premag.group('premag')[:-1]
         mag2 = re.sub('_','.',mag)
-        #print 'mag = ',mag,'mag2 = ', mag2
-        B_lab =  r' \chi =' + mag2 
+        B_lab =  r' \chi =' + mag2
     
     premag2 = re.search('_(?P<premag>\d+)T', fname)
     if premag2 and fname[:2] == 'r5':
@@ -533,9 +345,10 @@ def construct_label(fname,k_on=True):
         final_lab = kpre +  k_lab + '$ $' + h_lab + ' + ' + B_lab
     return final_lab, k_lab,h_lab,B_lab
 
+#-----------------------------------------------------------------------
 
 
-def get_tloop(path):
+def get_tloop(path,var='Te'):
     '''
         t_index_l,t_col_l = get_tloop(path)
     '''
@@ -543,7 +356,7 @@ def get_tloop(path):
     t_index_l = []
     t_col_l = []
     for fname in list_files:
-        s = re.search('(?P<fpre>.*?)_' + var_list[0] + '_(?P<time>\d\d).xy.*?',fname)
+        s = re.search('(?P<fpre>.*?)_' + var + '_(?P<time>\d\d).xy.*?',fname)
         if s:
             t_l = s.group('time')
             t_index_l.append(t_l)
@@ -585,6 +398,7 @@ def get_startline(fname):
     #print ' out_line = ', out_line, ' fname = ', fname
             
     return out_line
+#-----------------------------------------------------------------------
 
 def retrieve_path_tag(path):
     s = re.search('2D(?P<k_num>\d)', path)
@@ -685,16 +499,7 @@ def trim_array(array,nx,ny):
             offset_x = ((len(array[:,0]) % nx)/2)
             offset_x_rh = (len(array[:,0]) % nx)/2
             offset_x += int(2.0*np.abs((len(array[:,0]) % nx)/2.0 - (len(array[:,0]) % nx)/2))
-            '''
-            #offset_int = (len(array[:,0]) % nx)/2
-            #if np.abs(offset_x)>=offset_int
-            #print 'offset = ',offset_x
-            if (offset_x*2.0) != float(len(array[:,0]) % nx):
-                # need to redo in this case =----
-                offset_x_rh = offset_x
-                diff = float(len(array[:,0]) % nx) - (offset_x*2.0)
-                offset_x +=diff
-            '''
+
         if ny_a != ny:
             offset_y = (len(array[0,:]) % ny)/2
             offset_y_rh = (len(array[0,:]) % ny)/2
@@ -702,28 +507,9 @@ def trim_array(array,nx,ny):
             offset_y += int(2.0*np.abs((len(array[0,:]) % ny)/2.0 - (len(array[0,:]) % ny)/2))
             #print ' offset_y = ', offset_y, offset_y_rh
             #print 'offset = ',offset_x, offset_x_rh
-            '''
-            if (offset_y*2.0) != float(len(array[0,:]) % ny):
-                # need to redo in this case =----
-                offset_y_rh = offset_y
-                
-                diff = len(array[0,:]) % ny - (offset_y*2.0)
-                #print ' diff = ',diff, len(array[0,:]) % ny , offset_y*2.0
-                offset_y +=diff
-                # trim the extra off the bottom
-            '''
+
         #--------------
-        '''
-        if offset_x ==0:
-            offset_x_rh = 1
-        else:
-            offset_x_rh = offset_x
-        
-        if offset_y ==0:
-            offset_y_rh = 1
-        else:
-            offset_y_rh = offset_y
-        '''
+
         if ny == 1:
             offset_y = 1
             offset_y_rh = 1
@@ -859,7 +645,6 @@ def get_l_num_lmfp(fname):
     s = re.search('(\d+)lmfp',fname)
     if s:
         l_num = s.group()[:-4]
-        print(k_num)
     else:
         l_num = 40
     return float(l_num)    
@@ -997,10 +782,9 @@ def get_t_list(path,var='Te'):
             t_col = get_time(path + '/' + fname)
             tc_list.append(t_col)
             fprefix = s.group('fpre')  
-    print t_list
-    return t_list, tc_list  
-   
-#-----------------------------------------------------------------------    
+    return t_list, tc_list
+
+#-----------------------------------------------------------------------
 def load_path(path,var):
     '''
         Gets the IMPACT header info
@@ -1428,7 +1212,7 @@ def get_time(fname):
 def get_hallparam(Bz_norm,vte_norm,Z2ni_norm):
     chi = Bz_norm*(vte_norm**3)*(0.75*(np.pi**0.5))*(1.0/Z2ni_norm)
     return chi
-def calc_norms(var,sample =0.0,forced_power=[],normal_class=conv_factors_cd5):
+def calc_norms(var,sample =0.0,forced_power=[],normal_class=conv_factors_custom):
     '''
         norm_const, ylab = calc_norms(var)
     '''
@@ -1446,10 +1230,7 @@ def calc_norms(var,sample =0.0,forced_power=[],normal_class=conv_factors_cd5):
     tau_ei = normal_class.tau_ei
     nu_ei = normal_class.nu_ei
     lambda_mfp = normal_class.lambda_mfp
-    xstep_factor = normal_class.xstep_factor
-    tstep_factor = normal_class.tstep_factor
-    xlab = normal_class.xlab
-    ylab = normal_class.ylab
+
     n0,T0 = normal_class.n0, normal_class.T0
     #-----------------
 
@@ -1632,8 +1413,7 @@ def calc_norms(var,sample =0.0,forced_power=[],normal_class=conv_factors_cd5):
             power = extract_power(sample)
             norm_const = 1.0*(10**-power)
             mod = r'$ 10^{' +str(power)  + '} $'
-            #norm_const = 1.0#q_e*n0*v_te
-            
+
             title = r'$' + var[0] + '_' + var[1] + r'$ [ ' +mod + '$j_0$ ]'#r' [ $C/m^2 s$ ]'    
         elif var[0] =='U':
             
@@ -1641,8 +1421,6 @@ def calc_norms(var,sample =0.0,forced_power=[],normal_class=conv_factors_cd5):
             power = extract_power(sample)
             norm_const = 1.0*(10**-power)
             mod = r'$ 10^{' +str(power)  + '} $'
-            #c_fmt = '%1.0e'
-            #norm_const = m_e*(v_te**3)*n_04
             title = r'$' + var[0] + r'$ [ ' + mod + '$m_e v_n^2 n_0$ ]'# + r' [ $Jms^{-1}$ ]'
 
 
@@ -1651,12 +1429,13 @@ def calc_norms(var,sample =0.0,forced_power=[],normal_class=conv_factors_cd5):
     return norm_const, title, c_fmt
 
 
-def calc_norms_2(var,sample =0.0,SI_on=True,normal_class=conv_factors_cd5,forced_power=[]):
+def calc_norms_2(var,sample =0.0,SI_on=True,normal_class=conv_factors_custom(),forced_power=[]):
     '''
         dict = calc_norms(var)
         
     '''
-    
+
+
     q_e = constants.q_e
     m_e = constants.m_e
     m_p = constants.m_p
@@ -1675,7 +1454,22 @@ def calc_norms_2(var,sample =0.0,SI_on=True,normal_class=conv_factors_cd5,forced
     n0,T0 = normal_class.n0, normal_class.T0
     Z0 = normal_class.Z    
     c_fmt = '%3.2f'
-    
+    def get_mod(forced_power,sample_in = 0.0):
+
+        if len(forced_power) != 0:
+            power = forced_power[0]
+        else:
+            power = extract_power(sample_in)
+        power = int(power)
+
+        if power != 0:
+            mod = r'$ 10^{' + str(power) + '} $'
+            mult = 10**-power
+        else:
+            mod = r''
+            mult = 1.0
+        return mod, mult
+
     if SI_on:
         if var== 'Cx' or var=='Cy':
             
@@ -1774,12 +1568,11 @@ def calc_norms_2(var,sample =0.0,SI_on=True,normal_class=conv_factors_cd5,forced
         elif var[0] =='P':
             
             c_fmt = '%1.1f'
-            power = extract_power(sample)
-            norm_const = (2.0/3.0)*m_e*(v_te**2)*(n0*1e6)*(10**-power)*1e-5
-            #norm_const = const*(10**-power)
-            mod = r'$ 10^{' +str(power)  + '} $'
-            #c_fmt = '%1.0e'
-            #norm_const = m_e*(v_te**3)*n_04
+            norm_const = (2.0/3.0)*m_e*(v_te**2)*(n0*1e6)*1e-5
+
+            mod, mult = get_mod(forced_power,sample*norm_const)
+            norm_const *= mult
+
             var_name =  r'$' + var[0] + '$'
             units =  r'[ ' + mod + '$bar$ ]'
             title = r'$' + var[0] + r'$ [ ' + mod + 'bar ]'# + r' [ $Jms^{-1}$ ]'
@@ -1831,32 +1624,72 @@ def get_grad_1d(x_grid,T_data):
     dxT[0] = dxT[1]
     dxT[-1] = dxT[-2]
     return dxT
+
+def get_grad_dx2_1d(x_grid,T_data):
+    '''
+        ONLY FOR CC cells - centred differencing
+        dxdata = get_grad_1d(x_grid,data)
+    '''
+    dxT = np.zeros((len(T_data)))
+    dx = x_grid[2:] - x_grid[:-2]
+    dxT[1:-1] = (T_data[2:] - 2.0*T_data[1:-1] + T_data[:-2])/(2.0*(dx**2))
+    dxT[0] = dxT[1]
+    dxT[-1] = dxT[-2]
+    return dxT
+
+def add_grid_bcs(grid_in):
+    grid = np.zeros((len(grid_in)+2))
+    grid[1:-1] = grid_in
+    grid[0] = grid_in[0] - (grid_in[1]-grid_in[0])
+    grid[-1] = grid_in[-1] + (grid_in[-1] - grid_in[-2])
+    return grid
+
 #-----------------------------------------------------------------------
-def get_grad(x_grid,y_grid,T_data):
+def get_grad(x_grid,y_grid,T_data,bc='none'):
     '''
         ONLY FOR CC cells - centred differencing
         dxdata,dydata = get_grad(x_grid,y_grid,data)
     '''
-    
-    if len(np.shape(T_data))==1:
-        dx = x_grid[2:] - x_grid[:-2]
-        dxT = (T_data[2:] - T_data[:-2])/dx
-        return dxT
+    if bc=='periodic':
+        nx,ny = np.shape(T_data)
+        T_data_glb = np.zeros((nx +2, ny + 2))
+
+        T_data_glb[1:-1,1:-1] = T_data.copy()
+
+        T_data_glb[0, 1:-1] = T_data[-1,:]
+        T_data_glb[-1, 1:-1] = T_data[0, :]
+
+        T_data_glb[1:-1, 0] = T_data[:,-1]
+        T_data_glb[1:-1, -1] = T_data[:, 0]
+        x_grid_glb = add_grid_bcs(x_grid)
+        y_grid_glb = add_grid_bcs(y_grid)
+
+        X, Y = np.meshgrid(y_grid_glb, x_grid_glb)
+        dy = Y[2:, :] - Y[:-2, :]
+        dx = X[:, 2:] - X[:, :-2]
+        dxT = (T_data_glb[:, 2:] - T_data_glb[:, :-2]) / dx
+        dyT = (T_data_glb[2:, :] - T_data_glb[:-2, :]) / dy
+        return dyT,dxT
     else:
-        dx = x_grid[2:] - x_grid[:-2]
-        dy = y_grid[2:] - y_grid[:-2]
-        dxT = np.zeros((len(dx),len(dy)))
-        dyT = np.zeros((len(dx),len(dy)))
-        ldx,ldy = len(dx), len(dy)
-        #print 'SHAPE DX DY = ', ldx,ldy
-        for ii in range(len(dx)):
-            #print 'ii=  ', ii
-            dyT[ii,:] = (T_data[ii,2:] - T_data[ii,:-2])/dy
-        
-        for ii in range(len(dy)):
-            #print 'ix = ', ii, np.shape((T_data[2:,ii] - T_data[:-2,ii])), np.shape(dxT), np.shape(dx)
-            dxT[:,ii] = (T_data[2:,ii] - T_data[:-2,ii])/dx
-        return dxT, dyT
+        if len(np.shape(T_data))==1:
+            dx = x_grid[2:] - x_grid[:-2]
+            dxT = (T_data[2:] - T_data[:-2])/dx
+            return dxT
+        else:
+            dx = x_grid[2:] - x_grid[:-2]
+            dy = y_grid[2:] - y_grid[:-2]
+            dxT = np.zeros((len(dx),len(dy)))
+            dyT = np.zeros((len(dx),len(dy)))
+            ldx,ldy = len(dx), len(dy)
+            #print 'SHAPE DX DY = ', ldx,ldy
+            for ii in range(len(dx)):
+                #print 'ii=  ', ii
+                dyT[ii,:] = (T_data[ii,2:] - T_data[ii,:-2])/dy
+
+            for ii in range(len(dy)):
+                #print 'ix = ', ii, np.shape((T_data[2:,ii] - T_data[:-2,ii])), np.shape(dxT), np.shape(dx)
+                dxT[:,ii] = (T_data[2:,ii] - T_data[:-2,ii])/dx
+            return dxT, dyT
 #-----------------------------------------------------------------------
 
 def get_grad_varZ(x_grid,y_grid,T_data):
@@ -1895,7 +1728,7 @@ def load_data_all(path,fprefix,time):
     '''
         dict  = load_data_all_1D(path,fprefix,time)
     '''
-    print(' === dict load all ==== ')
+
     dict_Bz = load_dict(path,fprefix,'Bz',time)
     Bz = dict_Bz['mat']
 
@@ -1913,11 +1746,12 @@ def load_data_all(path,fprefix,time):
     qyY = dict_qyY['mat']
     qy_c = 0.5*(qyY[:,1:] + qyY[:,:-1])
     qx_c = 0.5*(qxX[1:,:] + qxX[:-1,:])
-    dict_wt = load_dict(path,fprefix,'wt',time)
-    wt = dict_wt['mat']
+    wt = get_wt(path,time)
     dict_ne = load_dict(path,fprefix,'n',time)
     ne = dict_ne['mat']
 
+    dict_Cx = load_dict(path,fprefix,'Cx',time)
+    Cx = dict_Cx['mat']
 
     ##Z2ni = ne
 
@@ -1930,23 +1764,22 @@ def load_data_all(path,fprefix,time):
 
     dict_fo = load_dict(path,fprefix,'fo',time)
     fo = dict_fo['mat']
-    #print '-------------------------------------------'
-    #print ' \n\ndict ----- time ===== ', dict_fo['time']
-    #print '-------------------------------------------'
+
     grid = dict_fo
     nv,ny,nx = np.shape(fo)
-    print('--- loading grid ---', nv,ny,nx)
+
     grid['x_grid'] = trim_array_1D(x_grid,nx,0)
     grid['y_grid'] = trim_array_1D(y_grid,ny,0)
-    print(' y_Grid = ', y_grid)
-    #grid['ny'] = 3
-    #nv,ny,nx = np.shape(fo)
+    v_grid = grid['v_grid']
+
     dict_Z = load_dict(path,fprefix,'Z',time)
     prof_Z = dict_Z['mat']
     Z2ni = np.transpose(trim_array(ne,nx,ny))*np.transpose(trim_array(prof_Z,nx,ny))
     dict_U = load_dict(path,fprefix,'U',time)
     Ue = dict_U['mat']
     
+
+    dxB,dyB = get_grad(x_grid,y_grid,Bz)
 
 
     Bz = np.transpose(trim_array(Bz,nx,ny))
@@ -1960,12 +1793,18 @@ def load_data_all(path,fprefix,time):
     
 
     #-------
-
+    #print('---> loading all data', nx,ny)
+    #pdb.set_trace()
     dxT,dyT = get_grad(x_grid,y_grid,Te)
     ne = np.transpose(trim_array(ne,nx,ny))
+    Cx = np.transpose(trim_array(Cx,nx,ny))
+
     Te = np.transpose(trim_array(Te,nx,ny))
     dxT = np.transpose(trim_array(dxT,nx,ny))
     dyT = np.transpose(trim_array(dyT,nx,ny))
+    dxB = np.transpose(trim_array(dxB,nx,ny))
+    dyB = np.transpose(trim_array(dyB,nx,ny))
+
     rA = (Z2ni)**-1
     
     
@@ -1975,6 +1814,7 @@ def load_data_all(path,fprefix,time):
     dict['Te'] = Te
     dict['U'] = Ue
 
+    dict['Cx'] = Cx
     dict['qx'] = qx
     dict['qy'] = qy
     dict['jx'] = jx
@@ -1982,8 +1822,12 @@ def load_data_all(path,fprefix,time):
     dict['dxT'] = dxT
     dict['dyT'] = dyT
     dict['Bz'] = Bz
+    dict['dxB'] = dxB
+    dict['dyB'] = dyB
     dict['x_grid'] = x_grid
     dict['y_grid'] = y_grid
+    dict['v_grid'] = v_grid
+
     dict['grid'] = grid
     dict['Z2ni'] = Z2ni
     dict['wt'] = wt
@@ -1997,6 +1841,10 @@ def load_data_all(path,fprefix,time):
     return dict
 
 #-----------------------------------------------------------------------
+def load_mat_1D(path_in,fprefix,time,var,nx,ny):
+    dict_te = load_dict_1D(path_in, fprefix, var, time)
+    mat = dict_te['mat']
+    return np.transpose(trim_array_1D(mat, nx, ny))
 
 def load_data_all_1D(path,fprefix,time):
     '''
@@ -2019,8 +1867,9 @@ def load_data_all_1D(path,fprefix,time):
     qyY = dict_qyY['mat']
     qy_c = 0.5*(qyY[:,1:] + qyY[:,:-1])
     qx_c = 0.5*(qxX[1:,:] + qxX[:-1,:])
-    dict_wt = load_dict_1D(path,fprefix,'wt',time)
-    wt = dict_wt['mat']
+
+    wt = get_wt_1D(path,time)
+
     dict_ne = load_dict_1D(path,fprefix,'n',time)
     ne = dict_ne['mat']
 
@@ -2044,7 +1893,6 @@ def load_data_all_1D(path,fprefix,time):
     ny = 3
     grid['x_grid'] = trim_array_1D(x_grid,nx,0)
     grid['y_grid'] = trim_array_1D(y_grid,ny,0)
-    print(' y_Grid = ', y_grid)
     grid['ny'] = 3
     #nv,ny,nx = np.shape(fo)
     dict_Z = load_dict_1D(path,fprefix,'Z',time)
@@ -2055,7 +1903,6 @@ def load_data_all_1D(path,fprefix,time):
     
 
 
-    Bz = np.transpose(trim_array_1D(Bz,nx,ny))
     jx = np.transpose(trim_array_1D(jx_c,nx,ny))
     jy = np.transpose(trim_array_1D(jy_c,nx,ny))
     qx = np.transpose(trim_array_1D(qx_c,nx,ny))
@@ -2072,6 +1919,14 @@ def load_data_all_1D(path,fprefix,time):
     Te = np.transpose(trim_array_1D(Te,nx,ny))
     dxT = np.transpose(trim_array_1D(dxT,nx,ny))
     dyT = np.transpose(trim_array_1D(dyT,nx,ny))
+
+
+
+    dxB,dyB = get_grad_varZ(x_grid,y_grid,Bz)
+    Bz = np.transpose(trim_array_1D(Bz,nx,ny))
+    dxB = np.transpose(trim_array_1D(dxB,nx,ny))
+    dyB = np.transpose(trim_array_1D(dyB,nx,ny))
+
     rA = (Z2ni)**-1
     
     
@@ -2079,6 +1934,7 @@ def load_data_all_1D(path,fprefix,time):
     
     dict['ne'] = ne
     dict['Te'] = Te
+    dict['Cx'] = load_mat_1D(path,fprefix,time,'Cx',nx,ny)
     dict['U'] = Ue
 
     dict['qx'] = qx
@@ -2088,8 +1944,11 @@ def load_data_all_1D(path,fprefix,time):
     dict['dxT'] = dxT
     dict['dyT'] = dyT
     dict['Bz'] = Bz
+    dict['dxB'] = dxB
+    dict['dyB'] = dyB
     dict['x_grid'] = x_grid
     dict['y_grid'] = y_grid
+    dict['v_grid'] = grid['v_grid']
     dict['grid'] = grid
     dict['Z2ni'] = Z2ni
     dict['wt'] = wt
@@ -2331,27 +2190,7 @@ def plot_xhlines(ax,x_grid_im,lim=[],lineout_list=[20,40,50,73],cmap=cm.bone,lin
                     linestyle=linestyle,
                     dashes=dashes)
 
-#-----------------------------------------------------------------------
-'''
-def plot_xvlines(ax,x_grid_im,lim,lineout_list=[20,40,50,73],color_lineout=[],cmap=cm.bone,linestyle='--',dashes=(4,2)):
-    if len(color_lineout) == 0:
-        color_lineout = cmap(np.linspace(0.0,1,len(lineout_list)+1))
-        color_lineout = color_lineout[:-1]
-    ##yl,yu = lim#ax.get_ylim()
-    #xl,xu = ax.get_ylim()
-    #print ' yl yu = ', yl, yu
-    ##print ' xl,xu = ', xl,xu
-    if len(lineout_list) ==0:
-        return
-    for xl in range(len(lineout_list)):
-        
-        #ax.axhline(x_grid_im[lineout_list[xl]],yl,yu,c=color_lineout[xl],linestyle=linestyle)
-        ax.axvline(x_grid_im[lineout_list[xl]],
-                    c=color_lineout[xl],
-                    linewidth=1.2,
-                    linestyle=linestyle,
-                    dashes=dashes)
-'''
+
 #-----------------------------------------------------------------------
 def plot_xvlines(ax,x_grid_im,lim,lineout_list=[20,40,50,73],color_lineout=[],cmap=cm.bone,custom_cmap =[],linestyle='--',dashes=(4,2)):
     if len(color_lineout) == 0:
@@ -2738,7 +2577,7 @@ def get_U_dev(U_data,lim = 0.01):
 def get_U_dev_abs(U_data):
     '''
         Gets a measure of the fractional deviation from average
-       saturates at lim
+       saturates at lim - the perturbation amplitude
        U_dev = get_U_dev_abs(U_data)
     '''    
     avgx_U = get_avgx(U_data)
@@ -2749,7 +2588,21 @@ def get_U_dev_abs(U_data):
     #    U_dev = np.where(U_dev<=lim,U_dev,lim)
     return U_dev
 #-----------------------------------------------------------------------
-
+#-----------------------------------------------------------------------
+def get_U_dev_frac(U_data):
+    '''
+        Gets a measure of the fractional deviation from average
+       saturates at lim - the perturbation amplitude
+       U_dev = get_U_dev_abs(U_data)
+    '''
+    avgx_U = get_avgx(U_data)
+    x_dummy,avgxy_U = np.meshgrid(np.ones((len(U_data[0,:]))),avgx_U)
+    #U_dev = U_data/avgxy_U
+    U_dev = (U_data - avgxy_U)/avgxy_U
+    #if lim>0.0:
+    #    U_dev = np.where(U_dev<=lim,U_dev,lim)
+    return U_dev
+#-----------------------------------------------------------------------
 def get_sigma_rms(U_data,reduced=True):
     '''
         Gets a measure of the fractional deviation from average
@@ -2804,6 +2657,7 @@ def get_atomic_Z(fname):
             Z_fl = float(re.sub('d','e',a.group('atomicZ')))
     f.close()
     return Z_fl
+#------------------------------------------------------------------------------
 def get_dims(fname):
     '''
         Searches fname - which should be either fort.10 or an IMPACT rundeck to retrieve the run dimensions
@@ -2827,3 +2681,90 @@ def get_dims(fname):
             nv = int(a_nv.group('nv'))
     f.close()
     return nv,ny,nx
+#------=================================================================
+#-----------------------------------------------------------------------
+def set_ylim_max(ax_in,x_grid,data,xlim,y_mult = [1.0,1.0]):
+    '''
+        This funciton sets the max and min y values of a particular plot
+        to sensible values. for the given data
+        (ymin-0.05(ymax-ymin) and ymax + 0.05(ymax-ymin)
+        
+    '''
+    xmin,xmax=xlim
+    ymin = np.min(data[(x_grid<xmax)*(x_grid>=xmin)])
+    ymax = np.max(data[(x_grid<xmax)*(x_grid>=xmin)])
+    dy = 0.05*np.abs(ymax - ymin)
+    if ymin !=ymax:
+    
+        ax_in.set_ylim(ymin-dy*y_mult[0],ymax+dy*y_mult[1])
+    else:
+        print('error ymin = ymax data all the same!')
+    print('ymin = %4.4e ymax = %4.4e ' % (ymin, ymax))
+
+ 
+    return
+
+#------------------------------------------------------------------------------
+def data_intersect(x_grid,data,data_pos=np.array([100.0,200.0,300.0,400.0,500.0,600.0,800.0])):
+    '''
+        i_out = data_intersect(data,data_pos)
+        Find the points where data is closest to values in data_pos
+    '''
+    i_out = np.zeros((len(data_pos)),dtype=int)    
+    for itt,data_loc in enumerate(data_pos):
+        i_closest = np.argsort(np.abs(data[:-100]-data_loc))[0]
+        i_out[itt] = i_closest
+    return i_out
+#-----------------------------------------------------------------------
+def get_wt(path,time):
+    '''
+        CURRENT IMPACT RUNS HAVE INCORRECT HALL PARAMETER OUTPUTS
+        Missing a 1/Z2ni factor, where 1/Z2ni = 1/<z^2>ni = 1/(fixed_prof_Z*ne)
+        
+        
+        Note fixed_prof_Z = <Z^2>/<Z> in these new IMPACT runs with TF EOS.
+        Use of this function should still work for other IMPACT versions (With older fixed_prof_Z but should be checked).
+        
+        
+    '''
+    fprefix = fpre(path)
+    dict_wt = load_dict(path,fprefix,'wt',time)
+
+    dict_fo = load_dict(path,fprefix,'fo',time)
+    fo = dict_fo['mat']
+    nv,ny,nx = np.shape(fo)
+
+    dict_ne = load_dict(path,fprefix,'n',time)
+    ne = dict_ne['mat']
+    dict_Z = load_dict(path,fprefix,'Z',time)
+    prof_Z = dict_Z['mat']
+    
+    Z2ni = trim_array(ne,nx,ny)*trim_array(prof_Z,nx,ny)
+    wte_uncorrected = trim_array(dict_wt['mat'],nx,ny)
+    
+    return wte_uncorrected / Z2ni
+
+#-----------------------------------------------------------------------
+def get_wt_1D(path,time):
+    '''
+        CURRENT IMPACT RUNS HAVE INCORRECT HALL PARAMETER OUTPUTS
+        Missing a 1/Z2ni factor, where 1/Z2ni = 1/<z^2>ni = 1/(fixed_prof_Z*ne)
+        
+        
+        Note fixed_prof_Z = <Z^2>/<Z> in these new IMPACT runs with TF EOS.
+        Use of this function should still work for other IMPACT versions (With older fixed_prof_Z but should be checked).
+        
+        
+    '''
+    fprefix = fpre(path)
+    dict_wt = load_dict_1D(path,fprefix,'wt',time)
+    dict_ne = load_dict_1D(path,fprefix,'n',time)
+    ne = dict_ne['mat']
+    dict_Z = load_dict_1D(path,fprefix,'Z',time)
+    prof_Z = dict_Z['mat']
+    
+    Z2ni = ne*prof_Z
+    
+    
+    return dict_wt['mat'] / Z2ni
+    

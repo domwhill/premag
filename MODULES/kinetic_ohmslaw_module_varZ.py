@@ -60,7 +60,7 @@ norm_name = 'p400nFL_5v37/'
 norm_path = '/Users/' + userid + '/Dropbox/York/Pre-magnetised/gorgon_import-11.10.17/p400nFL_5v37'
 log_file = '/Users/' + userid + '/Dropbox/York/Pre-magnetised/gorgon_import-11.10.17/' +norm_name + 'norm.log' 
 [T0,n0,Z0,Bz0] = np.loadtxt(log_file)
-
+'''
 cd5 = cf.conv_factors_custom(norm_path,Z0,Ar=6.51)
 
 print 'Z0 = ', Z0
@@ -77,6 +77,7 @@ xstep_factor = cd5.xstep_factor
 tstep_factor = cd5.tstep_factor
 xlab = cd5.xlab_rel
 ylab = cd5.ylab
+'''
 #<-------------------------------------
 #-----------------------------------------------------------------------
 
@@ -170,12 +171,13 @@ def get_v2dv(v_grid):
     v2dv = (v_grid**2)*dv
     return v2dv
 #-----------------------------------------------------------------------
-
+'''
 def get_v2dv_vyx(v_grid):
     dv = calc_dv(v_grid)
     v2dv = (v_grid**2)*dv
     v2dv_vyx = extend_grid_v_to_vxy(nv,ny,nx,v_grid)
     return v2dv_vyx
+'''
 #-----------------------------------------------------------------------
     
 def maxw_dist(v,vte):
@@ -185,6 +187,25 @@ def maxw_dist(v,vte):
 def maxw_dist_impact(v,ne,vte):
     f_om = ((np.pi*(vte**2))**(-1.5)) * np.exp(-(v/vte)**2) ;
     return f_om
+#-----------------------------------------------------------------------
+
+def get_fo_maxw_3D(v_grid,ne_vyx,Te_vyx):
+    '''
+        constructs a 3D nv,ny,nx array of f0_Maxwellian for values ne, Te
+    '''
+    nv,ny,nx = np.shape(Te_vyx)
+    v = extend_grid_v_to_vxy(nv,ny,nx,v_grid)
+
+    vte = (2.0*Te_vyx)**0.5
+
+    fo_unnorm = ((np.pi*(vte**2))**(-1.5)) * np.exp(-(v/vte)**2)
+    sum_array = np.sum(fo_unnorm,axis=0)
+    sum_vyx = np.zeros((np.shape(Te_vyx)))
+    for iv in range(nv):
+        sum_vyx[iv,:,:] = sum_array
+    fo = ne_vyx*((np.pi*(vte**2))**(-1.5)) * np.exp(-(v/vte)**2)/sum_vyx 
+    # note IMPACT normalisation of fo different to Epperleins
+    return fo
 #-----------------------------------------------------------------------
     
 def get_v_mom_m(v_grid,omega,F0,m):
@@ -207,7 +228,8 @@ def get_v_mom_m_n(v_grid,omega,F0,m,n):
     mom_n = get_v_mom_m(v_grid,omega,F0,n)
     mom_m_n = mom_m/mom_n
     return mom_m_n
-    
+#-----------------------------------------------------------------------
+
 
 def get_delta(v_grid,omega,F0):
     
@@ -518,31 +540,15 @@ def get_Biermann(grid,rho_vyx,Bz_vyx,fo):
     BierE_y = (1.0/Eta)*(I1_y + (omega_yx**2)*(I4/I2)*I3_y)
     #---- now take the curl?
     # --- get_grad assumes [x,y] indices
-    #print ' np.shape(BierE_x) = ', np.shape(BierE_x)
-    
+
     x_grid_yx,xY = np.meshgrid(grid['x_grid'],np.ones(len(grid['y_grid'])))
     yY,y_grid_yx = np.meshgrid(np.ones(len(grid['x_grid'])),grid['y_grid']) 
-    
-    #print '\n\n x_grid = ', x_grid_yx, '\n xY = ',xY, np.shape(x_grid_yx)
-    
-    #print ' y_grid = ', y_grid_yx, '\n yY = ', yY, np.shape(y_grid_yx)
-    
-    
-    
-    #dyBierE_x, dxBierE_x = cf.get_grad(grid['y_grid'],grid['x_grid'],BierE_x)
-    #dyBierE_y, dxBierE_y = cf.get_grad(grid['y_grid'],grid['x_grid'],BierE_y)
-    #print ' np.shape(BierE_x) = ',np.shape(I1_x), np.shape(omega_yx), np.shape(grid['y_grid']), np.shape(grid['x_grid']), np.shape(BierE_x),np.shape(BierE_y)
-    
+
     dxBierE_y =(BierE_y[:,2:] - BierE_y[:,:-2])/(x_grid_yx[:,2:] - x_grid_yx[:,:-2])
     dyBierE_x =(BierE_x[2:,:] - BierE_x[:-2,:])/(y_grid_yx[2:,:] - y_grid_yx[:-2,:])
     
-    
-    #print ' np.shape(BierE_x) = ', np.shape(BierE_x), np.shape(I1_x), np.shape(omega_yx), np.shape(grid['y_grid']), np.shape(grid['x_grid']), np.shape(dyBierE_x)
-    
-    #print ' np.shape(dxBierE_y) = ', np.shape(dxBierE_y), np.shape(dyBierE_x)
+
     kinetic_biermann_z = -1.0*(dxBierE_y[1:-1,:] - dyBierE_x[:,1:-1])
-    #print ' shape kinetic_biermann_z = ', np.shape(kinetic_biermann_z)
-    #sys.exit()
     return kinetic_biermann_z
 #-----------------------------------------------------------------------
 def get_Biermann_classic(grid,rho_vyx,Bz_vyx,ne,Te_vyx):
@@ -585,13 +591,7 @@ def get_Biermann_classic(grid,rho_vyx,Bz_vyx,ne,Te_vyx):
     x_grid_yx,xY = np.meshgrid(grid['x_grid'],np.ones(len(grid['y_grid'])))
     yY,y_grid_yx = np.meshgrid(np.ones(len(grid['x_grid'])),grid['y_grid']) 
     
-    #print '\n\n x_grid = ', x_grid_yx, '\n xY = ',xY, np.shape(x_grid_yx)
-    #print ' y_grid = ', y_grid_yx, '\n yY = ', yY, np.shape(y_grid_yx)
-    
-    
-    
-    #dyBierE_x, dxBierE_x = cf.get_grad(grid['y_grid'],grid['x_grid'],BierE_x)
-    #dyBierE_y, dxBierE_y = cf.get_grad(grid['y_grid'],grid['x_grid'],BierE_y)
+
     print ' np.shape(BierE_x) = ',np.shape(I1_x), np.shape(omega_yx), np.shape(grid['y_grid']), np.shape(grid['x_grid']), np.shape(BierE_x),np.shape(BierE_y)
     
     dxBierE_y =(BierE_y[:,2:] - BierE_y[:,:-2])/(x_grid_yx[:,2:] - x_grid_yx[:,:-2])
@@ -975,29 +975,11 @@ def get_q_SH(ne,Te,w,dxT,dyT):
     q_RL_x = + kappa_wedge*dyT
     q_RL_y = - kappa_wedge*dxT
     return q_SH_x
-'''
-def get_gradT(x_grid,y_grid,T_data):
-
-    
-    if len(np.shape(T_data))==1:
-        dx = x_grid[2:] - x_grid[:-2]
-        dxT = (T_data[2:] - T_data[:-2])/dx
-        return dxT
-    else:
-        dx = x_grid[2:] - x_grid[:-2]
-        dy = y_grid[2:] - y_grid[:-2]
-        dxT = (T_data[:,2:] - T_data[:,:-2])/dx
-        dyT = (T_data[2:,:] - T_data[:-2,:])/dy
-        return dxT, dyT
-'''
 
 #-----------------------------------------------------------------------
-
+'''
 def vmom_fo(m,v_grid,fo):
-    '''
-     mom = vmom_fo(m,v_grid,fo)
-     fo can be 1D array or 3D [v,y,x]
-    '''
+
     #dvc = get_dvc(v_grid)
     if len(np.shape(fo))>1:
         vmom = np.einsum('ijk,i->ijk',fo,Y0_weight*(v_grid**(m+2))*dvc)
@@ -1005,7 +987,7 @@ def vmom_fo(m,v_grid,fo):
         vmom = Y0_weight*fo*(v_grid**(m+2))*dvc
     mom = np.sum(vmom,axis=0)
     return mom
-    
+'''
 #-----------------------------------------------------------------------
     
 def convert_var_to_str(var):
@@ -1014,39 +996,7 @@ def convert_var_to_str(var):
             return name
 
 #-----------------------------------------------------------------------
-def plot_2D(ax,data,label,middle=None,colormap='jet',limits=None,xlabel=None,ylabel=None,clabel=None):
-    if middle != None:
-        try:
-            norm = cf.MidPointNorm(middle)
-        except ValueError:
-            norm = None
-    else:
-        norm = None
-    
-    if limits:
-        try:
-            im = ax.imshow(data,aspect='auto',cmap=colormap,norm=norm,extent=limits)
-            plt.colorbar(im,ax=ax,aspect='auto',norm=norm,label=clabel)
-        except ValueError:
-            norm=None
-            #print 'setting norm to None;'
-            im = ax.imshow(data,aspect='auto',cmap=colormap,norm=norm,extent=limits)
-            plt.colorbar(im,ax=ax,aspect='auto',norm=norm,label=clabel)
-            
-    else:
-        try:
-            im = ax.imshow(data,aspect='auto',cmap=colormap,norm=norm)
-            plt.colorbar(im,ax=ax,aspect='auto',norm=norm,label=clabel)
-        except ValueError:
-            im = ax.imshow(data,aspect='auto',cmap=colormap,norm=norm)
-            plt.colorbar(im,ax=ax,aspect='auto',norm=norm,label=clabel)
 
-    ax.set_title(label)
-    ax.set_xlabel(xlabel)
-    ax.set_ylabel(ylabel)
-        
-    #print ' plotted ---- ', label
-    
 #-----------------------------------------------------------------------
 def vmom_f1(m,v_grid,f1x_c,f1y_c):
     '''
@@ -1146,137 +1096,6 @@ def get_kinetic_heatflow_b(path,time):
 
 #-----------------------------------------------------------------------
 
-def get_kinetic_heatflow(path,time):
-    '''
-       dict_x,dict_y = get_kinetic_heatflow(path,time)
-       ---> obsolete
-    '''
-    dict_Bz = cf.load_dict(path,fpre(path),'Bz',time)
-    Bz = dict_Bz['mat']
-
-    dict_wt = cf.load_dict(path,fpre(path),'wt',time)
-    wt = dict_wt['mat']
-    dict_ne = cf.load_dict(path,fpre(path),'n',time)
-    ne = dict_ne['mat']
-    dict_Z = cf.load_dict(path,fpre(path),'Z',time)
-    prof_Z = dict_Z['mat']
-
-    dict_te = cf.load_dict(path,fpre(path),'Te',time)
-    Te = dict_te['mat']
-    x_grid = dict_te['x_grid']
-    y_grid = dict_te['y_grid']
-    
-    
-    dict_fo = cf.load_dict(path,fpre(path),'fo',time)
-    fo = dict_fo['mat']
-    
-    
-    dict_fxX = cf.load_dict(path,fpre(path),'fxX',time)
-    fxX = dict_fxX['mat']
-
-    dict_fxY = cf.load_dict(path,fpre(path),'fxY',time)
-    fxY = dict_fxY['mat']
-
-    dict_fyX = cf.load_dict(path,fpre(path),'fyX',time)
-    fyX = dict_fyX['mat']
-
-    dict_fyY = cf.load_dict(path,fpre(path),'fyY',time)
-    fyY = dict_fyY['mat']
-
-    dict_qxX = cf.load_dict(path,fpre(path),'qxX',time)
-    qxX = dict_qxX['mat']
-    dict_qyY = cf.load_dict(path,fpre(path),'qyY',time)
-    qyY = dict_qyY['mat']
-    
-    f1x_c = 0.5*(fxX[:,:,1:] + fxX[:,:,:-1])
-    f1y_c = 0.5*(fyY[:,1:,:] + fyY[:,:-1,:])
-    
-    qx_c = 0.5*(qxX[:,1:] + qxX[:,:-1])
-    qy_c = 0.5*(qyY[1:,:] + qyY[:-1,:])
-
-    vmomx_0,vmomy_0 = vmom_f1(0,v_grid,f1x_c,f1y_c)
-    vmomx_3,vmomy_3 = vmom_f1(3,v_grid,f1x_c,f1y_c)
-    vmomx_5,vmomy_5 = vmom_f1(5,v_grid,f1x_c,f1y_c)
-    
-    jx = -vmomx_0
-    jy = -vmomy_0
-    
-    mom0_3 = vmom_fo(3,v_grid,fo)
-    mom0_5 = vmom_fo(5,v_grid,fo)
-    mom0_7 = vmom_fo(7,v_grid,fo)
-
-    ##print 'np.shape(fxX) = ', np.shape(fxX), np.shape(fyY), np.shape(mom0_3), np.shape(mom0_5)
-    ##print ' shapes = ',np.shape(vmomx_3),np.shape(vmomy_3),np.shape(vmomx_5),np.shape(vmomy_5)
-    ny,nx = np.shape(vmomy_5)
-    ##print ' shape(Z2ni) = ', np.shape(Z2ni)
-    
-    Z2ni = np.transpose(cf.trim_array(ne,nx,ny))*np.transpose(cf.trim_array(prof_Z,nx,ny))
-    Bz = np.transpose(cf.trim_array(Bz,nx,ny))
-    ##print 'np.sort(Z2ni) = ', np.sort(Z2ni)[0,0], np.sort(fo)
-    ##print ' np.shape(Z2ni) = ', np.shape(Z2ni)
-    rA = (Z2ni*2.0)**-1
-
-    vqx = rA*(vmomx_5 - (4.0/3.0)*(mom0_5/mom0_3)*(vmomx_3))
-    vqy = rA*(vmomy_5 - (4.0/3.0)*(mom0_5/mom0_3)*(vmomy_3))
-
-    vqBz_x = -1.0*vqy*Bz
-    vqBz_y = -1.0*-1.0*vqx*Bz
-    #---------------
-    #print np.shape(mom0_7), np.shape(mom0_7)[:], np.shape(mom0_7)[:][0] 
-    ny,nx = np.shape(mom0_7)
-    
-    x_grid = cf.trim_array(x_grid,nx,[1])
-    y_grid = cf.trim_array(y_grid,ny,[1])
-    
-    ##print ' np.shape(x_Grid) = ', np.shape(x_grid),np.shape(y_grid), np.shape(mom0_7)
-    dymom7,dxmom7 = cf.get_grad(y_grid,x_grid,mom0_7)
-    dymom5,dxmom5 = cf.get_grad(y_grid,x_grid,mom0_5)
-    dymom7,dxmom7 = -1.0*dymom7,-1.0*dxmom7
-    dymom5,dxmom5 = -1.0*dymom5,-1.0*dxmom5
-    
-    ny,nx = np.shape(dxmom7)
-    eta_star = Z2ni
-    eta = Z2ni/(2.0*mom0_3)#Z2ni/(2vmom_0)
-    #--- trim arrays
-    ##print ' qx_c = ', np.shape(qx_c), np.shape(qy_c), np.shape(vqBz_y)
-    array_list = [rA,eta,jx,jy,mom0_7,mom0_5,mom0_3,vqBz_x,vqBz_y]
-    ##print ' nx = ',nx, 'ny = ', ny, np.shape(dxmom7)
-    qx_c =  cf.trim_array(np.transpose(qx_c),ny,nx)
-    qy_c = cf.trim_array(np.transpose(qy_c),ny,nx)
-    ##print ' qx_c = ', np.shape(qx_c), np.shape(qy_c)
-    #cf.trim_array(array,ny,nx)
-    rA,eta,jx,jy,mom0_7,mom0_5,mom0_3,vqBz_x,vqBz_y = map(lambda array: cf.trim_array(array,ny,nx),array_list)
-    
-    resist_x = rA*(8.0/3.0)*eta*jx*mom0_5
-    resist_y = rA*(8.0/3.0)*eta*jy*mom0_5
-    
-    
-    grad1_x = rA*(1.0/3.0)*dxmom7
-    grad1_y = rA*(1.0/3.0)*dymom7
-    
-    grad2_x = -(4.0/9.0)*rA*(dxmom5)*(mom0_5/mom0_3)
-    grad2_y = -(4.0/9.0)*rA*(dymom5)*(mom0_5/mom0_3)
-    #---------------
-    
-    qx_tot = grad1_x + grad2_x + resist_x + vqBz_x
-    qy_tot = grad1_y + grad2_y + resist_y + vqBz_y
-    dict_x = {}
-    dict_x['x_grid'] = x_grid
-    dict_x['grad1_x'] = grad1_x
-    dict_x['grad2_x'] = grad2_x
-    dict_x['resist_x'] = resist_x
-    dict_x['vqBz_x'] = vqBz_x
-    
-    dict_y = {} 
-    dict_y['y_grid'] = y_grid
-    dict_y['grad1_y'] = grad1_y
-    dict_y['grad2_y'] = grad2_y
-    dict_y['resist_y'] = resist_y
-    dict_y['vqBz_y'] = vqBz_y
-    
-    return dict_x,dict_y
-
-#-----------------------------------------------------------------------
 
 def get_avgx(mat,ax=1):
     '''
@@ -1336,7 +1155,68 @@ def get_Nernst_abs(path,time):
 
     return v_nx_k,v_ny_k,v_nx_c,v_ny_c
 
-#------------------------------------------------------------------def get_Nernst_ratio(path,time):
+
+# -----------------------------------------------------------------------
+def get_Nernst_abs_c(path, time):
+    '''
+    data_x,data_y = get_Nernst_ratio(path,time)
+    '''
+    dict = cf.load_data_all(path, fpre(path), time)
+    ne = dict['ne']
+    Te = dict['Te']
+    qx = dict['qx']
+    qy = dict['qy']
+    jx = dict['jx']
+    jy = dict['jy']
+    dxT = dict['dxT']
+    dyT = dict['dyT']
+    Bz = dict['Bz']
+    x_grid = dict['x_grid']
+    y_grid = dict['y_grid']
+    Z2ni = dict['Z2ni']
+    prof_Z = dict['Z']
+    fo = dict['fo']
+    nv = dict['nv']
+    ny = dict['ny']
+    nx = dict['nx']
+    rA = (Z2ni) ** -1
+
+    dict_fo = cf.load_dict(path, fpre(path), 'fo', time)
+    fo = dict_fo['mat']
+
+    rA = (Z2ni) ** -1
+
+    # ===============
+    grid = dict['grid']
+    dxfo, dyfo = cf.get_grad_3d(grid, fo)
+    rho = rA
+    omega = Bz * rA
+    rho_vyx = extend_grid_xy_to_vxy(nv, ny, nx, rA)
+    Bz_vyx = extend_grid_xy_to_vxy(nv, ny, nx, Bz)
+    omega_vyx = extend_grid_xy_to_vxy(nv, ny, nx, omega)
+    Te_vyx = extend_grid_xy_to_vxy(nv, ny, nx, Te)
+    ne_vyx = extend_grid_xy_to_vxy(nv, ny, nx, ne)
+
+    fo_m = get_fo_maxw_3D(dict_fo['v_grid'], ne_vyx, Te_vyx)
+
+    # ------ NERNST -----------------------------------------------------
+
+    v_nx_k, v_ny_k = get_v_N(grid, rho_vyx, Bz_vyx, fo)
+    v_nx_c, v_ny_c = get_v_N(grid, rho_vyx, Bz_vyx, fo_m)
+
+    #v_nx_classical, v_ny_classical, v_nx_hf, v_ny_hf = get_vN_from_path(path, fpre(path), time)
+
+    v_nx_c = np.transpose(v_nx_c)
+    v_ny_c = np.transpose(v_ny_c)  # np.transpoe(v_ny_classical)#[:,::-1]
+    v_nx_k = np.transpose(v_nx_k)
+    v_ny_k = np.transpose(v_ny_k)  # np.transpose(v_ny)#[:,::-1]
+    dict_k = {'vN x': v_nx_k, 'vN y': v_ny_k}
+    dict_c = {'vN x': v_nx_c, 'vN y': v_ny_c}
+    return dict_c, dict_k
+
+
+#------------------------------------------------------------------
+def get_Nernst_ratio(path,time):
     '''
     data_x,data_y = get_Nernst_ratio(path,time)
     '''
@@ -1347,7 +1227,7 @@ def get_Nernst_abs(path,time):
     jxX = dict_jxX['mat']
     dict_jyY = cf.load_dict(path,fpre(path),'jyY',time)
     jyY = dict_jyY['mat']
-    ###print 'np.shape(jxX) = ', np.shape(jxX), np.shape(jyY)
+
     jy_c = 0.5*(jyY[:,1:] + jyY[:,:-1])
     jx_c = 0.5*(jxX[1:,:] + jxX[:-1,:])
 
@@ -1355,7 +1235,7 @@ def get_Nernst_abs(path,time):
     qxX = dict_qxX['mat']
     dict_qyY = cf.load_dict(path,fpre(path),'qyY',time)
     qyY = dict_qyY['mat']
-    ###print 'np.shape(qxX) = ', np.shape(qxX), np.shape(qyY)
+
     qy_c = 0.5*(qyY[:,1:] + qyY[:,:-1])
     qx_c = 0.5*(qxX[1:,:] + qxX[:-1,:])
     dict_wt = cf.load_dict(path,fpre(path),'wt',time)
@@ -1368,14 +1248,9 @@ def get_Nernst_abs(path,time):
     Te = dict_te['mat']
     x_grid = dict_te['x_grid']
     y_grid = dict_te['y_grid']
-    x_grid_SI = x_grid*xstep_factor
-    y_grid_SI = y_grid*xstep_factor
-    time_col = dict_te['time']*tstep_factor
-
     dict_fo = cf.load_dict(path,fpre(path),'fo',time)
     fo = dict_fo['mat']
-    ##print '-------------------------------------------'
-    #print ' \n\ndict ----- time ===== ', dict_fo['time']
+
 
     dict_wt = cf.load_dict(path,fpre(path),'wt',time)
     wt = dict_wt['mat']
@@ -1405,7 +1280,7 @@ def get_Nernst_abs(path,time):
     omega_vyx = extend_grid_xy_to_vxy(nv,ny,nx,omega)
     #------ NERNST -----------------------------------------------------
     v_nx,v_ny = get_v_N(grid,rho_vyx,Bz_vyx,fo)
-    #v_nx_classical,v_ny_classical,v_nx_hf,v_ny_hf = q_mod.get_vN_from_path(path,fpre(path),time)
+
     v_nx_classical,v_ny_classical,v_nx_hf,v_ny_hf = get_vN_from_path(path,fpre(path),time)
     
     v_nx_kinetic = np.transpose(v_nx)
@@ -1420,7 +1295,7 @@ def get_Nernst_abs(path,time):
 
     data_x = v_nx_kinetic/v_nx_classical[:,:]
     data_x = np.where(v_nx_classical[:,:]==0.0,1.0,data_x)
-    #vmin,vmax = -1.0,1.0
+
     data_x = np.where(np.abs(data_x)>vmax,np.sign(data_x)*vmax,data_x)
     return data_x,data_y
 
@@ -1448,6 +1323,7 @@ def get_q_abs(path,time):
     dxT = dict['dxT']
     dyT = dict['dyT']
     Bz = dict['Bz']
+    dxB = dict['dxB']
     U = dict['U']
     x_grid = dict['x_grid']
     y_grid = dict['y_grid']
@@ -1457,6 +1333,7 @@ def get_q_abs(path,time):
     nv = dict['nv']
     ny = dict['ny']
     nx = dict['nx']
+    wt = dict['wt']
     rA = (Z2ni)**-1
 
     dict_fo = cf.load_dict(path,fpre(path),'fo',time)
@@ -1479,7 +1356,7 @@ def get_q_abs(path,time):
     for name in name_list:
         dict[name]['data'] = np.transpose(dict[name]['data'])[:]
     
-    q_KSH_x,q_KSH_y,q_KRL_x,q_KRL_y,q_KTE_x,q_KTE_y,q_KE_x,q_KE_y =dict['q_SH_x']['data'],dict['q_SH_y']['data'],dict['q_RL_x']['data'],dict['q_RL_y']['data'],dict['q_TE_x']['data'],dict['q_TE_y']['data'],dict['q_E_x']['data'],dict['q_E_y']['data']
+    q_KSH_x,q_KSH_y,q_KRL_x,q_KRL_y,q_KTE_x,q_KTE_y,q_KE_x,q_KE_y = dict['q_SH_x']['data'],dict['q_SH_y']['data'],dict['q_RL_x']['data'],dict['q_RL_y']['data'],dict['q_TE_x']['data'],dict['q_TE_y']['data'],dict['q_E_x']['data'],dict['q_E_y']['data']
     #--- classical
 
     
@@ -1497,39 +1374,7 @@ def get_q_abs(path,time):
     q_y_VFP = (q_yY[:,:,1:] + q_yY[:,:,:-1])*0.5
     q_x_B = q_RL_x + q_E_x + q_SH_x
     q_y_B = q_RL_y + q_E_y + q_SH_y
-    '''
-    #------ total
-    q_xk = q_x_VFP[time_int,:x_lim,:]
-    q_xc = q_x_B[time_int,:x_lim,:]
-    avg = np.average(np.abs(q_xc))
-    rat_tot_x = get_ratio_lim(q_xc,q_xk)
-    rat_tot_x = np.where(np.abs(q_xc)<=avg*1e-4,0.0,rat_tot_x)
 
-       
-    q_yk = q_y_VFP[time_int,:x_lim,:]
-    q_yc = q_y_B[time_int,:x_lim,:]   
-    rat_tot_y = get_ratio_lim(q_yc,q_yk)   
-    avg = np.average(np.abs(q_yc))
-    rat_tot_y = np.where(np.abs(q_yc)<=avg*1e-2,0.0,rat_tot_y)
-
-    
-    #------ RL
-    q_yk = q_KRL_y
-    q_yc = q_RL_y[time_int,:x_lim,:]   
-    rat_RL_y = get_ratio_lim(q_yc,q_yk)
-
-    q_xk = q_KRL_x
-    q_xc = q_RL_x[time_int,:x_lim,:]   
-    rat_RL_x = get_ratio_lim(q_xc,q_xk)
-    #---- SH
-    q_yk = q_KSH_y
-    q_yc = q_SH_y[time_int,:x_lim,:]    
-    rat_SH_y = get_ratio_lim(q_yc,q_yk)
-
-    q_xk = q_KSH_x
-    q_xc = q_SH_x[time_int,:x_lim,:]    
-    rat_SH_x = get_ratio_lim(q_xc,q_xk)
-    '''
     #------
 
     
@@ -1546,8 +1391,8 @@ def get_q_abs(path,time):
     
     
     dict_k = {}
-    dict_k['tot x'] = q_x_VFP[time_int,:,:]
-    dict_k['tot y'] = q_y_VFP[time_int,:,:]
+    dict_k['tot x'] = q_KSH_x + q_KRL_x + q_KTE_x + q_KE_x#q_x_VFP[time_int,:,:]
+    dict_k['tot y'] = q_KSH_y + q_KRL_y + q_KTE_y + q_KE_y#q_y_VFP[time_int,:,:]
     
     dict_k['SH x'] = q_KSH_x#q_SH_x[time_int,:x_lim,:]
     dict_k['SH y'] = q_KSH_y#q_SH_y[time_int,:x_lim,:]
@@ -1566,13 +1411,158 @@ def get_q_abs(path,time):
     dict_k['jx'] = np.transpose(jx)
     dict_k['jy'] = np.transpose(jy)
     dict_k['dxT'] = np.transpose(dxT)
+    dict_k['dxB'] = np.transpose(dxB)
+
     dict_k['dyT']  = np.transpose(dyT)
     dict_k['Bz']= np.transpose(Bz)
     dict_k['Z2ni']= np.transpose(Z2ni)
     dict_k['U']= np.transpose(U)
+    dict_k['wt']= np.transpose(wt)
 
     
     return dict_c, dict_k
+
+#-----------------------------------------------------------------------
+def get_q_abs_c(path,time):
+    '''
+    dict_ratio = get_q_ratio(path,time)
+    '''
+    time_int = int(time)
+    dict  = cf.load_data_all(path,fpre(path),time)
+    ne = dict['ne']
+    Te = dict['Te'] 
+    qx = dict['qx']
+    qy = dict['qy']
+    jx = dict['jx']
+    jy = dict['jy']
+    dxT = dict['dxT']
+    dyT = dict['dyT']
+    Bz = dict['Bz']
+    dxB = dict['dxB']
+    U = dict['U']
+    x_grid = dict['x_grid']
+    y_grid = dict['y_grid']
+    Z2ni = dict['Z2ni']
+    prof_Z = dict['Z']
+    fo = dict['fo']
+    nv = dict['nv']
+    ny = dict['ny']
+    nx = dict['nx']
+    wt = dict['wt']
+
+    rA = (Z2ni)**-1
+
+    dict_fo = cf.load_dict(path,fpre(path),'fo',time)
+    fo = dict_fo['mat']
+    rA = (Z2ni)**-1
+    
+    #===============
+    grid = dict['grid']
+    dxfo, dyfo = cf.get_grad_3d(grid,fo)
+    rho = rA
+    omega = Bz*rA
+    rho_vyx =  extend_grid_xy_to_vxy(nv,ny,nx,rA)
+    Bz_vyx = extend_grid_xy_to_vxy(nv,ny,nx,Bz)
+    omega_vyx = extend_grid_xy_to_vxy(nv,ny,nx,omega)
+    #--- constructing fo maxw
+    ##########
+    # extra extensions requried for maxwellian f0
+    Te_vyx = extend_grid_xy_to_vxy(nv,ny,nx,Te)
+    ne_vyx = extend_grid_xy_to_vxy(nv,ny,nx,ne)
+    
+
+    #heat flow ratios
+    
+    #--- kinetic
+    dict = get_qSH_kinetic(grid,rho_vyx,Bz_vyx,jx,jy,fo)
+    name_list = ['q_SH_x','q_SH_y','q_RL_x','q_RL_y','q_TE_x','q_TE_y','q_E_x','q_E_y']
+    for name in name_list:
+        dict[name]['data'] = np.transpose(dict[name]['data'])[:]
+    
+    q_KSH_x,q_KSH_y,q_KRL_x,q_KRL_y,q_KTE_x,q_KTE_y,q_KE_x,q_KE_y =dict['q_SH_x']['data'],dict['q_SH_y']['data'],dict['q_RL_x']['data'],dict['q_RL_y']['data'],dict['q_TE_x']['data'],dict['q_TE_y']['data'],dict['q_E_x']['data'],dict['q_E_y']['data']
+
+
+    #--------------------------------------------------------------------------
+    fo_m = get_fo_maxw_3D(dict_fo['v_grid'],ne_vyx,Te_vyx)
+    dict_c_in = get_qSH_kinetic(grid,rho_vyx,Bz_vyx,jx,jy,fo_m)
+    name_list = ['q_SH_x','q_SH_y','q_RL_x','q_RL_y','q_TE_x','q_TE_y','q_E_x','q_E_y']
+    for name in name_list:
+        dict_c_in[name]['data'] = np.transpose(dict_c_in[name]['data'])[:]
+    
+    
+    
+    q_SH_x,q_SH_y = dict_c_in['q_SH_x']['data'],dict_c_in['q_SH_y']['data']
+    q_RL_x,q_RL_y = dict_c_in['q_RL_x']['data'],dict_c_in['q_RL_y']['data']
+    q_TE_x,q_TE_y = dict_c_in['q_TE_x']['data'],dict_c_in['q_TE_y']['data']
+    q_E_x,q_E_y = dict_c_in['q_E_x']['data'],dict_c_in['q_E_y']['data']
+    #--- classical
+
+    q_dir = path + '/q_dir/' 
+    '''
+
+    q_SH_x = np.load(q_dir + 'q_SH_x.txt.npy')
+    q_SH_y = np.load(q_dir + 'q_SH_y.txt.npy')
+    q_RL_x = np.load(q_dir + 'q_RL_x.txt.npy')
+    q_RL_y = np.load(q_dir + 'q_RL_y.txt.npy')
+    q_E_x = np.load(q_dir + 'q_E_x.txt.npy')
+    q_E_y = np.load(q_dir + 'q_E_y.txt.npy')
+    '''
+    q_xX = np.load(q_dir + 'q_xX.txt.npy')
+    q_yY = np.load(q_dir + 'q_yY.txt.npy')
+    #nt,ny,nx
+    q_x_VFP = (q_xX[:,1:,:] + q_xX[:,:-1,:])*0.5
+    q_y_VFP = (q_yY[:,:,1:] + q_yY[:,:,:-1])*0.5
+    q_x_B = q_RL_x + q_E_x + q_SH_x + q_TE_x
+    q_y_B = q_RL_y + q_E_y + q_SH_y + q_TE_y
+
+    #------
+
+    
+    dict_c = {}
+    dict_c['tot x'] = q_x_B[:,:]#q_xc
+    dict_c['tot y'] = q_y_B[:,:]
+    
+    dict_c['SH x'] = q_SH_x[:,:] #q_SH_x[time_int,:x_lim,:]
+    dict_c['SH y'] = q_SH_y[:,:] #q_SH_y[time_int,:x_lim,:]
+    dict_c['RL x'] = q_RL_x[:,:]  
+    dict_c['RL y'] = q_RL_y[:,:] 
+    dict_c['E x'] = q_TE_x +  q_E_x[:,:] 
+    dict_c['E y'] = q_TE_y + q_E_y[:,:]
+    
+    
+    dict_k = {}
+    dict_k['tot x'] = q_KSH_x + q_KRL_x + q_KTE_x + q_KE_x#q_x_VFP[time_int,:,:]
+    dict_k['tot y'] = q_KSH_y + q_KRL_y + q_KTE_y + q_KE_y#q_y_VFP[time_int,:,:]
+
+    
+    dict_k['SH x'] = q_KSH_x#q_SH_x[time_int,:x_lim,:]
+    dict_k['SH y'] = q_KSH_y#q_SH_y[time_int,:x_lim,:]
+    dict_k['RL x'] = q_KRL_x
+    dict_k['RL y'] = q_KRL_y
+    dict_k['E x'] = q_KTE_x + q_KE_x
+    dict_k['E y'] = q_KTE_y + q_KE_y
+    
+    dict_k['time'] = dict_fo['time']
+    dict_c['x_grid'] = x_grid[1:-1]
+    dict_c['y_grid'] = y_grid
+    dict_k['x_grid'] = x_grid[1:-1]
+    dict_k['y_grid'] = y_grid
+    dict_k['ne'] = np.transpose(ne)
+    dict_k['Te'] = np.transpose(Te)
+    dict_k['jx'] = np.transpose(jx)
+    dict_k['jy'] = np.transpose(jy)
+    dict_k['dxT'] = np.transpose(dxT)
+    dict_k['dxB'] = np.transpose(dxB)
+
+    dict_k['dyT']  = np.transpose(dyT)
+    dict_k['Bz']= np.transpose(Bz)
+    dict_k['Z2ni']= np.transpose(Z2ni)
+    dict_k['U']= np.transpose(U)
+    dict_k['wt']= np.transpose(wt)
+
+    
+    return dict_c, dict_k
+#------------------------------------------------------------------------------
 def get_q_ratio(path,time):
     '''
     dict_ratio = get_q_ratio(path,time)
@@ -1585,7 +1575,7 @@ def get_q_ratio(path,time):
     jxX = dict_jxX['mat']
     dict_jyY = cf.load_dict(path,fpre(path),'jyY',time)
     jyY = dict_jyY['mat']
-    ###print 'np.shape(jxX) = ', np.shape(jxX), np.shape(jyY)
+
     jy_c = 0.5*(jyY[:,1:] + jyY[:,:-1])
     jx_c = 0.5*(jxX[1:,:] + jxX[:-1,:])
 
@@ -1593,7 +1583,7 @@ def get_q_ratio(path,time):
     qxX = dict_qxX['mat']
     dict_qyY = cf.load_dict(path,fpre(path),'qyY',time)
     qyY = dict_qyY['mat']
-    ###print 'np.shape(qxX) = ', np.shape(qxX), np.shape(qyY)
+
     qy_c = 0.5*(qyY[:,1:] + qyY[:,:-1])
     qx_c = 0.5*(qxX[1:,:] + qxX[:-1,:])
     dict_wt = cf.load_dict(path,fpre(path),'wt',time)
@@ -1606,14 +1596,9 @@ def get_q_ratio(path,time):
     Te = dict_te['mat']
     x_grid = dict_te['x_grid']
     y_grid = dict_te['y_grid']
-    x_grid_SI = x_grid*xstep_factor
-    y_grid_SI = y_grid*xstep_factor
-    time_col = dict_te['time']*tstep_factor
 
     dict_fo = cf.load_dict(path,fpre(path),'fo',time)
     fo = dict_fo['mat']
-    ##print '-------------------------------------------'
-    #print ' \n\ndict ----- time ===== ', dict_fo['time']
 
     dict_wt = cf.load_dict(path,fpre(path),'wt',time)
     wt = dict_wt['mat']
@@ -1754,18 +1739,12 @@ def get_kinetic_and_classicB(path,fprefix,time,xlim=-1):
     Te = dict_te['mat']
     x_grid = dict_te['x_grid']
     y_grid = dict_te['y_grid']
-    x_grid_SI = x_grid*xstep_factor
-    y_grid_SI = y_grid*xstep_factor
-    time_col = dict_te['time']*tstep_factor
+    time_col = dict_te['time']
     
     
     
     dict_fo = cf.load_dict(path,fprefix,'fo',time)
     fo = dict_fo['mat']
-    #print '-------------------------------------------'
-    #print ' \n\ndict ----- time ===== ', dict_fo['time']
-    #print '-------------------------------------------'
-    #print ' -------------------- SHAPES --------------------------------'
     
     grid = dict_fo
     
@@ -1780,8 +1759,6 @@ def get_kinetic_and_classicB(path,fprefix,time,xlim=-1):
     
     Te = np.transpose(cf.trim_array(Te,nx,ny))
     ne = np.transpose(cf.trim_array(ne,nx,ny))
-    # #print ' np.shapae(jx_c) = ', np.shape(jx_c),np.shape(jy_c)
-    # #print ' np.shape(Z2ni) = ', np.shape(Z2ni),' np.shape(Bz) = ', np.shape(Bz)
     
     rA = (Z2ni)**-1
     
@@ -1797,17 +1774,7 @@ def get_kinetic_and_classicB(path,fprefix,time,xlim=-1):
     ne_vyx = extend_grid_xy_to_vxy(nv,ny,nx,ne)
 
     #----- image plot setup
-    limits = [y_grid_SI[0],y_grid_SI[-1],x_grid_SI[xlim],x_grid_SI[0]]
-    lab_dict = {}
-    lab_dict['figsize'] = (6,6) # x,y inches
-    lab_dict['lims'] = limits#[y_grid_SI[0],y_grid_SI[-1],x_grid_SI[c_index],x_grid_SI[0]]
-    lab_dict['colormap'] = 'jet'
-    lab_dict['xlab'],lab_dict['ylab'] = xlab,ylab
-    lab_dict['cbar_title'] = '   '
-    lab_dict['title'] = '   '
-    lab_dict['middle'] = 0.0
 
-    
     
     
     
@@ -1823,6 +1790,79 @@ def get_kinetic_and_classicB(path,fprefix,time,xlim=-1):
     kinetic_biermann = np.transpose(kinetic_biermann)
 
     return classic_biermann,kinetic_biermann
+
+
+def get_kinetic_and_classicB_c(path, fprefix, time, xlim=-1):
+    '''
+       classic_biermann,kinetic_biermann = get_kinetic_and_classicB(path,fprefix,time)
+    '''
+    dict_Bz = cf.load_dict(path, fprefix, 'Bz', time)
+    Bz = dict_Bz['mat']
+
+    dict_jxX = cf.load_dict(path, fprefix, 'jxX', time)
+    jxX = dict_jxX['mat']
+    dict_jyY = cf.load_dict(path, fprefix, 'jyY', time)
+    jyY = dict_jyY['mat']
+    # print 'np.shape(jxX) = ', np.shape(jxX), np.shape(jyY)
+    jy_c = 0.5 * (jyY[:, 1:] + jyY[:, :-1])
+    jx_c = 0.5 * (jxX[1:, :] + jxX[:-1, :])
+
+    dict_qxX = cf.load_dict(path, fprefix, 'qxX', time)
+    qxX = dict_qxX['mat']
+    dict_qyY = cf.load_dict(path, fprefix, 'qyY', time)
+    qyY = dict_qyY['mat']
+    # print 'np.shape(qxX) = ', np.shape(qxX), np.shape(qyY)
+    qy_c = 0.5 * (qyY[:, 1:] + qyY[:, :-1])
+    qx_c = 0.5 * (qxX[1:, :] + qxX[:-1, :])
+
+    dict_wt = cf.load_dict(path, fprefix, 'wt', time)
+    wt = dict_wt['mat']
+
+    dict_ne = cf.load_dict(path, fprefix, 'n', time)
+    ne = dict_ne['mat']
+
+    dict_te = cf.load_dict(path, fprefix, 'Te', time)
+
+    Te = dict_te['mat']
+    x_grid = dict_te['x_grid']
+    y_grid = dict_te['y_grid']
+    time_col = dict_te['time']
+
+    dict_fo = cf.load_dict(path, fprefix, 'fo', time)
+    fo = dict_fo['mat']
+
+
+    dict_Z = cf.load_dict(path, fpre(path), 'Z', time)
+    prof_Z = dict_Z['mat']
+    nv, ny, nx = np.shape(fo)
+    Z2ni = np.transpose(cf.trim_array(ne, nx, ny)) * np.transpose(cf.trim_array(prof_Z, nx, ny))
+
+    Bz = np.transpose(cf.trim_array(Bz, nx, ny))
+    jx = np.transpose(cf.trim_array(jx_c, nx, ny))
+    jy = np.transpose(cf.trim_array(jy_c, nx, ny))
+
+    Te = np.transpose(cf.trim_array(Te, nx, ny))
+    ne = np.transpose(cf.trim_array(ne, nx, ny))
+
+    rA = (Z2ni) ** -1
+
+    # ===============
+    grid = dict_fo
+    rho_vyx = extend_grid_xy_to_vxy(nv, ny, nx, rA)
+    Bz_vyx = extend_grid_xy_to_vxy(nv, ny, nx, Bz)
+    Te_vyx = extend_grid_xy_to_vxy(nv, ny, nx, Te)
+    ne_vyx = extend_grid_xy_to_vxy(nv, ny, nx, ne)
+    fo_m = get_fo_maxw_3D(dict_fo['v_grid'], ne_vyx, Te_vyx)
+    # ----- image plot setup
+
+    classic_biermann = get_Biermann(grid, rho_vyx, Bz_vyx, fo_m)
+    kinetic_biermann = get_Biermann(grid, rho_vyx, Bz_vyx, fo)
+
+    classic_biermann = np.transpose(classic_biermann)
+    kinetic_biermann = np.transpose(kinetic_biermann)
+
+    return classic_biermann, kinetic_biermann
+
 
 #-----------------------------------------------------------------------
 
@@ -1864,8 +1904,8 @@ def get_kinetic_and_classic_E_pressure(path,fprefix,time,xlim=73):
     Te = dict_te['mat']
     x_grid = dict_te['x_grid']
     y_grid = dict_te['y_grid']
-    x_grid_SI = x_grid*xstep_factor
-    y_grid_SI = y_grid*xstep_factor
+    #x_grid_SI = x_grid*xstep_factor
+    #y_grid_SI = y_grid*xstep_factor
     time_col = dict_te['time']*tstep_factor
     
     
@@ -1914,15 +1954,15 @@ def get_kinetic_and_classic_E_pressure(path,fprefix,time,xlim=73):
     
 
     #----- image plot setup
-    limits = [y_grid_SI[0],y_grid_SI[-1],x_grid_SI[xlim],x_grid_SI[0]]
-    lab_dict = {}
-    lab_dict['figsize'] = (6,6) # x,y inches
-    lab_dict['lims'] = limits#[y_grid_SI[0],y_grid_SI[-1],x_grid_SI[c_index],x_grid_SI[0]]
-    lab_dict['colormap'] = 'jet'
-    lab_dict['xlab'],lab_dict['ylab'] = xlab,ylab
-    lab_dict['cbar_title'] = '   '
-    lab_dict['title'] = '   '
-    lab_dict['middle'] = 0.0
+    #limits = [#y_grid_SI[0],#y_grid_SI[-1],#x_grid_SI[xlim],#x_grid_SI[0]]
+    #lab_dict = {}
+    #lab_dict['figsize'] = (6,6) # x,y inches
+    #lab_dict['lims'] = #limits#[#y_grid_SI[0],#y_grid_SI[-1],#x_grid_SI[c_index],#x_grid_SI[0]]
+    #lab_dict['colormap'] = 'jet'
+    #lab_dict['xlab'],#lab_dict['ylab'] = xlab,ylab
+    #lab_dict['cbar_title'] = '   '
+    #lab_dict['title'] = '   '
+    #lab_dict['middle'] = 0.0
 
     
     
@@ -1946,126 +1986,6 @@ def get_kinetic_and_classic_E_pressure(path,fprefix,time,xlim=73):
     
     return dict_classical,dict_kinetic
 
-def get_kinetic_and_classic_E_pressure(path,fprefix,time,xlim=73):
-    '''
-       dict_classical,dict_kinetic =get_kinetic_and_classic_E_pressure(path,fprefix,time,xlim=73)
-    '''
-    dict_Bz = cf.load_dict(path,fprefix,'Bz',time)
-    Bz = dict_Bz['mat']
-
-    dict_jxX = cf.load_dict(path,fprefix,'jxX',time)
-    jxX = dict_jxX['mat']
-    dict_jyY = cf.load_dict(path,fprefix,'jyY',time)
-    jyY = dict_jyY['mat']
-    #print 'np.shape(jxX) = ', np.shape(jxX), np.shape(jyY)
-    jy_c = 0.5*(jyY[:,1:] + jyY[:,:-1])
-    jx_c = 0.5*(jxX[1:,:] + jxX[:-1,:])
-
-    dict_qxX = cf.load_dict(path,fprefix,'qxX',time)
-    qxX = dict_qxX['mat']
-    dict_qyY = cf.load_dict(path,fprefix,'qyY',time)
-    qyY = dict_qyY['mat']
-    #print 'np.shape(qxX) = ', np.shape(qxX), np.shape(qyY)
-    qy_c = 0.5*(qyY[:,1:] + qyY[:,:-1])
-    qx_c = 0.5*(qxX[1:,:] + qxX[:-1,:])
-
-
-
-    dict_wt = cf.load_dict(path,fprefix,'wt',time)
-    wt = dict_wt['mat']
-
-    
-    dict_ne = cf.load_dict(path,fprefix,'n',time)
-    ne = dict_ne['mat']
-    #Z2ni = ne
-    
-    dict_te = cf.load_dict(path,fprefix,'Te',time)
-    
-    Te = dict_te['mat']
-    x_grid = dict_te['x_grid']
-    y_grid = dict_te['y_grid']
-    x_grid_SI = x_grid*xstep_factor
-    y_grid_SI = y_grid*xstep_factor
-    time_col = dict_te['time']*tstep_factor
-    
-    
-    
-    dict_fo = cf.load_dict(path,fprefix,'fo',time)
-    fo = dict_fo['mat']
-    #print '-------------------------------------------'
-    #print ' \n\ndict ----- time ===== ', dict_fo['time']
-    #print '-------------------------------------------'
-    #print ' -------------------- SHAPES --------------------------------'
-    
-    grid = dict_fo
-    nv,ny,nx = np.shape(fo)
-    
-    dict_Z = cf.load_dict(path,fpre(path),'Z',time)
-    prof_Z = dict_Z['mat']
-    Z2ni = np.transpose(cf.trim_array(ne,nx,ny))*np.transpose(cf.trim_array(prof_Z,nx,ny))
-
-    Bz = np.transpose(cf.trim_array(Bz,nx,ny))
-    jx = np.transpose(cf.trim_array(jx_c,nx,ny))
-    jy = np.transpose(cf.trim_array(jy_c,nx,ny))
-    
-    Te = np.transpose(cf.trim_array(Te,nx,ny))
-    ne = np.transpose(cf.trim_array(ne,nx,ny))
-    # #print ' np.shapae(jx_c) = ', np.shape(jx_c),np.shape(jy_c)
-    # #print ' np.shape(Z2ni) = ', np.shape(Z2ni),' np.shape(Bz) = ', np.shape(Bz)
-    
-    rA = (Z2ni)**-1
-    
-    #===============
-    grid = dict_fo
-    dxfo, dyfo = cf.get_grad_3d(grid,fo)
-    #rho = rA
-    omega = Bz*rA
-    rho_vyx =  extend_grid_xy_to_vxy(nv,ny,nx,rA)
-    Bz_vyx = extend_grid_xy_to_vxy(nv,ny,nx,Bz)
-    jx_vyx = extend_grid_xy_to_vxy(nv,ny,nx,jx)
-    jy_vyx = extend_grid_xy_to_vxy(nv,ny,nx,jy)
-
-
-    omega_vyx = extend_grid_xy_to_vxy(nv,ny,nx,omega)
-    Te_vyx = extend_grid_xy_to_vxy(nv,ny,nx,Te)
-    ne_vyx = extend_grid_xy_to_vxy(nv,ny,nx,ne)
-    
-    
-
-    #----- image plot setup
-    limits = [y_grid_SI[0],y_grid_SI[-1],x_grid_SI[xlim],x_grid_SI[0]]
-    lab_dict = {}
-    lab_dict['figsize'] = (6,6) # x,y inches
-    lab_dict['lims'] = limits#[y_grid_SI[0],y_grid_SI[-1],x_grid_SI[c_index],x_grid_SI[0]]
-    lab_dict['colormap'] = 'jet'
-    lab_dict['xlab'],lab_dict['ylab'] = xlab,ylab
-    lab_dict['cbar_title'] = '   '
-    lab_dict['title'] = '   '
-    lab_dict['middle'] = 0.0
-
-    
-    
-    
-    
-    #------ NERNST -----------------------------------------------------
-    print '\n\n--------- time ==================== ', time
-    
-    #v_nx,v_ny = get_v_N(grid,rho_vyx,Bz_vyx,fo)
-    
-    E_Pressure_c_x,E_Pressure_c_y = get_pressureEfield_classic(grid,rho_vyx,Bz_vyx,ne,Te_vyx)
-    E_Pressure_k_x,E_Pressure_k_y =  get_pressureEfield_kinetic(grid,rho_vyx,Bz_vyx,fo)
-    E_hall_x,E_hall_y =  get_hallfield(grid,rho_vyx,Bz_vyx,jx_vyx,jy_vyx,fo)
-    E_TEwedgex,E_TEwedgey = get_thermoelectricEfield_kinetic(grid,rho_vyx,Bz_vyx,fo)
-    
-    dict_classic = {}
-    dict_classic['E_P_x'] = E_Pressure_c_x
-    dict_classic['E_P_y'] = E_Pressure_c_y
-    
-    dict_kinetic = {}
-    dict_kinetic['E_P_x'] = E_Pressure_k_x
-    dict_kinetic['E_P_y'] = E_Pressure_k_y
-    
-    return dict_classical,dict_kinetic
 #=======================================================================
 def get_alpha_perp_path(path,time):
     '''
@@ -2098,8 +2018,8 @@ def get_alpha_perp_path(path,time):
     Te = dict_te['mat']
     x_grid = dict_te['x_grid']
     y_grid = dict_te['y_grid']
-    x_grid_SI = x_grid*xstep_factor
-    y_grid_SI = y_grid*xstep_factor
+    #x_grid_SI = x_grid*xstep_factor
+    #y_grid_SI = y_grid*xstep_factor
     time_col = dict_te['time']*tstep_factor
     dict_fo = cf.load_dict(path,fprefix,'fo',time)
     fo = dict_fo['mat']
@@ -2200,8 +2120,8 @@ def get_kinetic_E(path,fprefix,time,xlim=73):
     Te = dict_te['mat']
     x_grid = dict_te['x_grid']
     y_grid = dict_te['y_grid']
-    x_grid_SI = x_grid*xstep_factor
-    y_grid_SI = y_grid*xstep_factor
+    #x_grid_SI = x_grid*xstep_factor
+    #y_grid_SI = y_grid*xstep_factor
     time_col = dict_te['time']*tstep_factor
     
     
@@ -2249,15 +2169,15 @@ def get_kinetic_E(path,fprefix,time,xlim=73):
     
 
     #----- image plot setup
-    limits = [y_grid_SI[0],y_grid_SI[-1],x_grid_SI[xlim],x_grid_SI[0]]
-    lab_dict = {}
-    lab_dict['figsize'] = (6,6) # x,y inches
-    lab_dict['lims'] = limits#[y_grid_SI[0],y_grid_SI[-1],x_grid_SI[c_index],x_grid_SI[0]]
-    lab_dict['colormap'] = 'jet'
-    lab_dict['xlab'],lab_dict['ylab'] = xlab,ylab
-    lab_dict['cbar_title'] = '   '
-    lab_dict['title'] = '   '
-    lab_dict['middle'] = 0.0
+    #limits = [#y_grid_SI[0],#y_grid_SI[-1],#x_grid_SI[xlim],#x_grid_SI[0]]
+    #lab_dict = {}
+    #lab_dict['figsize'] = (6,6) # x,y inches
+    #lab_dict['lims'] = #limits#[#y_grid_SI[0],#y_grid_SI[-1],#x_grid_SI[c_index],#x_grid_SI[0]]
+    #lab_dict['colormap'] = 'jet'
+    #lab_dict['xlab'],#lab_dict['ylab'] = xlab,ylab
+    #lab_dict['cbar_title'] = '   '
+    #lab_dict['title'] = '   '
+    #lab_dict['middle'] = 0.0
 
     
     
@@ -2335,8 +2255,8 @@ def get_kinetic_q(path,time):
     Te = dict_te['mat']
     x_grid = dict_te['x_grid']
     y_grid = dict_te['y_grid']
-    x_grid_SI = x_grid*xstep_factor
-    y_grid_SI = y_grid*xstep_factor
+    #x_grid_SI = x_grid*xstep_factor
+    #y_grid_SI = y_grid*xstep_factor
     time_col = dict_te['time']*tstep_factor
 
     dict_fo = cf.load_dict(path,fprefix,'fo',time)
@@ -2382,86 +2302,58 @@ def get_kinetic_q(path,time):
         dict[name]['label'] = convert_name_to_label(name)
     q_KSH_x,q_KSH_y,q_KRL_x,q_KRL_y,q_KTE_x,q_KTE_y,q_KE_x,q_KE_y =dict['q_SH_x']['data'],dict['q_SH_y']['data'],dict['q_RL_x']['data'],dict['q_RL_y']['data'],dict['q_TE_x']['data'],dict['q_TE_y']['data'],dict['q_E_x']['data'],dict['q_E_y']['data']
     #--- classical
-    '''
-    
-    q_dir = path + '/q_dir/' 
-    q_SH_x = np.load(q_dir + 'q_SH_x.txt.npy')
-    q_SH_y = np.load(q_dir + 'q_SH_y.txt.npy')
-    q_RL_x = np.load(q_dir + 'q_RL_x.txt.npy')
-    q_RL_y = np.load(q_dir + 'q_RL_y.txt.npy')
-    q_E_x = np.load(q_dir + 'q_E_x.txt.npy')
-    q_E_y = np.load(q_dir + 'q_E_y.txt.npy')
-    q_xX = np.load(q_dir + 'q_xX.txt.npy')
-    q_yY = np.load(q_dir + 'q_yY.txt.npy')
-    #nt,ny,nx
-    q_x_VFP = (q_xX[:,1:,:] + q_xX[:,:-1,:])*0.5
-    q_y_VFP = (q_yY[:,:,1:] + q_yY[:,:,:-1])*0.5
-    q_x_B = q_RL_x + q_E_x + q_SH_x
-    q_y_B = q_RL_y + q_E_y + q_SH_y
-    
-    if np.isnan(np.sum(q_E_x)):
-        print ' nans in Q_E_X'
-        print ' SUM q_E_x = ', np.sum(q_E_x)
-        print ' SUM q_RL_x = ', np.sum(q_RL_x)
-        print ' SUM q_SH_x = ', np.sum(q_SH_x)
-        print np.where(np.isnan(q_E_x))
-    
-    if np.isnan(np.sum(q_E_y)):
-        print ' nans in Q_E_y'
-        print ' SUM q_E_y = ', np.sum(q_E_y)
-        print ' SUM q_RL_y = ', np.sum(q_RL_y)
-        print ' SUM q_SH_y = ', np.sum(q_SH_y)
-        print ' np.where(q_E_x)', np.where(np.isnan(q_E_y))
-        
 
-    
-    #------ RL
-    
-    q_yk = q_KRL_y
-    q_yc = q_RL_y[time_int,:,:]   
-    rat_RL_y = get_ratio_lim(q_yc,q_yk)
-
-    q_xk = q_KRL_x
-    q_xc = q_RL_x[time_int,:,:]   
-    rat_RL_x = get_ratio_lim(q_xc,q_xk)
-    #---- SH
-    q_yk = q_KSH_y
-    q_yc = q_SH_y[time_int,:,:]    
-    rat_SH_y = get_ratio_lim(q_yc,q_yk)
-
-    q_xk = q_KSH_x
-    q_xc = q_SH_x[time_int,:,:]    
-    rat_SH_x = get_ratio_lim(q_xc,q_xk)
-    #--------
-    #---- SH
-    q_yk = q_KSH_y
-    q_yc = q_SH_y[time_int,:,:]    
-    rat_SH_y = get_ratio_lim(q_yc,q_yk)
-
-    q_xk = q_E_x
-    q_xc = q_SH_x[time_int,:,:]    
-    rat_SH_x = get_ratio_lim(q_xc,q_xk)
-    
-    print '--- now doing the totals ---- x'
-    #--- tot x
-    q_xk = q_x_VFP[time_int,:,:]
-    q_xc = q_x_B[time_int,:,:]    
-    rat_tot_x = get_ratio_lim(q_xc,q_xk)
-    #---- tot y
-    print ' ---- now doing the totals ---y'
-    q_yk = q_y_VFP[time_int,:,:]
-    q_yc = q_y_B[time_int,:,:]    
-    rat_tot_y = get_ratio_lim(q_yc,q_yk)
-    
-    dict_ratio = {}
-    dict_ratio['SH x'] = rat_SH_x#q_SH_x[time_int,:,:]
-    dict_ratio['SH y'] = rat_SH_y#q_SH_y[time_int,:x_lim,:]
-    dict_ratio['RL x'] = rat_RL_x
-    dict_ratio['RL y'] = rat_RL_y
-    
-    dict_ratio['tot x'] = rat_tot_x
-    dict_ratio['tot y'] = rat_tot_y
-    return dict_ratio
-    '''
     return dict
     
+#-----------------------------------------------------------------------
+def repack_2D(path,time,recompute_q_c = False):
+    '''
+
+        dict_c,dict_k = repack_2D(path,time)
+    '''
+
+    if recompute_q_c:
+        dict_qc,dict_qk =get_q_abs_c(path,time)
+    else:
+        dict_qc,dict_qk = get_q_abs(path,time)#get_q_ratio(path,time)#get_q_individ(path,time)
+
+    print('-->')
+    v_nx_k,v_ny_k,v_nx_c,v_ny_c = get_Nernst_abs(path,time)
+
+
+    dict_out_c = {}
+    dict_out_k = {}
+    transport_var_list = ['tot x', 'tot y', 
+                          'SH x','SH y',
+                          'RL x','RL y',
+                          'E x','E y',
+                          'vN x','vN y']
+
+    for var in transport_var_list:
+        if var[0] != 'v':
+            dict_out_k[var] = dict_qk[var]
+        elif var == 'vN x':
+            dict_out_k[var] = v_nx_k
+        elif var == 'vN y':
+            dict_out_k[var] = v_ny_k
+
+    for var in transport_var_list:
+        if var[0] != 'v':
+            dict_out_c[var] = dict_qc[var]
+        elif var == 'vN x':
+            dict_out_c[var] = v_nx_c
+        elif var == 'vN y':
+            dict_out_c[var] = v_ny_c
+
+    nx,ny = np.shape(dict_out_k['SH x'])
+    key_list = ['U', 'Te', 'ne', 'Bz','wt']
+    for key in key_list:
+        dict_out_k[key] = dict_qk[key]
+
+
+    dict_out_k['dxT'] = dict_qk['dxT']
+    dict_out_k['dxB'] = dict_qk['dxB']
+
+    dict_out_k['y_grid'] = cf.trim_array(dict_qk['y_grid'],ny,1)
+    dict_out_k['x_grid'] = cf.trim_array(dict_qk['x_grid'],nx,1)
+    return dict_out_c,dict_out_k

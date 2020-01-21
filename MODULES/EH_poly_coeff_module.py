@@ -1,4 +1,5 @@
 import numpy as np
+import os
 from scipy import interpolate as SI
 import getpass
 q_e = 1.602e-19
@@ -124,10 +125,8 @@ def impact_inputs(ne,Te,Z,Bz,Ar):
     return dict
     
 def load_EHcoeffs():
-    fname = '/Users/dominichill/Dropbox/PhD/Code/AblationMaths/EH_coeffs.txt'
-    #fname = '~/Dropbox/PhD/Code/AblationMaths/EH_coeffs.txt'
-    #fname = '/Users/DH814/Dropbox/PhD/Code/AblationMaths/EH_coeffs.txt'
-    fname = '/Users/' + userid + '/Dropbox/PhD/Code/AblationMaths/EH_coeffs.txt'
+    dirname, filename = os.path.split(os.path.abspath(__file__))
+    fname = '%s/EH_coeffs.txt' % dirname
     data = np.loadtxt(fname,dtype=str)
     ylen = len(data[:,0])
     xlen = len(data[0,:])
@@ -240,6 +239,85 @@ def coeff_poly_fit(chi,Z):
     coeff_dict = get_coeff_dict(Z)
      
     return t_dict,coeff_dict
+#-----------------------------------------------------------------------
+def coeff_poly_fit_diff(chi,Z):
+    '''
+        Finds the differential forms of the EH transport coefficients.
+        
+        Uses the analytic forms ( derived in Mathematica).
+        t_dict = coeff_poly_fit_diff(chi,Z)
+    '''
+    alpha0 = get_coeff("alpha_0",Z)
+    alpha0p= get_coeff("alpha_0'",Z)
+    alpha1p= get_coeff("alpha_0'",Z)
+    a0p= get_coeff("a_0'",Z)
+    a1p= get_coeff("a_1'",Z)
+    alpha0wedge= get_coeff("alpha_0_wedge",Z)
+    alpha0pp= get_coeff("alpha_0''",Z)
+    alpha1pp= get_coeff("alpha_1''",Z)
+    a0pp= get_coeff("a_0''",Z)
+    a1pp= get_coeff("a_1''",Z)
+    a2pp= get_coeff("a_2''",Z)
+    beta0= get_coeff("beta_0",Z)
+    beta0p = get_coeff("beta_0'",Z)
+    beta1p= get_coeff("beta_1'",Z)
+    b0p = get_coeff("b_0'",Z)
+    b1p = get_coeff("b_1'",Z)
+    b2p = get_coeff("b_2'",Z)
+    beta0wedge = get_coeff("beta_0_wedge",Z)
+    beta0pp = get_coeff("beta_0''",Z)
+    beta1pp = get_coeff("beta_1''",Z)
+    b0pp = get_coeff("b_0''",Z)
+    b1pp = get_coeff("b_1''",Z)
+    b2pp = get_coeff("b_2''",Z)
+    gamma0 = get_coeff("gamma_0",Z)
+    gamma0p = get_coeff("gamma_0'",Z)
+    gamma1p = get_coeff("gamma_1'",Z)
+    c0p = get_coeff("c_0'",Z)
+    c1p = get_coeff("c_1'",Z)
+    c2p= get_coeff("c_2'",Z)
+    gamma0wedge = get_coeff("gamma_0_wedge",Z)
+    gamma0pp = get_coeff("gamma_0''",Z)
+    gamma1pp= get_coeff("gamma_1''",Z)
+    c0pp= get_coeff("c_0''",Z)
+    c1pp= get_coeff("c_1''",Z)
+    c2pp= get_coeff("c_2''",Z)
+    
+    dalphaperp = (a1p*alpha0p - a0p*alpha1p + chi*(2*alpha0p + alpha1p*chi))/(a0p + chi*(a1p + chi))**2
+
+    dalphawedge =  -((0.8888888888888888*chi*(alpha0pp + alpha1pp*chi)*(a1pp + chi*(2*a2pp + 3*chi)))/(a0pp + chi*(a1pp + chi*(a2pp + chi)))**
+     1.8888888888888888) + (alpha1pp*chi)/ \
+    (a0pp + chi*(a1pp + chi*(a2pp + chi)))**0.8888888888888888 + \
+    (alpha0pp + alpha1pp*chi)/(a0pp + chi*(a1pp + chi*(a2pp + chi)))**0.8888888888888888
+
+    dbetaperp = -((0.8888888888888888*(beta0p + beta1p*chi)*(b1p + chi*(2*b2p + 3*chi)))/\
+    (b0p + chi*(b1p + chi*(b2p + chi)))**1.8888888888888888) + \
+    beta1p/(b0p + chi*(b1p + chi*(b2p + chi)))**0.8888888888888888
+
+    dbetawedge = (b0pp*(beta0pp + 2*beta1pp*chi) - chi**2*(b2pp*beta0pp - b1pp*beta1pp + \
+     2*beta0pp*chi + beta1pp*chi**2))/(b0pp + chi*(b1pp + chi*(b2pp + chi)))**2
+ 
+    dkappaperp = ((-c1p)*gamma0p + c0p*gamma1p - chi*((2*c2p + 3*chi)*gamma0p + \
+     chi*(c2p + 2*chi)*gamma1p))/(c0p + chi*(c1p + chi*(c2p + chi)))**2
+ 
+    dkappawedge = ((c0pp - chi**2*(c2pp + 2*chi))*gamma0pp + chi*(2*c0pp + c1pp*chi - chi**3)*gamma1pp) \
+    /(c0pp + chi*(c1pp + chi*(c2pp + chi)))**2
+
+    t_dict = {}
+    t_dict['alpha_para'] = 0.0
+    t_dict['alpha_perp'] = dalphaperp
+    t_dict['alpha_wedge'] = dalphawedge
+  
+    t_dict['beta_para'] = 0.0
+    t_dict['beta_perp'] = dbetaperp
+    t_dict['beta_wedge'] = dbetawedge
+    
+    t_dict['kappa_para'] = 0.0
+    t_dict['kappa_perp'] = dkappaperp
+    t_dict['kappa_wedge'] = dkappawedge
+    
+     
+    return t_dict
 
 
 if __name__=="__main__":

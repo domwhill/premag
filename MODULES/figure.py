@@ -14,6 +14,8 @@ import numpy as np, getpass,sys,re
 import matplotlib as mpl
 from pylab import *
 userid = getpass.getuser()
+import matplotlib.gridspec as GS
+
 mpl.use('pgf')
 class plotting_params():
     '''
@@ -259,6 +261,106 @@ def newfig_custom(width_scale,height_scale):
 
     return fig
 
+
+def set_ax(ax,lim):
+    ax.set_xlim(lim[0],lim[1])
+    ax.set_ylim(lim[2],lim[3])
+
+def clear_xax(ax):
+    ax.set_xticklabels([])
+    ax.set_xticks([])
+
+
+def clear_yax(ax):
+    ax.set_yticklabels([])
+    ax.set_yticks([])
+
+
+
+def newfig_4implot(grid, data_in,out_file='im.png',cmap='RdBu_r', vmin=0,vmax=0, **kwargs):
+    '''
+
+    '''
+    data1 = data_in['data1']
+    data2 = data_in['data2']
+    data3 = data_in['data3']
+    data4 = data_in['data4']
+
+
+
+    x_grid = grid['x_grid']
+    y_grid = grid['y_grid']
+
+    gs1 = GS.GridSpec(2, 3, width_ratios=[1.0, 1.0, 0.04])
+    fig = newfig_generic(1.0)
+    plt.subplots_adjust(hspace=0.12, wspace=0.12, right=0.8)
+
+    ax1 = plt.subplot(gs1[0, 0])
+    ax2 = plt.subplot(gs1[0, 1])
+    ax3 = plt.subplot(gs1[1, 0])
+    ax4 = plt.subplot(gs1[1, 1])
+    cax = plt.subplot(gs1[:, 2])
+
+    lims = [x_grid[0], x_grid[-1], y_grid[0], y_grid[-1]]
+    im = ax1.imshow(data1, aspect='auto', extent=lims,
+               cmap=cmap,
+               vmin=vmin,vmax=vmax)
+    im = ax2.imshow(data2, aspect='auto', extent=lims,
+               cmap=cmap,
+               vmin=vmin,vmax=vmax)
+    im = ax3.imshow(data3, aspect='auto', extent=lims,
+               cmap=cmap,
+               vmin=vmin,vmax=vmax)
+    im = ax4.imshow(data4, aspect='auto', extent=lims,
+                    cmap=cmap,
+                    vmin=vmin,vmax=vmax)
+
+    if 'lim' in data_in:
+        lim = data_in['lim']
+        set_ax(ax1, lim)
+        set_ax(ax2, lim)
+        set_ax(ax3, lim)
+        set_ax(ax4, lim)
+
+    if 'lab' in data_in:
+        lab = data_in['lab']
+    else:
+        lab=''
+
+    c2 = fig.colorbar(im, cax=cax, ax=cax,
+                      format='%.1e',
+                      label=lab)
+    if 'ylab' in data_in:
+        ylab = data_in['ylab']
+        ax1.set_ylabel(ylab)
+        ax3.set_ylabel(ylab)
+    clear_yax(ax2)
+    clear_yax(ax4)
+
+    clear_xax(ax1)
+    clear_xax(ax2)
+    if 'xlab' in data_in:
+        xlab  = data_in['xlab']
+        ax3.set_xlabel(xlab)
+        ax4.set_xlabel(xlab)
+    return ax1, ax2, ax3, ax4, cax
+
+
+def set_ylim_max(ax_in, grid, data, y_mult=[1.0, 1.0], xlim=[-5.0, 20.0]):
+    xmin, xmax = xlim[0], xlim[1]
+    ymin = np.min(data[(grid < xmax) * (grid >= xmin)])
+    ymax = np.max(data[(grid < xmax) * (grid >= xmin)])
+    dy = 0.05 * np.abs(ymax - ymin)
+    if ymin != ymax:
+
+        ax_in.set_ylim(ymin - dy * y_mult[0], ymax + dy * y_mult[1])
+    else:
+        print('error ymin = ymax data all the same!')
+    print('ymin = %4.4e ymax = %4.4e ' % (ymin, ymax))
+
+    return
+
+#--------------------------------------------------------------------------
 def annotate_axis(ax,lett='(a)',dx_mult=1.0,dy_mult=1.0,fontsize=0):
     xmin,xmax = ax.get_xlim()
     ymin,ymax = ax.get_ylim()

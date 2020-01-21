@@ -56,7 +56,7 @@ norm_name = 'p400nFL_5v37/'
 norm_path = '/Users/' + userid + '/Dropbox/York/Pre-magnetised/gorgon_import-11.10.17/p400nFL_5v37'
 log_file = '/Users/' + userid + '/Dropbox/York/Pre-magnetised/gorgon_import-11.10.17/' +norm_name + 'norm.log' 
 [T0,n0,Z0,Bz0] = np.loadtxt(log_file)
-
+'''
 cd5 = cf.conv_factors_custom(norm_path,Z0,Ar=6.51)
 
 print 'Z0 = ', Z0
@@ -73,6 +73,8 @@ xstep_factor = cd5.xstep_factor
 tstep_factor = cd5.tstep_factor
 xlab = cd5.xlab_rel
 ylab = cd5.ylab
+'''
+tstep_factor = 1.0
 #<-------------------------------------
 
 def convert_name_to_label(name):
@@ -992,7 +994,8 @@ def convert_var_to_str(var):
             return name
 
 #-----------------------------------------------------------------------
-def plot_2D(ax,data,label,middle=None,colormap='jet',limits=None,xlabel=None,ylabel=None,clabel=None):
+'''
+def plot_2D(ax,data,label,middle=None,colormap='jet',#limits=None,xlabel=None,ylabel=None,clabel=None):
     if middle != None:
         try:
             norm = cf.MidPointNorm(middle)
@@ -1001,14 +1004,14 @@ def plot_2D(ax,data,label,middle=None,colormap='jet',limits=None,xlabel=None,yla
     else:
         norm = None
     
-    if limits:
+    if #limits:
         try:
-            im = ax.imshow(data,aspect='auto',cmap=colormap,norm=norm,extent=limits)
+            im = ax.imshow(data,aspect='auto',cmap=colormap,norm=norm,extent=#limits)
             plt.colorbar(im,ax=ax,aspect='auto',norm=norm,label=clabel)
         except ValueError:
             norm=None
             #print 'setting norm to None;'
-            im = ax.imshow(data,aspect='auto',cmap=colormap,norm=norm,extent=limits)
+            im = ax.imshow(data,aspect='auto',cmap=colormap,norm=norm,extent=#limits)
             plt.colorbar(im,ax=ax,aspect='auto',norm=norm,label=clabel)
             
     else:
@@ -1024,7 +1027,7 @@ def plot_2D(ax,data,label,middle=None,colormap='jet',limits=None,xlabel=None,yla
     ax.set_ylabel(ylabel)
         
     #print ' plotted ---- ', label
-    
+''' 
 #-----------------------------------------------------------------------
 def vmom_f1(m,v_grid,f1x_c,f1y_c):
     '''
@@ -1395,7 +1398,7 @@ def get_q_abs(path,time):
     #--- classical
 
     
-    q_dir = path + '/q_dir/' 
+    q_dir = path + '/' 
     q_SH_x = np.load(q_dir + 'q_SH_x.txt.npy')
     q_SH_y = np.load(q_dir + 'q_SH_y.txt.npy')
     q_RL_x = np.load(q_dir + 'q_RL_x.txt.npy')
@@ -1409,42 +1412,8 @@ def get_q_abs(path,time):
     q_y_VFP = (q_yY[:,:,1:] + q_yY[:,:,:-1])*0.5
     q_x_B = q_RL_x + q_E_x + q_SH_x
     q_y_B = q_RL_y + q_E_y + q_SH_y
-    '''
-    #------ total
-    q_xk = q_x_VFP[time_int,:x_lim,:]
-    q_xc = q_x_B[time_int,:x_lim,:]
-    avg = np.average(np.abs(q_xc))
-    rat_tot_x = get_ratio_lim(q_xc,q_xk)
-    rat_tot_x = np.where(np.abs(q_xc)<=avg*1e-4,0.0,rat_tot_x)
 
-       
-    q_yk = q_y_VFP[time_int,:x_lim,:]
-    q_yc = q_y_B[time_int,:x_lim,:]   
-    rat_tot_y = get_ratio_lim(q_yc,q_yk)   
-    avg = np.average(np.abs(q_yc))
-    rat_tot_y = np.where(np.abs(q_yc)<=avg*1e-2,0.0,rat_tot_y)
 
-    
-    #------ RL
-    q_yk = q_KRL_y
-    q_yc = q_RL_y[time_int,:x_lim,:]   
-    rat_RL_y = get_ratio_lim(q_yc,q_yk)
-
-    q_xk = q_KRL_x
-    q_xc = q_RL_x[time_int,:x_lim,:]   
-    rat_RL_x = get_ratio_lim(q_xc,q_xk)
-    #---- SH
-    q_yk = q_KSH_y
-    q_yc = q_SH_y[time_int,:x_lim,:]    
-    rat_SH_y = get_ratio_lim(q_yc,q_yk)
-
-    q_xk = q_KSH_x
-    q_xc = q_SH_x[time_int,:x_lim,:]    
-    rat_SH_x = get_ratio_lim(q_xc,q_xk)
-    '''
-    #------
-
-    
     dict_c = {}
     dict_c['tot x'] = q_x_B[time_int,:,:]#q_xc
     dict_c['tot y'] = q_y_B[time_int,:,:]
@@ -1486,6 +1455,138 @@ def get_q_abs(path,time):
     
     return dict_c, dict_k
 
+#-----------------------------------------------------------------------
+def get_q_abs_c(path,time):
+    '''
+    dict_ratio = get_q_ratio(path,time)
+    '''
+    time_int = int(time)
+    dict  = cf.load_data_all_1D(path,fpre(path),time)
+    ne = dict['ne']
+    Te = dict['Te'] 
+    qx = dict['qx']
+    qy = dict['qy']
+    jx = dict['jx']
+    jy = dict['jy']
+    dxT = dict['dxT']
+    dyT = dict['dyT']
+    Bz = dict['Bz']
+    dxB = dict['dxB']
+    U = dict['U']
+    x_grid = dict['x_grid']
+    y_grid = dict['y_grid']
+    Z2ni = dict['Z2ni']
+    prof_Z = dict['Z']
+    fo = dict['fo']
+    nv = dict['nv']
+    ny = dict['ny']
+    nx = dict['nx']
+    wt = dict['wt']
+
+    rA = (Z2ni)**-1
+
+    dict_fo = cf.load_dict_1D(path,fpre(path),'fo',time)
+    fo = dict_fo['mat']
+    rA = (Z2ni)**-1
+    
+    #===============
+    grid = dict['grid']
+    dxfo, dyfo = cf.get_grad_3d(grid,fo)
+    rho = rA
+    omega = Bz*rA
+    rho_vyx =  extend_grid_xy_to_vxy(nv,ny,nx,rA)
+    Bz_vyx = extend_grid_xy_to_vxy(nv,ny,nx,Bz)
+    omega_vyx = extend_grid_xy_to_vxy(nv,ny,nx,omega)
+    #--- constructing fo maxw
+    ##########
+    # extra extensions requried for maxwellian f0
+    Te_vyx = extend_grid_xy_to_vxy(nv,ny,nx,Te)
+    ne_vyx = extend_grid_xy_to_vxy(nv,ny,nx,ne)
+    
+
+    #heat flow ratios
+    
+    #--- kinetic
+    dict = get_qSH_kinetic(grid,rho_vyx,Bz_vyx,jx,jy,fo)
+    name_list = ['q_SH_x','q_SH_y','q_RL_x','q_RL_y','q_TE_x','q_TE_y','q_E_x','q_E_y']
+    for name in name_list:
+        dict[name]['data'] = np.transpose(dict[name]['data'])[:]
+    
+    q_KSH_x,q_KSH_y,q_KRL_x,q_KRL_y,q_KTE_x,q_KTE_y,q_KE_x,q_KE_y =dict['q_SH_x']['data'],dict['q_SH_y']['data'],dict['q_RL_x']['data'],dict['q_RL_y']['data'],dict['q_TE_x']['data'],dict['q_TE_y']['data'],dict['q_E_x']['data'],dict['q_E_y']['data']
+
+
+    #--------------------------------------------------------------------------
+    fo_m = get_fo_maxw_3D(dict_fo['v_grid'],ne_vyx,Te_vyx)
+    dict_c_in = get_qSH_kinetic(grid,rho_vyx,Bz_vyx,jx,jy,fo_m)
+    name_list = ['q_SH_x','q_SH_y','q_RL_x','q_RL_y','q_TE_x','q_TE_y','q_E_x','q_E_y']
+    for name in name_list:
+        dict_c_in[name]['data'] = np.transpose(dict_c_in[name]['data'])[:]
+    
+    
+    
+    q_SH_x,q_SH_y = dict_c_in['q_SH_x']['data'],dict_c_in['q_SH_y']['data']
+    q_RL_x,q_RL_y = dict_c_in['q_RL_x']['data'],dict_c_in['q_RL_y']['data']
+    q_TE_x,q_TE_y = dict_c_in['q_TE_x']['data'],dict_c_in['q_TE_y']['data']
+    q_E_x,q_E_y = dict_c_in['q_E_x']['data'],dict_c_in['q_E_y']['data']
+    #--- classical
+
+    q_dir = path + '/' 
+
+    q_xX = np.load(q_dir + 'q_xX.txt.npy')
+    q_yY = np.load(q_dir + 'q_yY.txt.npy')
+    #nt,ny,nx
+    q_x_VFP = (q_xX[:,1:,:] + q_xX[:,:-1,:])*0.5
+    q_y_VFP = (q_yY[:,:,1:] + q_yY[:,:,:-1])*0.5
+    q_x_B = q_RL_x + q_E_x + q_SH_x + q_TE_x
+    q_y_B = q_RL_y + q_E_y + q_SH_y + q_TE_y
+
+    #------
+
+    
+    dict_c = {}
+    dict_c['tot x'] = q_x_B[:,:]#q_xc
+    dict_c['tot y'] = q_y_B[:,:]
+    
+    dict_c['SH x'] = q_SH_x[:,:] #q_SH_x[time_int,:x_lim,:]
+    dict_c['SH y'] = q_SH_y[:,:] #q_SH_y[time_int,:x_lim,:]
+    dict_c['RL x'] = q_RL_x[:,:]  
+    dict_c['RL y'] = q_RL_y[:,:] 
+    dict_c['E x'] = q_TE_x +  q_E_x[:,:] 
+    dict_c['E y'] = q_TE_y + q_E_y[:,:]
+    
+    
+    dict_k = {}
+    dict_k['tot x'] = q_x_VFP[time_int,:,:]
+    dict_k['tot y'] = q_y_VFP[time_int,:,:]
+    
+    dict_k['SH x'] = q_KSH_x#q_SH_x[time_int,:x_lim,:]
+    dict_k['SH y'] = q_KSH_y#q_SH_y[time_int,:x_lim,:]
+    dict_k['RL x'] = q_KRL_x
+    dict_k['RL y'] = q_KRL_y
+    dict_k['E x'] = q_KTE_x + q_KE_x
+    dict_k['E y'] = q_KTE_y + q_KE_y
+    
+    dict_k['time'] = dict_fo['time']
+    dict_c['x_grid'] = x_grid[1:-1]
+    dict_c['y_grid'] = y_grid
+    dict_k['x_grid'] = x_grid[1:-1]
+    dict_k['y_grid'] = y_grid
+    dict_k['ne'] = np.transpose(ne)
+    dict_k['Te'] = np.transpose(Te)
+    dict_k['jx'] = np.transpose(jx)
+    dict_k['jy'] = np.transpose(jy)
+    dict_k['dxT'] = np.transpose(dxT)
+    dict_k['dxB'] = np.transpose(dxB)
+
+    dict_k['dyT']  = np.transpose(dyT)
+    dict_k['Bz']= np.transpose(Bz)
+    dict_k['Z2ni']= np.transpose(Z2ni)
+    dict_k['U']= np.transpose(U)
+    dict_k['wt']= np.transpose(wt)
+
+    
+    return dict_c, dict_k
+#------------------------------------------------------------------------------
 
 #-----------------------------------------------------------------------
 
@@ -1515,8 +1616,8 @@ def get_kinetic_and_classicB(path,fprefix,time,xlim=-1):
 
     dict_fo = cf.load_dict_1D(path,fpre(path),'fo',time)
     fo = dict_fo['mat']
-    x_grid_SI = x_grid*xstep_factor
-    y_grid_SI = y_grid*xstep_factor
+    #x_grid_SI = x_grid*xstep_factor
+    #y_grid_SI = y_grid*xstep_factor
     time_col = dict_fo['time']*tstep_factor
     
     rA = (Z2ni)**-1
@@ -1534,15 +1635,15 @@ def get_kinetic_and_classicB(path,fprefix,time,xlim=-1):
     ne_vyx = extend_grid_xy_to_vxy(nv,ny,nx,ne)
 
     #----- image plot setup
-    limits = [y_grid_SI[0],y_grid_SI[-1],x_grid_SI[xlim],x_grid_SI[0]]
-    lab_dict = {}
-    lab_dict['figsize'] = (6,6) # x,y inches
-    lab_dict['lims'] = limits#[y_grid_SI[0],y_grid_SI[-1],x_grid_SI[c_index],x_grid_SI[0]]
-    lab_dict['colormap'] = 'jet'
-    lab_dict['xlab'],lab_dict['ylab'] = xlab,ylab
-    lab_dict['cbar_title'] = '   '
-    lab_dict['title'] = '   '
-    lab_dict['middle'] = 0.0
+    #limits = [#y_grid_SI[0],#y_grid_SI[-1],#x_grid_SI[xlim],#x_grid_SI[0]]
+    #lab_dict = {}
+    #lab_dict['figsize'] = (6,6) # x,y inches
+    #lab_dict['lims'] = #limits#[#y_grid_SI[0],#y_grid_SI[-1],#x_grid_SI[c_index],#x_grid_SI[0]]
+    #lab_dict['colormap'] = 'jet'
+    #lab_dict['xlab'],#lab_dict['ylab'] = xlab,ylab
+    #lab_dict['cbar_title'] = '   '
+    #lab_dict['title'] = '   '
+    #lab_dict['middle'] = 0.0
 
     
     
@@ -1591,8 +1692,8 @@ def get_kinetic_and_classic_E_pressure(path,fprefix,time,xlim=73):
 
     dict_fo = cf.load_dict_1D(path,fpre(path),'fo',time)
     fo = dict_fo['mat']
-    x_grid_SI = x_grid*xstep_factor
-    y_grid_SI = y_grid*xstep_factor
+    #x_grid_SI = x_grid*xstep_factor
+    #y_grid_SI = y_grid*xstep_factor
     time_col = dict_fo['time']*tstep_factor
     
     rA = (Z2ni)**-1
@@ -1613,15 +1714,15 @@ def get_kinetic_and_classic_E_pressure(path,fprefix,time,xlim=73):
     
 
     #----- image plot setup
-    limits = [y_grid_SI[0],y_grid_SI[-1],x_grid_SI[xlim],x_grid_SI[0]]
-    lab_dict = {}
-    lab_dict['figsize'] = (6,6) # x,y inches
-    lab_dict['lims'] = limits#[y_grid_SI[0],y_grid_SI[-1],x_grid_SI[c_index],x_grid_SI[0]]
-    lab_dict['colormap'] = 'jet'
-    lab_dict['xlab'],lab_dict['ylab'] = xlab,ylab
-    lab_dict['cbar_title'] = '   '
-    lab_dict['title'] = '   '
-    lab_dict['middle'] = 0.0
+    #limits = [#y_grid_SI[0],#y_grid_SI[-1],#x_grid_SI[xlim],#x_grid_SI[0]]
+    #lab_dict = {}
+    #lab_dict['figsize'] = (6,6) # x,y inches
+    #lab_dict['lims'] = #limits#[#y_grid_SI[0],#y_grid_SI[-1],#x_grid_SI[c_index],#x_grid_SI[0]]
+    #lab_dict['colormap'] = 'jet'
+    #lab_dict['xlab'],#lab_dict['ylab'] = xlab,ylab
+    #lab_dict['cbar_title'] = '   '
+    #lab_dict['title'] = '   '
+    #lab_dict['middle'] = 0.0
 
     
     
@@ -1671,8 +1772,8 @@ def get_kinetic_and_classic_E_pressure(path,fprefix,time,xlim=73):
 
     dict_fo = cf.load_dict_1D(path,fpre(path),'fo',time)
     fo = dict_fo['mat']
-    x_grid_SI = x_grid*xstep_factor
-    y_grid_SI = y_grid*xstep_factor
+    #x_grid_SI = x_grid*xstep_factor
+    #y_grid_SI = y_grid*xstep_factor
     time_col = dict_fo['time']*tstep_factor
     
     rA = (Z2ni)**-1
@@ -1695,15 +1796,15 @@ def get_kinetic_and_classic_E_pressure(path,fprefix,time,xlim=73):
     
 
     #----- image plot setup
-    limits = [y_grid_SI[0],y_grid_SI[-1],x_grid_SI[xlim],x_grid_SI[0]]
-    lab_dict = {}
-    lab_dict['figsize'] = (6,6) # x,y inches
-    lab_dict['lims'] = limits#[y_grid_SI[0],y_grid_SI[-1],x_grid_SI[c_index],x_grid_SI[0]]
-    lab_dict['colormap'] = 'jet'
-    lab_dict['xlab'],lab_dict['ylab'] = xlab,ylab
-    lab_dict['cbar_title'] = '   '
-    lab_dict['title'] = '   '
-    lab_dict['middle'] = 0.0
+    #limits = [#y_grid_SI[0],#y_grid_SI[-1],#x_grid_SI[xlim],#x_grid_SI[0]]
+    #lab_dict = {}
+    #lab_dict['figsize'] = (6,6) # x,y inches
+    #lab_dict['lims'] = #limits#[#y_grid_SI[0],#y_grid_SI[-1],#x_grid_SI[c_index],#x_grid_SI[0]]
+    #lab_dict['colormap'] = 'jet'
+    #lab_dict['xlab'],#lab_dict['ylab'] = xlab,ylab
+    #lab_dict['cbar_title'] = '   '
+    #lab_dict['title'] = '   '
+    #lab_dict['middle'] = 0.0
 
     
     
@@ -1757,8 +1858,8 @@ def get_alpha_perp_path(path,time):
 
     dict_fo = cf.load_dict_1D(path,fpre(path),'fo',time)
     fo = dict_fo['mat']
-    x_grid_SI = x_grid*xstep_factor
-    y_grid_SI = y_grid*xstep_factor
+    #x_grid_SI = x_grid*xstep_factor
+    #y_grid_SI = y_grid*xstep_factor
     time_col = dict_fo['time']*tstep_factor
     
     rA = (Z2ni)**-1
@@ -1844,8 +1945,8 @@ def get_kinetic_E(path,fprefix,time,xlim=73):
 
     dict_fo = cf.load_dict_1D(path,fpre(path),'fo',time)
     fo = dict_fo['mat']
-    x_grid_SI = x_grid*xstep_factor
-    y_grid_SI = y_grid*xstep_factor
+    #x_grid_SI = x_grid*xstep_factor
+    #y_grid_SI = y_grid*xstep_factor
     time_col = dict_fo['time']*tstep_factor
     
     rA = (Z2ni)**-1
@@ -1854,8 +1955,8 @@ def get_kinetic_E(path,fprefix,time,xlim=73):
     grid = dict['grid']
     dxfo, dyfo = cf.get_grad_3d_varZ(grid,fo)
     
-    x_grid_SI = x_grid*xstep_factor
-    y_grid_SI = y_grid*xstep_factor
+    #x_grid_SI = x_grid*xstep_factor
+    #y_grid_SI = y_grid*xstep_factor
     time_col = dict_te['time']*tstep_factor    
     dict_fo = cf.load_dict_1D(path,fprefix,'fo',time)
     
@@ -1877,15 +1978,15 @@ def get_kinetic_E(path,fprefix,time,xlim=73):
     
 
     #----- image plot setup
-    limits = [y_grid_SI[0],y_grid_SI[-1],x_grid_SI[xlim],x_grid_SI[0]]
-    lab_dict = {}
-    lab_dict['figsize'] = (6,6) # x,y inches
-    lab_dict['lims'] = limits#[y_grid_SI[0],y_grid_SI[-1],x_grid_SI[c_index],x_grid_SI[0]]
-    lab_dict['colormap'] = 'jet'
-    lab_dict['xlab'],lab_dict['ylab'] = xlab,ylab
-    lab_dict['cbar_title'] = '   '
-    lab_dict['title'] = '   '
-    lab_dict['middle'] = 0.0
+    #limits = [#y_grid_SI[0],#y_grid_SI[-1],#x_grid_SI[xlim],#x_grid_SI[0]]
+    #lab_dict = {}
+    #lab_dict['figsize'] = (6,6) # x,y inches
+    #lab_dict['lims'] = #limits#[#y_grid_SI[0],#y_grid_SI[-1],#x_grid_SI[c_index],#x_grid_SI[0]]
+    #lab_dict['colormap'] = 'jet'
+    #lab_dict['xlab'],#lab_dict['ylab'] = xlab,ylab
+    #lab_dict['cbar_title'] = '   '
+    #lab_dict['title'] = '   '
+    #lab_dict['middle'] = 0.0
 
     
     
@@ -1959,8 +2060,8 @@ def get_kinetic_q(path,time):
 
     dict_fo = cf.load_dict_1D(path,fpre(path),'fo',time)
     fo = dict_fo['mat']
-    x_grid_SI = x_grid*xstep_factor
-    y_grid_SI = y_grid*xstep_factor
+    #x_grid_SI = x_grid*xstep_factor
+    #y_grid_SI = y_grid*xstep_factor
     time_col = dict_fo['time']*tstep_factor
     
     rA = (Z2ni)**-1
