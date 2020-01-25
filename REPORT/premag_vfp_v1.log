@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2016.5.15)  25 JAN 2020 16:51
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2016.5.15)  25 JAN 2020 17:05
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1212,7 +1212,7 @@ Package rerunfilecheck Info: File `premag_vfp_v1.out' has not changed.
 Here is how much of TeX's memory you used:
  34394 strings out of 493089
  812384 string characters out of 6134842
- 927600 words of memory out of 5000000
+ 927601 words of memory out of 5000000
  37345 multiletter control sequences out of 15000+600000
  14298 words of font info for 51 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -1255,7 +1255,7 @@ fonts/cm/cmti9.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/cm-su
 per/sfrm1000.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/cm-supe
 r/sfrm1200.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/cm-super/
 sfsl1200.pfb>
-Output written on premag_vfp_v1.pdf (10 pages, 4021847 bytes).
+Output written on premag_vfp_v1.pdf (10 pages, 4021786 bytes).
 PDF statistics:
  1466 PDF objects out of 1728 (max. 8388607)
  1222 compressed objects within 13 object streams
