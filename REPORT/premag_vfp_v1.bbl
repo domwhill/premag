@@ -6,7 +6,7 @@
 %Control: page (1) range
 %Control: year (1) truncated
 %Control: production of eprint (0) enabled
-\begin{thebibliography}{24}%
+\begin{thebibliography}{25}%
 \makeatletter
 \providecommand \@ifxundefined [1]{%
  \@ifx{#1\undefined}
@@ -244,6 +244,16 @@
   {\doibase 10.1103/PhysRevLett.88.045004} {\bibfield  {journal} {\bibinfo
   {journal} {Phys. Rev. Lett.}\ }\textbf {\bibinfo {volume} {88}},\ \bibinfo
   {pages} {4} (\bibinfo {year} {2002})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Langdon}(1980)}]{Langdon1980}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {A.~B.}\ \bibnamefont
+  {Langdon}},\ }\bibfield  {title} {\enquote {\bibinfo {title} {{Nonlinear
+  inverse bremsstrahlung and heated-electron distributions}},}\ }\href
+  {\doibase 10.1103/PhysRevLett.44.575} {\bibfield  {journal} {\bibinfo
+  {journal} {Phys. Rev. Lett.}\ }\textbf {\bibinfo {volume} {44}},\ \bibinfo
+  {pages} {575--579} (\bibinfo {year} {1980})},\ \Eprint
+  {http://arxiv.org/abs/arXiv:1011.1669v3} {arXiv:arXiv:1011.1669v3}
+  \BibitemShut {NoStop}%
 \bibitem [{\citenamefont {Brodrick}\ \emph {et~al.}(2018)\citenamefont
   {Brodrick}, \citenamefont {Sherlock}, \citenamefont {Farmer}, \citenamefont
   {Joglekar}, \citenamefont {Barrois}, \citenamefont {Wengraf}, \citenamefont
