@@ -3,3 +3,4 @@ BACKUP/
 THESIS/
 TEST/
 *test*.py
+*.npy

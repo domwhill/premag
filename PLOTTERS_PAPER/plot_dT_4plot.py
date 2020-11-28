@@ -1,4 +1,3 @@
-
 '''
 27/08/2019
 - Rehash of plot_q_lineout.py
@@ -21,8 +20,6 @@ import chfoil_module as cf
 import house_keeping as hk
 import plot_utils as utils
 import tsi_module as tsi
-
-
 '''
 
 #---> constants...
@@ -70,8 +67,6 @@ for ip in range(len(bz_list)):
 #aesthetics
 cmap = cm.viridis
 
-
-
 #<<<--- transport inputs
 time = '07'
 iy = 20
@@ -81,18 +76,22 @@ c_list = ['r', 'g', 'b']
 
 fpre = lambda path_in: path_in.split('/')[-1]
 
+
 def get_amp(data):
     return data - np.average(data)
 
-def set_yax(ax,xlab,ylab,xlim):
+
+def set_yax(ax, xlab, ylab, xlim):
     ax.grid(c='gray')
     ax.set_ylabel(ylab)
     ax.set_xlabel(xlab)
     ax.set_xlim(xlim[0], xlim[-1])
     ax.ticklabel_format(axis='y', style='sci', scilimits=(-1, 1))
-    ax.tick_params(which='both',direction='in')
+    ax.tick_params(which='both', direction='in')
+
 
 class plot_dT_vs_x:
+
     def __init__(self, run_obj_list, time_list):
         self.style_list = [':', '--', '-', '-', '--', ':']
         self.mstyle_list = [None, None, None, 'x', '^', 'o']
@@ -102,13 +101,19 @@ class plot_dT_vs_x:
         self.time_list = time_list
         self.xmin, self.xmax = -2.0, 20.0
 
-    def plot(self,ax_t):
+    def plot(self, ax_t):
         ax_Te = ax_t.twinx()
-        p1dt = TEL.plot_custom_xlineout_amp_tevol(fig, ax_t, self.path_list, var_amp='Te', time_list=self.time_list,
-                                                  style_list=self.style_list, mstyle_list=self.mstyle_list,
-                                                  cmap=['gray', 'b', 'k'],
-                                                  axleg=ax_t,
-                                                  leg_dict=[])#{'title': self.norm.tlab, 'some_other thing': 1.0})
+        p1dt = TEL.plot_custom_xlineout_amp_tevol(
+            fig,
+            ax_t,
+            self.path_list,
+            var_amp='Te',
+            time_list=self.time_list,
+            style_list=self.style_list,
+            mstyle_list=self.mstyle_list,
+            cmap=['gray', 'b', 'k'],
+            axleg=ax_t,
+            leg_dict=[])    #{'title': self.norm.tlab, 'some_other thing': 1.0})
         # leg = ax_t.legend(p1dt, leg_list,loc = 'bottom right')
 
         var = 'Te'
@@ -120,23 +125,18 @@ class plot_dT_vs_x:
             dict_T = cf.load_dict(path, fpre(path), var, time)
             data_grid = dict_T['x_grid'] * self.norm.xstep_factor
             data_plot = dict_T['mat'][:, iy] * (2.0 * run_obj.norm.T0 / 1e3)
-            p2, = ax_Te.plot(
-                            data_grid,
-                             data_plot,
-                             c='k',
-                            linestyle=self.style_list[pp]
-            )
+            p2, = ax_Te.plot(data_grid, data_plot, c='k', linestyle=self.style_list[pp])
             p_list.append(p2)
             bz_list.append(run_obj.bz)
 
             # plot crosses
             self.plot_crosses(ax_Te, run_obj, data_grid, data_plot)
 
-
         ax_Te.set_ylabel(r'$T_e\,[\si{keV}]$')
         # legend
         id_sort = np.argsort(bz_list)
-        leg2 = ax_Te.legend(list(np.array(p_list)[id_sort]), list(np.array(self.run_obj_list.tags)[id_sort]))
+        leg2 = ax_Te.legend(list(np.array(p_list)[id_sort]),
+                            list(np.array(self.run_obj_list.tags)[id_sort]))
         leg2.get_frame().set_linewidth(0.0)
         leg2.get_frame().set_facecolor('none')
 
@@ -147,17 +147,20 @@ class plot_dT_vs_x:
     def plot_crosses(self, ax, run_obj, x_grid, data):
         idx_list = run_obj.get_idx_list()
         for ix, idx in enumerate(idx_list):
-            ax.scatter(x_grid[idx],data[idx],c=c_list[ix],marker='x')
+            ax.scatter(x_grid[idx], data[idx], c=c_list[ix], marker='x')
 
         pass
+
+
 class plot_dT_vs_y:
-    def __init__(self,run_obj, **kwargs):
+
+    def __init__(self, run_obj, **kwargs):
         # assuming norms are the same for all run objs which is the case for all premag runs.
         self.run_obj = run_obj
         self.norm = self.run_obj.norm
-        self.time = kwargs.get('time','06')
+        self.time = kwargs.get('time', '06')
 
-    def plot(self,ax,time):
+    def plot(self, ax, time):
         # --->
         self.time = time
         # plot one simulation per plot
@@ -178,12 +181,10 @@ class plot_dT_vs_y:
 
         for idx, ix in enumerate(idx_list):
             color = c_list[idx]
-            p1, = ax.plot(
-                y_grid * self.norm.xstep_factor,
-                get_amp(data[ix, :]),
-                c=color,
-                linestyle='-'
-            )
+            p1, = ax.plot(y_grid * self.norm.xstep_factor,
+                          get_amp(data[ix, :]),
+                          c=color,
+                          linestyle='-')
 
             p_list.append(p1)
             lab_list.append(leg_tag)
@@ -195,29 +196,26 @@ class plot_dT_vs_y:
             set_yax(ax, xlab, ylab, [ymin, ymax])
 
 
-
 #-------------------------------------->
 
-
-fig = fprl.newfig_generic_twinx(1.0,scale_width=1.0,scale_ratio=1.4)
-gs = GS.GridSpec(2,3,height_ratios=[1.0,0.4])
-gs.update(wspace=0.5,hspace=0.5,left=0.15,right=0.88)
-ax_t = plt.subplot(gs[0,:])
-ax1 = plt.subplot(gs[1,0])
-ax2 = plt.subplot(gs[1,1])
-ax3 = plt.subplot(gs[1,2])
+fig = fprl.newfig_generic_twinx(1.0, scale_width=1.0, scale_ratio=1.4)
+gs = GS.GridSpec(2, 3, height_ratios=[1.0, 0.4])
+gs.update(wspace=0.5, hspace=0.5, left=0.15, right=0.88)
+ax_t = plt.subplot(gs[0, :])
+ax1 = plt.subplot(gs[1, 0])
+ax2 = plt.subplot(gs[1, 1])
+ax3 = plt.subplot(gs[1, 2])
 
 time_list = ['06']
-bz_list = [0.0,50.0,400.0]
-run_obj_list = utils.run_obj_list('bz',scale_length=1,bz_in=bz_list, pert_amp='1p')
+bz_list = [0.0, 50.0, 400.0]
+run_obj_list = utils.run_obj_list('bz', scale_length=1, bz_in=bz_list, pert_amp='1p')
 time_max = run_obj_list.tmax_index
 # sort by bz
 
-plot_dT_vs_x(run_obj_list,time_list).plot(ax_t)
-plot_dT_vs_y(run_obj_list.run_obj_dict['0']).plot(ax1,time_max)
-plot_dT_vs_y(run_obj_list.run_obj_dict['50']).plot(ax2,time_max)
-plot_dT_vs_y(run_obj_list.run_obj_dict['400']).plot(ax3,time_max)
-
+plot_dT_vs_x(run_obj_list, time_list).plot(ax_t)
+plot_dT_vs_y(run_obj_list.run_obj_dict['0']).plot(ax1, time_max)
+plot_dT_vs_y(run_obj_list.run_obj_dict['50']).plot(ax2, time_max)
+plot_dT_vs_y(run_obj_list.run_obj_dict['400']).plot(ax3, time_max)
 
 ax2.set_ylabel('')
 ax3.set_ylabel('')
@@ -226,15 +224,12 @@ save_name = '%s_%s.png' % (run_obj_list.save_tag, '4plotdT')
 
 #====================================================
 
-
-
-
 #=======
 #plt.show()
 
-plt.savefig(save_name,dpi=600)
-print( 'saving as: ', save_name)
-print( ' copy and paste: open -a preview ' + save_name)
+plt.savefig(save_name, dpi=600)
+print('saving as: ', save_name)
+print(' copy and paste: open -a preview ' + save_name)
 
 #plt.show()
 #plt.close()
