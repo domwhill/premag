@@ -33,7 +33,6 @@ cB = 3.0 * np.sqrt(np.pi) / 4.0
 
 # -----
 
-
 # ---> file inputs
 paths = hk.directory_paths()
 src_dir = paths.src_dir
@@ -46,7 +45,7 @@ cd5 = cf.conv_factors_custom(norm_dir, Z_ref, Ar=6.51)
 
 # ---- user inputs
 # aesthetics
-xmin, xmax = -10, 60.0  # max/min of x axis on plot
+xmin, xmax = -10, 60.0    # max/min of x axis on plot
 cmap = cm.viridis
 style_list = ['--', '--', ':', '-', '--', ':']
 mstyle_list = [None, None, None, 'x', '^', 'o']
@@ -54,7 +53,7 @@ mstyle_list = [None, None, None, 'x', '^', 'o']
 # ---> TSI parameters
 lambda_p_mfp = 5.0
 s_list = [2]
-bz_in = 400.0  # selected magnetic field [Tesla]
+bz_in = 400.0    # selected magnetic field [Tesla]
 save_name = '%stsi_growth_LT%i_%i_dT_%iT.png' % (save_path, s_list[0], lambda_p_mfp, bz_in)
 
 time_list = ['03', '05', '07']
@@ -82,14 +81,17 @@ def get_grad(x_grid, data):
 def fpre(path):
     return path.split('/')[-1]
 
-def plot_complex(axy, x,**kwargs):
+
+def plot_complex(axy, x, **kwargs):
     p0, = axy.plot(x.real, **kwargs)
-    axy.plot(x.imag, linestyle='--',**kwargs)
+    axy.plot(x.imag, linestyle='--', **kwargs)
     return p0
+
 
 # -----------------------------------------------------------------------
 # Compute growth rate
 class GetSimData:
+
     def __init__(self, run_obj, **kwargs):
         path = run_obj.path
         time = kwargs.get('time', run_obj.time_max)
@@ -105,7 +107,7 @@ class GetSimData:
 
         self.ne_ref = self.cfg.n0
         self.Te_ref = self.cfg.T0
-        self.Bz_ref = (m_e / (q_e * self.cfg.tau_ei)) * 1.0  # assumes that norm Bz is 1T
+        self.Bz_ref = (m_e / (q_e * self.cfg.tau_ei)) * 1.0    # assumes that norm Bz is 1T
         self.v_te = self.cfg.v_te
         self.tau_ei = self.cfg.tau_ei
         self.Z_ref = self.cfg.Z
@@ -143,7 +145,8 @@ class GetSimData:
 
         self.wt = convert_array('wt')
         self.Bz = convert_array('Bz') * Bz_factor
-        self.x_grid = cf.trim_array_1D(dict_load['x_grid'], dict_load['nx'], dict_load['ny']) * x_factor
+        self.x_grid = cf.trim_array_1D(dict_load['x_grid'], dict_load['nx'],
+                                       dict_load['ny']) * x_factor
 
         self.dxT = convert_array('dxT') * Te_factor / x_factor
         self.dxB = convert_array('dxB') * Bz_factor / x_factor
@@ -158,8 +161,7 @@ class GetSimData:
     def load_transport(self, wte):
         # dict_n = inorm.impact_inputs_array(self.ne_ref, self.Te_ref, self.Z_ref, 1.0,
         #                                self.Ar)  # Bz must be in tesla because this is the units of gorgon data
-        dict_n = inorm.impact_inputs_array(self.ne, self.Te, self.Z, self.Bz,
-                                           self.Ar)
+        dict_n = inorm.impact_inputs_array(self.ne, self.Te, self.Z, self.Bz, self.Ar)
         # --------
         self.wpe_over_nu_ei = dict_n['wpe_over_nu_ei']
         self.c_over_vte = dict_n['c_over_vte']
@@ -168,7 +170,7 @@ class GetSimData:
         self.tau_T = dict_n['tau_ei']
 
         delta_c_norm = self.c_over_vte / self.wpe_over_nu_ei
-        self.delta = delta_c_norm * self.lambda_T  # m
+        self.delta = delta_c_norm * self.lambda_T    # m
         dict_n['delta'] = self.delta
 
         ref_vals = {}
@@ -205,14 +207,15 @@ class GetSimData:
             self.dbetaperp_dchi[iw] = grad_dict['beta_perp']
             self.dalphawedge_dchi[iw] = grad_dict['alpha_wedge']
 
-            self.beta_wedge[iw] = dict['beta_wedge']  # /e?
-            self.psi_wedge[iw] = dict['beta_wedge']  # ettinghausen term
+            self.beta_wedge[iw] = dict['beta_wedge']    # /e?
+            self.psi_wedge[iw] = dict['beta_wedge']    # ettinghausen term
             self.kappa_perp[iw] = dict['kappa_perp']
 
 
 # --------------------
 # Plot TSI growthrate
 class SimCoeffs:
+
     def __init__(self, k, GetSimData):
         self.SimData = GetSimData
         self.k = k * (1.0 / self.SimData.lambda_mfp)
@@ -262,8 +265,8 @@ class SimCoeffs:
 
         dc2 = 0.1
         me = 9.11e-31
-        k =  1.0
-        dkappwedgedchi  = self.dkappa_wedge_dchi
+        k = 1.0
+        dkappwedgedchi = self.dkappa_wedge_dchi
         omega1 = 0.0
 
         ap0 = self.SimData.alpha_perp
@@ -272,12 +275,12 @@ class SimCoeffs:
         taub = self.taub
         a1i = (1 / (2 * me * n0 ** 2)) * (3 * me * n0 ** 3 * omega1 + 2 * dkappwedgedchi * k * taub ** 2 * n0 * \
                                           Te0 ** 4 * dxBz0 - 2 * dkappwedgedchi * k * taub ** 2 * Bz0 * \
-                                          Te0 ** 4 * dxn0);
+                                          Te0 ** 4 * dxn0)
 
         a1r = (1 / (4 * me)) * (kp0 * taub * (Te0 ** 2) ** (1 / 4.0) * (4 * (k - Kx) * (k + Kx) * Te0 ** 2 - \
                                                                       15 * dxTe0 ** 2 - 10 * Te0 * (2 * Kx * dxTe0 + \
-                                                                                                    d2xTe0)));
-        a2 = -((1j * dkappwedgedchi * k * taub ** 2 * Te0 ** 4 * dxTe0) / (me * n0));
+                                                                                                    d2xTe0)))
+        a2 = -((1j * dkappwedgedchi * k * taub**2 * Te0**4 * dxTe0) / (me * n0))
 
 
         b1r = -((1 / (4 * n0 ** 2 * Te0 ** 4)) * ((Te0 ** 2) ** (1 / 4.0) * \
@@ -289,9 +292,9 @@ class SimCoeffs:
                                                                                   3 * dxTe0) + n0 * (
                                                                            4 * (-k ** 2 + Kx ** 2) * Te0 ** 2 + \
                                                                            3 * dxTe0 ** 2 + 6 * Te0 * (2 * Kx * dxTe0 + \
-                                                                                                       d2xTe0))))));
+                                                                                                       d2xTe0))))))
 
-        b1i = (k * dxn0) / n0;
+        b1i = (k * dxn0) / n0
         b2r = (1 / (2 * n0 ** 2 * Te0 ** 4)) * (2 * Kx * Cx0 * n0 ** 2 * Te0 ** 4 + \
                                                 2 * dbetawedgedchi * taub * Te0 ** 4 * (Te0 ** 2) ** (3.0 / 4.0) * dxn0 * \
                                                 dxTe0 + n0 ** 2 * (2 * ap0 * dc2 * (k ** 2 + Kx ** 2) * Te0 * \
@@ -299,7 +302,7 @@ class SimCoeffs:
                                                                    3 * ap0 * dc2 * Kx * (Te0 ** 2) ** (3.0 / 4.0) * dxTe0) - \
                                                 dbetawedgedchi * taub * n0 * Te0 ** 3 * (Te0 ** 2) ** (3.0 / 4.0) * \
                                                 (3 * dxTe0 ** 2 + 2 * Te0 * (Kx * dxTe0 + \
-                                                                             d2xTe0)));
+                                                                             d2xTe0)))
         b2i = -omega1
         # g3 Kx^2 + g2 Kx + g1
         g1 = (ap0 * dc2 * k ** 2 * (Te0 ** 2.) ** (3.0 / 4.0)) / Te0 ** 3 + dxCx0 + \
@@ -307,10 +310,11 @@ class SimCoeffs:
               dxTe0) / n0 ** 2 - \
              (3. * dbetawedgedchi * taub * (Te0 ** 2.) ** (3.0 / 4.0) * dxTe0 ** 2) / \
              (2. * n0 * Te0) - (dbetawedgedchi * taub * (Te0 ** 2) ** (3.0 / 4.0) * d2xTe0) / n0
-        g2 = Cx0 - (dbetawedgedchi * taub * (Te0 ** 2) ** (3.0 / 4.0) * dxTe0) / n0 - (
-                    3 * ap0 * dc2 * (Te0 ** 2) ** (3.0 / 4.0) * dxTe0) / (2. * Te0 ** 4)
-        g3 = (ap0 * dc2 * (Te0 ** 2) ** (3.0 / 4.0)) / Te0 ** 3
-        return g1,g2,g3, a1r,a1i,a2,b1r,b1i, b2r, b2i
+        g2 = Cx0 - (dbetawedgedchi * taub *
+                    (Te0**2)**(3.0 / 4.0) * dxTe0) / n0 - (3 * ap0 * dc2 * (Te0**2)**
+                                                           (3.0 / 4.0) * dxTe0) / (2. * Te0**4)
+        g3 = (ap0 * dc2 * (Te0**2)**(3.0 / 4.0)) / Te0**3
+        return g1, g2, g3, a1r, a1i, a2, b1r, b1i, b2r, b2i
 
     def get_uv_quartic_coefficients(self, Kx):
         '''
@@ -331,8 +335,8 @@ class SimCoeffs:
 
         dc2 = 0.1
         me = 9.11e-31
-        k =  1.0
-        dkappwedgedchi  = self.dkappa_wedge_dchi
+        k = 1.0
+        dkappwedgedchi = self.dkappa_wedge_dchi
         omega1 = 0.0
 
         ap0 = self.SimData.alpha_perp
@@ -340,12 +344,11 @@ class SimCoeffs:
         dbetawedgedchi = self.SimData.dbetawedge_dchi
         taub = self.taub
 
-
-
         delta1 = kp0
-        delta2 = -kp0*k**2  + 1j* dkappwedgedchi * k * (taub ** 2) * ((Te0 ** 1.5)/n0) * (n0 * dxBz0 -  Bz0 * dxn0)
+        delta2 = -kp0 * k**2 + 1j * dkappwedgedchi * k * (taub**2) * (
+            (Te0**1.5) / n0) * (n0 * dxBz0 - Bz0 * dxn0)
 
-        epsilon1 = -(((1j * dkappwedgedchi * k * taub ** 2 * Te0 ** 4 * dxTe0) / (me * n0)));
+        epsilon1 = -(((1j * dkappwedgedchi * k * taub**2 * Te0**4 * dxTe0) / (me * n0)))
 
 
         b1r = -((1 / (4 * n0 ** 2 * Te0 ** 4)) * ((Te0 ** 2) ** (1 / 4.0) * \
@@ -357,27 +360,28 @@ class SimCoeffs:
                                                                                   3 * dxTe0) + n0 * (
                                                                            4 * (-k ** 2 + Kx ** 2) * Te0 ** 2 + \
                                                                            3 * dxTe0 ** 2 + 6 * Te0 * (2 * Kx * dxTe0 + \
-                                                                                                       d2xTe0))))));
+                                                                                                       d2xTe0))))))
 
-        eta1 = 1j*((k * dxn0) / n0)/(Te0**2.5);
+        eta1 = 1j * ((k * dxn0) / n0) / (Te0**2.5)
         # g3 Kx^2 + g2 Kx + g1
         g1 = (ap0 * dc2 * k ** 2 * (Te0 ** 2) ** (3.0 / 4.0)) / Te0 ** 3 + dxCx0 + \
              (dbetawedgedchi * taub * (Te0 ** 2) ** (3.0 / 4.0) * dxn0 * \
               dxTe0) / n0 ** 2 - \
              (3 * dbetawedgedchi * taub * (Te0 ** 2) ** (3.0 / 4.0) * dxTe0 ** 2) / \
              (2 * n0 * Te0) - (dbetawedgedchi * taub * (Te0 ** 2) ** (3.0 / 4.0) * d2xTe0) / n0
-        g2 = Cx0 - (dbetawedgedchi * taub * (Te0 ** 2) ** (3.0 / 4.0) * dxTe0) / n0 - (
-                    3 * ap0 * dc2 * (Te0 ** 2) ** (3.0 / 4.0) * dxTe0) / (2 * Te0 ** 4)
-        g3 = (ap0 * dc2 * (Te0 ** 2) ** (3.0 / 4.0)) / Te0 ** 3
+        g2 = Cx0 - (dbetawedgedchi * taub *
+                    (Te0**2)**(3.0 / 4.0) * dxTe0) / n0 - (3 * ap0 * dc2 * (Te0**2)**
+                                                           (3.0 / 4.0) * dxTe0) / (2 * Te0**4)
+        g3 = (ap0 * dc2 * (Te0**2)**(3.0 / 4.0)) / Te0**3
 
-        p0 = (-epsilon1)*eta1 + delta2*g1
-        p1 = delta2*g2
-        p2 = (delta1*g1 + delta2*g3)
-        p3 = delta1*g2
-        p4 = delta1*g3
+        p0 = (-epsilon1) * eta1 + delta2 * g1
+        p1 = delta2 * g2
+        p2 = (delta1 * g1 + delta2 * g3)
+        p3 = delta1 * g2
+        p4 = delta1 * g3
 
         #poly = np.vstack((p4, p3, p2, p1, p0))
-        poly = np.stack((p4, p3, p2, p1, p0),axis=-1)
+        poly = np.stack((p4, p3, p2, p1, p0), axis=-1)
 
         return poly
 
@@ -400,8 +404,8 @@ class SimCoeffs:
 
         dc2 = 0.1
         me = 9.11e-31
-        k =  1.0
-        dkappwedgedchi  = self.dkappa_wedge_dchi
+        k = 1.0
+        dkappwedgedchi = self.dkappa_wedge_dchi
         omega1 = 0.0
 
         ap0 = self.SimData.alpha_perp
@@ -409,12 +413,11 @@ class SimCoeffs:
         dbetawedgedchi = self.SimData.dbetawedge_dchi
         taub = self.taub
 
-
-
         delta1 = kp0
-        delta2 = -kp0*k**2  + 1j* dkappwedgedchi * k * (taub ** 2) * ((Te0 ** 1.5)/n0) * (n0 * dxBz0 -  Bz0 * dxn0)
+        delta2 = -kp0 * k**2 + 1j * dkappwedgedchi * k * (taub**2) * (
+            (Te0**1.5) / n0) * (n0 * dxBz0 - Bz0 * dxn0)
 
-        epsilon1 = -(((1j * dkappwedgedchi * k * taub ** 2 * Te0 ** 4 * dxTe0) / (me * n0)));
+        epsilon1 = -(((1j * dkappwedgedchi * k * taub**2 * Te0**4 * dxTe0) / (me * n0)))
 
         eta1 = (1 / (2. * n0 ** 2 * Te0 ** 6)) * (n0 * (2 * 1j * k * Te0 ** (7. / 2.) * dxn0 + \
                15 * ap0 * dc2 * n0 * dxBz0 * dxTe0 + 2 * dbetawedgedchi * taub * Te0 ** 4 * \
@@ -433,26 +436,28 @@ class SimCoeffs:
               dxTe0) / n0 ** 2 - \
              (3 * dbetawedgedchi * taub * (Te0 ** 2) ** (3.0 / 4.0) * dxTe0 ** 2) / \
              (2 * n0 * Te0) - (dbetawedgedchi * taub * (Te0 ** 2) ** (3.0 / 4.0) * d2xTe0) / n0
-        g2 = Cx0 - (dbetawedgedchi * taub * (Te0 ** 2) ** (3.0 / 4.0) * dxTe0) / n0 - (
-                    3 * ap0 * dc2 * (Te0 ** 2) ** (3.0 / 4.0) * dxTe0) / (2 * Te0 ** 4)
-        g3 = (ap0 * dc2 * (Te0 ** 2) ** (3.0 / 4.0)) / Te0 ** 3
+        g2 = Cx0 - (dbetawedgedchi * taub *
+                    (Te0**2)**(3.0 / 4.0) * dxTe0) / n0 - (3 * ap0 * dc2 * (Te0**2)**
+                                                           (3.0 / 4.0) * dxTe0) / (2 * Te0**4)
+        g3 = (ap0 * dc2 * (Te0**2)**(3.0 / 4.0)) / Te0**3
 
-        p0 = (-epsilon1)*eta1 + delta2*g1
-        p1 = delta2*g2 - epsilon1 * eta2
-        p2 = (delta1*g1 + delta2*g3 - epsilon1* eta3)
-        p3 = delta1*g2
-        p4 = delta1*g3
+        p0 = (-epsilon1) * eta1 + delta2 * g1
+        p1 = delta2 * g2 - epsilon1 * eta2
+        p2 = (delta1 * g1 + delta2 * g3 - epsilon1 * eta3)
+        p3 = delta1 * g2
+        p4 = delta1 * g3
 
         ##poly = np.vstack((p4, p3, p2, p1, p0))
-        poly = np.stack((p4, p3, p2, p1, p0),axis=-1)
+        poly = np.stack((p4, p3, p2, p1, p0), axis=-1)
         return poly
 
-
-    def get_roots(self,poly):
-        roots = np.zeros((len(poly[:,0]),4),dtype=complex)
-        for ii in range(len(poly[:,0])):
-            roots[ii,:] = np.roots(poly[ii,:])
+    def get_roots(self, poly):
+        roots = np.zeros((len(poly[:, 0]), 4), dtype=complex)
+        for ii in range(len(poly[:, 0])):
+            roots[ii, :] = np.roots(poly[ii, :])
         return roots
+
+
 lambda_p = 5.0
 sim_obj = run_obj(scale_length=1, bz_in=50.0, lambda_p=lambda_p, pert_amp='1p')
 sim_data_obj = GetSimData(sim_obj)
@@ -464,14 +469,12 @@ wkb_obj = SimCoeffs(k, sim_data_obj)
 poly_approx = wkb_obj.get_uv_quartic_coefficients(Kx)
 poly = wkb_obj.get_uv_quartic_coefficients_corrected(Kx)
 
-
-poly_approx[:,1] *=0.0
-poly_approx[:,2] *=0.0
-poly_approx[:,3] *=0.0
+poly_approx[:, 1] *= 0.0
+poly_approx[:, 2] *= 0.0
+poly_approx[:, 3] *= 0.0
 
 roots_approx = wkb_obj.get_roots(poly_approx)
 roots_true = wkb_obj.get_roots(poly)
-
 
 sim_data_obj_highBz = GetSimData(sim_obj)
 mult = 10000.0
@@ -481,30 +484,25 @@ wkb_obj_highBz = SimCoeffs(k, sim_data_obj_highBz)
 poly_Bz = wkb_obj_highBz.get_uv_quartic_coefficients_corrected(Kx)
 roots_highBz = wkb_obj_highBz.get_roots(poly_Bz)
 
-
-
-
-ixmin=100
-ixmax=210
-dTlineout= np.max(np.abs(wkb_obj.T1),axis=0)
-dBlineout= np.max(np.abs(wkb_obj.Bz1),axis=0)
+ixmin = 100
+ixmax = 210
+dTlineout = np.max(np.abs(wkb_obj.T1), axis=0)
+dBlineout = np.max(np.abs(wkb_obj.Bz1), axis=0)
 
 fig = plt.figure()
 ax = fig.add_subplot(121)
 ax2 = fig.add_subplot(122)
-p0 = plot_complex(ax, poly[:,0], c='r')
-p1 = plot_complex(ax, poly[:,1], c='g')
-p2 = plot_complex(ax, poly[:,2], c='b')
-p3 = plot_complex(ax, poly[:,3], c='m')
-p4 = plot_complex(ax, poly[:,4], c='y')
+p0 = plot_complex(ax, poly[:, 0], c='r')
+p1 = plot_complex(ax, poly[:, 1], c='g')
+p2 = plot_complex(ax, poly[:, 2], c='b')
+p3 = plot_complex(ax, poly[:, 3], c='m')
+p4 = plot_complex(ax, poly[:, 4], c='y')
 
-
-p0 = plot_complex(ax2, poly_Bz[:,0], c='r')
-p1 = plot_complex(ax2, poly_Bz[:,1], c='g')
-p2 = plot_complex(ax2, poly_Bz[:,2], c='b')
-p3 = plot_complex(ax2, poly_Bz[:,3], c='m')
-p4 = plot_complex(ax2, poly_Bz[:,4], c='y')
-
+p0 = plot_complex(ax2, poly_Bz[:, 0], c='r')
+p1 = plot_complex(ax2, poly_Bz[:, 1], c='g')
+p2 = plot_complex(ax2, poly_Bz[:, 2], c='b')
+p3 = plot_complex(ax2, poly_Bz[:, 3], c='m')
+p4 = plot_complex(ax2, poly_Bz[:, 4], c='y')
 
 ax.set_xlim(100, 207)
 ax2.set_ylim(ax.get_ylim())
@@ -514,20 +512,19 @@ leg_list = ['0', '1', '2', '3', '4']
 ax.legend(p_list, leg_list)
 plt.show()
 
-
 fig = plt.figure()
 ax1 = fig.add_subplot(121)
 ax2 = fig.add_subplot(122)
-x = np.arange(len(roots_approx[:,0]))
+x = np.arange(len(roots_approx[:, 0]))
 for ii in range(4):
 
-    ax1.scatter(x, roots_true[:,ii].real,c='b')
-    ax1.scatter(x, roots_approx[:,ii].real,c='r')
-    ax2.scatter(x, roots_true[:,ii].imag,c='b')
-    ax2.scatter(x, roots_approx[:,ii].real,c='r')
+    ax1.scatter(x, roots_true[:, ii].real, c='b')
+    ax1.scatter(x, roots_approx[:, ii].real, c='r')
+    ax2.scatter(x, roots_true[:, ii].imag, c='b')
+    ax2.scatter(x, roots_approx[:, ii].real, c='r')
 
-    ax1.scatter(x, roots_highBz[:,ii].real,c='g')
-    ax2.scatter(x, roots_highBz[:,ii].imag,c='g')
+    ax1.scatter(x, roots_highBz[:, ii].real, c='g')
+    ax2.scatter(x, roots_highBz[:, ii].imag, c='g')
 
 ax1.set_xlim(100, 207)
 ax2.set_xlim(100, 207)

@@ -1,4 +1,3 @@
-
 '''
 27/08/2019
 - Rehash of plot_q_lineout.py
@@ -28,16 +27,21 @@ m_e = 9.11e-31
 fpre = lambda path_in: path_in.split('/')[-1]
 #-------------------------------------------------------------------------
 
+
 def clear_yax(ax):
     fprl.clear_yax(ax)
     ax.set_ylabel('')
     pass
 
+
 def format_yax(ax):
     ax.yaxis.set_major_locator(MaxNLocator(5))
     ax.yaxis.set_major_formatter(ticker.FormatStrFormatter('%i'))
     pass
+
+
 #-------------------------------------------------------------------------
+
 
 def b_lab(bz_in):
     if int(bz_in) == -1:
@@ -45,26 +49,35 @@ def b_lab(bz_in):
     else:
         lab = r'$%i\,\si{T}$' % (bz_in)
     return lab
+
+
 #-------------------------------------------------------------------------
+
 
 def ensure_list(s):
     # Ref: https://stackoverflow.com/a/56641168/
-    return s if isinstance(s, list) else list(s) if isinstance(s, (tuple, set, np.ndarray)) else [] if s is None else [s]
+    return s if isinstance(
+        s, list) else list(s) if isinstance(s,
+                                            (tuple, set, np.ndarray)) else [] if s is None else [s]
+
+
 #-------------------------------------------------------------------------
 
-def convert_lists_to_set(a_list,b_list,c_list,d_list):
-    var_list = set((a, b, c, d)
-                   for a in ensure_list(a_list)
-                   for b in ensure_list(np.sort(b_list))
-                   for c in ensure_list(c_list)
-                   for d in ensure_list(d_list))
+
+def convert_lists_to_set(a_list, b_list, c_list, d_list):
+    var_list = set((a, b, c, d) for a in ensure_list(a_list) for b in ensure_list(np.sort(b_list))
+                   for c in ensure_list(c_list) for d in ensure_list(d_list))
     return var_list
+
+
 #-------------------------------------------------------------------------
+
 
 def absmaxND(a, axis=None):
     amax = a.max(axis)
     amin = a.min(axis)
     return np.where(-amin > amax, amin, amax)
+
 
 class run_obj_list:
 
@@ -76,16 +89,15 @@ class run_obj_list:
         self.lambda_p = lambda_p
         self.pert_amp = pert_amp
         self.var_type = var_type
-        self.var_list = convert_lists_to_set(self.scale_length, self.bz_in, self.lambda_p, self.pert_amp)
-
+        self.var_list = convert_lists_to_set(self.scale_length, self.bz_in, self.lambda_p,
+                                             self.pert_amp)
 
         #--->
         self.path_list = {}
         paths = hk.directory_paths()
         run_name = sys.argv[0].split('/')[-1].split('.')[0]
-        self.save_tag = '%s%s_' % (paths.save_dir,run_name)
+        self.save_tag = '%s%s_' % (paths.save_dir, run_name)
         self.t_max_col = 0
-
 
         self.paths = []
         self.tags = []
@@ -119,11 +131,14 @@ class run_obj_list:
         time_in = int(np.min(time_in_list))
         self.tmax_index = '%02i' % (time_in)
         self.tmax_col = tc_list[time_in]
+
+
 #-------------------------------------------------------------------------
 
 
 class run_obj:
-    def __init__(self,scale_length =1, bz_in= 400.0, lambda_p = 5, pert_amp = '0p', dim='2D'):
+
+    def __init__(self, scale_length=1, bz_in=400.0, lambda_p=5, pert_amp='0p', dim='2D'):
         paths = hk.directory_paths()
         self.dim = dim
         self.path = paths.get_path(scale_length, bz_in, lambda_p, pert_amp=pert_amp, dim=self.dim)
@@ -162,6 +177,7 @@ class run_obj:
 
 # Compute growth rate
 class GetSimData:
+
     def __init__(self, run_obj, **kwargs):
         path = run_obj.path
         self.time = kwargs.get('time', run_obj.time_max)
@@ -183,18 +199,17 @@ class GetSimData:
 
         self.ne_ref = self.cfg.n0
         self.Te_ref = self.cfg.T0
-        self.Bz_ref = (m_e / (q_e * self.cfg.tau_ei)) * 1.0  # assumes that norm Bz is 1T
+        self.Bz_ref = (m_e / (q_e * self.cfg.tau_ei)) * 1.0    # assumes that norm Bz is 1T
         self.v_te = self.cfg.v_te
         self.tau_ei = self.cfg.tau_ei
         self.Z_ref = self.cfg.Z
         self.Ar = self.cfg.Ar
         self.lambda_mfp = self.cfg.lambda_mfp
 
-
         # Only load in line outs of arrays
         # swap y direction after transpose for y gradients
         self.time_secs = dict_load['time'] * self.tau_ei
-        if self.dim =='1D':
+        if self.dim == '1D':
             self.dyB = None
             self.dyT = None
         else:
@@ -215,7 +230,7 @@ class GetSimData:
 
         self.wt = convert_array('wt')
         self.Bz = convert_array('Bz')
-        if self.dim =='1D':
+        if self.dim == '1D':
             self.x_grid = cf.trim_array_1D(dict_load['x_grid'], dict_load['nx'], 1)
             self.y_grid = None
         else:
@@ -233,7 +248,6 @@ class GetSimData:
         self.C_factor = 1.0
         self.P_factor = 2.0 / 3.0
         self.x_factor = 1.0
-
 
     def conv_to_SI(self):
         self.n_factor = self.ne_ref
@@ -256,8 +270,7 @@ class GetSimData:
     def load_transport(self, wte):
         # dict_n = inorm.impact_inputs_array(self.ne_ref, self.Te_ref, self.Z_ref, 1.0,
         #                                self.Ar)  # Bz must be in tesla because this is the units of gorgon data
-        dict_n = inorm.impact_inputs_array(self.ne, self.Te, self.Z, self.Bz,
-                                           self.Ar)
+        dict_n = inorm.impact_inputs_array(self.ne, self.Te, self.Z, self.Bz, self.Ar)
         # --------
         self.wpe_over_nu_ei = dict_n['wpe_over_nu_ei']
         self.c_over_vte = dict_n['c_over_vte']
@@ -266,7 +279,7 @@ class GetSimData:
         self.tau_T = dict_n['tau_ei']
 
         delta_c_norm = self.c_over_vte / self.wpe_over_nu_ei
-        self.delta = delta_c_norm * self.lambda_T  # m
+        self.delta = delta_c_norm * self.lambda_T    # m
         dict_n['delta'] = self.delta
 
         ref_vals = {}
@@ -303,7 +316,6 @@ class GetSimData:
             self.dbetaperp_dchi[iw] = grad_dict['beta_perp']
             self.dalphawedge_dchi[iw] = grad_dict['alpha_wedge']
 
-            self.beta_wedge[iw] = dict['beta_wedge']  # /e?
-            self.psi_wedge[iw] = dict['beta_wedge']  # ettinghausen term
+            self.beta_wedge[iw] = dict['beta_wedge']    # /e?
+            self.psi_wedge[iw] = dict['beta_wedge']    # ettinghausen term
             self.kappa_perp[iw] = dict['kappa_perp']
-

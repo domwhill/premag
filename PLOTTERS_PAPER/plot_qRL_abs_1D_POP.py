@@ -30,7 +30,7 @@ userid = getpass.getuser()
 from pylab import *
 from matplotlib.legend_handler import HandlerBase
 import argparse
-sys.path.extend(["./" ])
+sys.path.extend(["./"])
 import MODULES.chfoil_module as cf
 import MODULES.figure_prl_twocol as fprl
 import MODULES.house_keeping as hk
@@ -52,19 +52,24 @@ log_file = norm_dir + 'norm.log'
 cd5 = cf.conv_factors_custom(norm_dir, Z_ref, Ar=6.51)
 #---> USER inputs
 parser = argparse.ArgumentParser(description=__doc__)
-parser.add_argument("transport_component", description="Transport term to plot RL x = x component of Righi-Leduc, SH y = y component of Spitzer-HArm/diffusive heat flow,"
-                                                       "vN y = y-component of Nernst")
+parser.add_argument(
+    "transport_component",
+    description=
+    "Transport term to plot RL x = x component of Righi-Leduc, SH y = y component of Spitzer-HArm/diffusive heat flow,"
+    "vN y = y-component of Nernst")
 parser.add_argument("thermodynamic_variable",
                     description="string for impact variable: Te, ne, Bz, Cx (ion velocity)")
-parser.add_argument("output_directory", default="", description="output directory path (relative to root)")
+parser.add_argument("output_directory",
+                    default="",
+                    description="output directory path (relative to root)")
 args = parser.parse_args()
-var1 = args.transport_component # eg. 'RL y' for y component of Righi-Leduc heat flow, '
+var1 = args.transport_component    # eg. 'RL y' for y component of Righi-Leduc heat flow, '
 var2 = args.thermodynamic_variable
 save_path = args.output_directory
 print('Input argument= ', args)
 if save_path[-1] != '/':
     save_path = save_path + '/'
-print "var1 = " + var1 + " var2 = " + var2 + " output_directory = " + save_path
+print( "var1 = " + var1 + " var2 = " + var2 + " output_directory = " + save_path)
 
 save_name = '%sqlineout_%s_abs_%s_1d.png' % (save_path, re.sub(' ', '', var1), var2)
 #----------------
@@ -251,7 +256,7 @@ def set_ylim_max_2data(ax_in, grid, data1, data2, y_mult=[1.0, 1.0], xlim=[-5.0,
 
 
 #-----------------------------------------------------------------------
-if __name__=="__main__":
+if __name__ == "__main__":
     #----> data loading
     #dict_0T_c,dict_0T_k = repack(path_0T,time)
     dict_50T_c, dict_50T_k = repack(path_50T, time)
@@ -269,13 +274,11 @@ if __name__=="__main__":
 
     data_k = dict_50T_k[var1]
 
-    #---->> initialise labels ---->>>
     if var_lim_400:
         v1_labs = norm_labels(var1, var_data=dict_400T_k[var1])
     else:
         v1_labs = norm_labels(var1, var_data=dict_50T_c[var1])
     v2_labs = norm_labels(var2)
-    #<--------------------------------
 
     vmin = np.min(data_k[np.abs(x_grid - xmin) <= xmax]) * 0.8
     vmax = np.max(data_k[np.abs(x_grid - xmin) <= xmax]) * 1.2
@@ -324,6 +327,3 @@ if __name__=="__main__":
     print('saving as: ', save_name)
     print(' copy and paste: open -a preview ' + save_name)
     os.system('open -a preview ' + save_name)
-
-#ax2.plot(x_grid,dict_qk['SH x'][:,1],c='r',linestyle='--')
-#plt.show()
