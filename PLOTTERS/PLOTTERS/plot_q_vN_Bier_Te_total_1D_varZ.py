@@ -15,7 +15,7 @@ import kinetic_ohmslaw_module_1D_varZ as q_mod
 import matplotlib as mpl
 from pylab import *
 import figure as fprl
-import chfoil_module as cf
+import MODULES.chfoil_module as cf
 from chfoil_module import conv_factors_cd5
 from chfoil_module import cd5_switches
 import kinetic_ohmslaw_module_1D_varZ as kbier

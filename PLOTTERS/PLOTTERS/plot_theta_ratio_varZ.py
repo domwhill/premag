@@ -9,13 +9,13 @@ site.addsitedir('/Users/' + userid + '/Dropbox/IMPACT_dir/SIM_DATA/ANALYSIS')
 site.addsitedir('/Users/' + userid + '/Dropbox/IMPACT_dir/SIM_DATA/ANALYSIS')
 import matplotlib.pyplot as plt
 #---> kinetic/classical transport post processing module
-import kinetic_ohmslaw_module_varZ as kohb
+import MODULES.kinetic_ohmslaw_module_varZ as kohb
 
 import figure as fprl
 import matplotlib.gridspec as GS
 import matplotlib.ticker as ticker
 from pylab import *
-import chfoil_module as cf
+import MODULES.chfoil_module as cf
 
 path_pre = '/Users/' + userid + '/Dropbox/IMPACT_dir/SIM_DATA/PREMAG/2D_RUNS/'
 path_0T = path_pre + 'r5_v40_Z_FEOS_MODNE_5y_matchedf0_in_0T_E'

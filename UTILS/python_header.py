@@ -2,7 +2,7 @@ import re, os, sys, site, getpass, numpy as np
 userid = getpass.getuser()
 site.addsitedir('/Users/' + userid + '/Dropbox/IMPACT_dir/SIM_DATA/ANALYSIS')
 site.addsitedir(path_pre)
-import chfoil_module as cf
+import MODULES.chfoil_module as cf
 
 SI_on = cd5_switches.SI_on
 save_on = cd5_switches.save_on

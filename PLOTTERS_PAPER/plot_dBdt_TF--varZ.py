@@ -5,21 +5,17 @@
 '''
 
 import numpy as np, sys, os, getpass, site
-userid = getpass.getuser()
-site.addsitedir('/Users/' + userid + '/Dropbox/IMPACT_dir/SIM_DATA/ANALYSIS/MODULES')
-site.addsitedir('/Users/' + userid + '/Dropbox/IMPACT_dir/SIM_DATA/ANALYSIS/PLOTTERS')
+sys.path.extend(["./"])
 
 import matplotlib.pyplot as plt
-import gen_Te_lineout as TEL
-import gen_dyqy_RL_varZ as dyqy
-import gen_dBdt_bier_varZ as gdBdt
-import figure as fprl
+import PLOTTERS.gen_Te_lineout as TEL
+import PLOTTERS.gen_dyqy_RL_varZ as dyqy
+import PLOTTERS.gen_dBdt_bier_varZ as gdBdt
+import MODULES.figure as fprl
 import matplotlib.gridspec as GS
-import matplotlib.ticker as ticker
 from pylab import *
-import chfoil_module as cf
-import house_keeping as hk
-import pdb
+import MODULES.chfoil_module as cf
+import MODULES.house_keeping as hk
 #-------------------------------------------------#
 # load in initial modules
 save_name = 'modeinv'

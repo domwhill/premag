@@ -6,11 +6,10 @@
 '''
 import sys
 import re
-sys.path.extend(["./"])
-
 import matplotlib.gridspec as GS
 from pylab import *
 sys.path.extend(["./"])
+
 import MODULES.kinetic_ohmslaw_module_varZ as q_mod
 import MODULES.figure_prl_twocol as fprl
 import MODULES.chfoil_module as cf
@@ -147,6 +146,7 @@ def get_phase_array(grid, data):
         data_amp = get_amp1(grid, data.take(ix, axis=0))
         phase_arr[ix] = get_phase(grid, data_amp)
     return phase_arr
+
 
 if __name__ == "__main__":
     slice_array_y = lambda array: array[iy, :]

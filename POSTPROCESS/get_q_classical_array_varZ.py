@@ -17,7 +17,7 @@ from pylab import *
 userid = getpass.getuser()
 site.addsitedir('/Users/' + userid + '/Dropbox/IMPACT_dir/chfoil_d5/MODULES')
 import EH_poly_coeff_module as sv
-import chfoil_module as cf
+import MODULES.chfoil_module as cf
 import matplotlib as mpl
 
 q_e = 1.602e-19

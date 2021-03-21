@@ -6,10 +6,10 @@
 import numpy as np, re, os, sys, getpass, matplotlib.pyplot as plt, site
 userid = getpass.getuser()
 site.addsitedir('/Users/' + userid + '/Dropbox/IMPACT_dir/SIM_DATA/ANALYSIS')
-import chfoil_module as cfoil
+import MODULES.chfoil_module as cfoil
 from chfoil_module import conv_factors_eos
 from chfoil_module import cd5_switches
-import house_keeping as hk
+import MODULES.house_keeping as hk
 import figure_prl_twocol as fprl
 import matplotlib.ticker as ticker
 from pylab import *

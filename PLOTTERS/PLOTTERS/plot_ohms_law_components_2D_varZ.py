@@ -10,13 +10,13 @@ site.addsitedir('/Users/' + userid + '/Dropbox/IMPACT_dir/chfoil_d5/')
 #import kinetic_biermann_compare_lineouts as kbier
 
 import matplotlib.pyplot as plt
-import kinetic_ohmslaw_module_varZ as q_mod
-import kinetic_ohmslaw_module_varZ as kbier
+import MODULES.kinetic_ohmslaw_module_varZ as q_mod
+import MODULES.kinetic_ohmslaw_module_varZ as kbier
 import matplotlib as mpl
 from pylab import *
 from matplotlib import ticker
 #
-import chfoil_module as cf
+import MODULES.chfoil_module as cf
 #import figure_prl_twocol as fprl
 from chfoil_module import conv_factors_cd5
 from chfoil_module import cd5_switches

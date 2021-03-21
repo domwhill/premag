@@ -5,17 +5,15 @@
 
 '''
 import numpy as np, sys, os, getpass, site, re
-userid = getpass.getuser()
-site.addsitedir('/Users/' + userid + '/Dropbox/IMPACT_dir/SIM_DATA/ANALYSIS/MODULES')
-site.addsitedir('/Users/' + userid + '/Dropbox/IMPACT_dir/SIM_DATA/ANALYSIS/PLOTTERS')
+sys.path.extend(["./"])
 import matplotlib.pyplot as plt
 import figure_prl_twocol as fprl
 from pylab import *
-import kinetic_ohmslaw_module_varZ as kohb
+import MODULES.kinetic_ohmslaw_module_varZ as kohb
 import matplotlib.gridspec as GS
-import chfoil_module as cf
-import house_keeping as hk
-import tsi_module as tsi
+import MODULES.chfoil_module as cf
+import MODULES.house_keeping as hk
+import MODULES.tsi_module as tsi
 import gen_dyqy_RL_varZ as qrl
 
 #---> constants...

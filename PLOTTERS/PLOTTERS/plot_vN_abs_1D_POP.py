@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import sys, re, os, getpass, site
 userid = getpass.getuser()
 site.addsitedir('/Users/' + userid + '/Dropbox/IMPACT_dir/SIM_DATA/ANALYSIS')
-import chfoil_module as cf
+import MODULES.chfoil_module as cf
 #import q_SH_Te_tsteps as q_mod
 import matplotlib as mpl
 from pylab import *

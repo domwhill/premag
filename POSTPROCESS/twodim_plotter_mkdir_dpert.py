@@ -14,7 +14,7 @@ import re
 import matplotlib.ticker as ticker
 userid = getpass.getuser()
 site.addsitedir('/Users/' + userid + '/Dropbox/IMPACT_dir/chfoil_d5/MODULES')
-import chfoil_module as cf
+import MODULES.chfoil_module as cf
 
 #import IMPACT_mod as IM
 

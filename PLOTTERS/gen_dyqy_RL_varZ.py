@@ -6,12 +6,12 @@ import getpass, site
 userid = getpass.getuser()
 site.addsitedir('/Users/' + userid + '/Dropbox/IMPACT_dir/SIM_DATA/ANALYSIS')
 
-import chfoil_module as cf
+import MODULES.chfoil_module as cf
 from chfoil_module import conv_factors_eos
 from chfoil_module import cd5_switches
 #import plot_comparison as pc
 import figure_prl_twocol as fprl
-import kinetic_ohmslaw_module_varZ as kohb
+import MODULES.kinetic_ohmslaw_module_varZ as kohb
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from matplotlib import ticker
 #import load_names as LN

@@ -4,21 +4,14 @@
  Plots Phase shift of kinetic/classical heat flows
 
 '''
-import numpy as np, sys, os, getpass, site, re
-userid = getpass.getuser()
-site.addsitedir('/Users/' + userid + '/Dropbox/IMPACT_dir/SIM_DATA/ANALYSIS/MODULES')
-site.addsitedir('/Users/' + userid + '/Dropbox/IMPACT_dir/SIM_DATA/ANALYSIS/PLOTTERS')
-import matplotlib.pyplot as plt
-import figure_prl_twocol as fprl
+import sys, re
+sys.path.extend(["./"])
 import matplotlib.gridspec as GS
-import matplotlib.ticker as ticker
 from pylab import *
-import kinetic_ohmslaw_module_varZ as q_mod
-import pdb
-
-import chfoil_module as cf
-import house_keeping as hk
-import tsi_module as tsi
+import MODULES.figure_prl_twocol as fprl
+import MODULES.kinetic_ohmslaw_module_varZ as q_mod
+import MODULES.chfoil_module as cf
+import MODULES.house_keeping as hk
 
 #---> constants...
 c = 3e8

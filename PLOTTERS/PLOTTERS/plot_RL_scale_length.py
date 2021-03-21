@@ -15,7 +15,7 @@ import matplotlib as mpl
 from pylab import *
 from matplotlib import ticker
 #
-import chfoil_module as cf
+import MODULES.chfoil_module as cf
 #import figure_prl_twocol as fprl
 from chfoil_module import conv_factors_cd5
 from chfoil_module import cd5_switches

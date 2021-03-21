@@ -16,9 +16,9 @@ import gen_Te_lineout as TEL
 import gen_dyqy_RL_varZ as dyqy
 import gen_dBdt_bier_varZ as gdBdt
 import figure_prl_twocol as fprl
-import chfoil_module as cf
-import house_keeping as hk
-import tsi_module as tsi
+import MODULES.chfoil_module as cf
+import MODULES.house_keeping as hk
+import MODULES.tsi_module as tsi
 import impact_norms as inorm
 from plot_utils import run_obj
 import EH_poly_coeff_module as ep

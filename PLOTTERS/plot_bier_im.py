@@ -9,11 +9,11 @@ site.addsitedir('/Users/' + userid + '/Dropbox/IMPACT_dir/SIM_DATA/ANALYSIS')
 site.addsitedir('/Users/' + userid + '/Dropbox/IMPACT_dir/SIM_DATA/ANALYSIS/MODULES')
 import matplotlib.pyplot as plt
 #---> kinetic/classical transport post processing module
-import kinetic_ohmslaw_module_varZ as kohb
+import MODULES.kinetic_ohmslaw_module_varZ as kohb
 import figure_prl_twocol as fprl
 from pylab import *
-import chfoil_module as cf
-import house_keeping as hk
+import MODULES.chfoil_module as cf
+import MODULES.house_keeping as hk
 import pdb
 
 q_e = 1.602e-19
