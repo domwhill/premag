@@ -4,11 +4,9 @@
 	Additional debug funtionalitiy is to plot dxT
 
 '''
-import numpy as np, sys, os, getpass, site
-
-userid = getpass.getuser()
-site.addsitedir('/Users/' + userid + '/Dropbox/IMPACT_dir/SIM_DATA/ANALYSIS/MODULES')
-site.addsitedir('/Users/' + userid + '/Dropbox/IMPACT_dir/SIM_DATA/ANALYSIS/PLOTTERS')
+import sys
+import numpy as np
+sys.path.extend(["./"])
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as GS
 import matplotlib.ticker as ticker
