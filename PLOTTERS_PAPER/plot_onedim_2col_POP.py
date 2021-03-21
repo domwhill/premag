@@ -1,20 +1,20 @@
-'''#
+'''Figure 1 of paper.
+
     This file plots the inital profiles then the evolved profiles for a 50T
     sim. in format for 2column paper
+
+    Usuage instructions
+
+        python PLOTTERS_PAPER/plot_onedim_2col_POP.py
 '''
 
 import os, sys, site, getpass
-userid = getpass.getuser()
-site.addsitedir('/Users/' + userid + '/Dropbox/IMPACT_dir/SIM_DATA/ANALYSIS/MODULES')
-import sys, os, re
-import subprocess as sp
-import matplotlib.pyplot as plt
-import numpy as np
+sys.path.extend(["./"])
+
 from pylab import *
-import house_keeping as hk
-import chfoil_module as cf
-import impact_norms as inorm
-import figure_prl_twocol as fprl
+import MODULES.house_keeping as hk
+import MODULES.chfoil_module as cf
+import MODULES.figure_prl_twocol as fprl
 import matplotlib as mpl
 
 paths = hk.directory_paths()
@@ -31,7 +31,6 @@ epsilon0 = 8.854e-12
 mult = 6
 cfg.yi = 1
 
-#--->
 #--- generating  path_list
 dim = '1D'
 bz_in = 50
@@ -86,31 +85,20 @@ if __name__ == "__main__":
         loop = range(0, len(t_list))
     loop = [0, 7, 9, 10, 11]
     n = len(loop)    # number of curves to plot
-    ##color=iter(cm.plasma(np.linspace(0,1,n)))
 
     if not os.path.isdir(save_path):
         os.system('mkdir ' + save_path)
         print 'making directory ', save_path
     lstyle_list = ['-', '--', ':']
-    if False:
-        var_extra = 'wt'
-        var_extra_ylab = r'\omega \tau_{ei}'
-        var_extra_lab = r'$\omega \tau_{ei}$'
-    elif False:
-        var_extra = 'Z'
-        var_extra_lab = r'Z'
-        var_extra_ylab = r'Z'
-    else:
-        var_extra = ''
-        var_extra_lab = r''
-        var_extra_ylab = r''
+    var_extra = ''
+    var_extra_lab = r''
+    var_extra_ylab = r''
 
     tt_list = [0, 15]
     for path in path_list:
         for itt, tt in enumerate(tt_list):
             axn = ax_list[itt][0]
             ax2 = ax_list[itt][1]
-            #lstyle=lstyle_list[path_list.index(path)]
             lstyle = lstyle_list[path_list.index(path)]
 
             #--- load data
@@ -128,15 +116,10 @@ if __name__ == "__main__":
             time_col = Te_dict['time']
 
             x_grid_ccg = n_dict['x_grid'] * cfg.xstep_factor
-            power = 0    #cf.extract_power(ne_dict['norm_const'])
-            mod = ''    #r'$ 10^{' +str(power)  + '} $'
+            power = 0
+            mod = ''
 
             n_mult, T_mult, C_mult, B_mult = 1.0 / 40.0, 2.5, 20.0, 1.2
-
-            #n_str = get_norm_const(cfg.n0*(n_mult**-1))
-            #T_str = get_norm_const((T_mult**-1)*2.0*Te_ref*1e-3)
-            #C_str = get_norm_const((v_te*1e-3)*(C_mult**-1))
-            #I_str = get_norm_const(B_const*(B_mult**-1))
 
             ne_lab = r'$n_e$[\SI{%1.1e}{\centi\meter^{-3}}]' % (cfg.n0 * (n_mult**-1))
             Te_lab = r'$T_e$[\SI{%1.1f}{\kilo\electronvolt}]' % ((T_mult**-1) * 2.0 * cfg.T0 * 1e-3)
@@ -235,7 +218,6 @@ if __name__ == "__main__":
     axn0.set_xlim(xmin, xmax)
     axn1.set_xlim(xmin, xmax)
 
-    #plt.show()
     save_suffix = 'one_dim_2col' + time
     savename = save_path + save_suffix + '.png'
     print 'saving fig as ', savename

@@ -2,6 +2,7 @@
 source activate pop_env
 
 # Fig. 1 lineouts from IMPACT profiles
+python PLOTTERS_PAPER/plot_onedim_2col_POP.py
 
 # Fig 2 f0 
 
