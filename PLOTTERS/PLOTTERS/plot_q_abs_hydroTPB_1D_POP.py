@@ -2,18 +2,13 @@
 test plot
 '''
 
-import numpy as np
-import matplotlib.pyplot as plt
-import sys, re, os, getpass, site
-userid = getpass.getuser()
-site.addsitedir('/Users/' + userid + '/Dropbox/IMPACT_dir/SIM_DATA/ANALYSIS')
-import chfoil_module as cf
-#import q_SH_Te_tsteps as q_mod
-import matplotlib as mpl
-from pylab import *
-import figure_prl_twocol as fprl
-import kinetic_ohmslaw_module_1D_varZ as q_mod
+import sys
+sys.path.extend(["./"])
 from matplotlib.legend_handler import HandlerBase
+from pylab import *
+import MODULES.chfoil_module as cf
+import MODULES.figure_prl_twocol as fprl
+import MODULES.kinetic_ohmslaw_module_1D_varZ as q_mod
 
 q_e = 1.602e-19
 m_e = 9.11e-31

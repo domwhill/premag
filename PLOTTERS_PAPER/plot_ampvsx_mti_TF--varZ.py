@@ -4,21 +4,17 @@
      + the Biermann + the div.q_RL - i.e. where dyqyrl intersect and have same sign? We have TS instability...
 '''
 
-import numpy as np, sys, os, getpass, site
-userid = getpass.getuser()
-site.addsitedir('/Users/' + userid + '/Dropbox/IMPACT_dir/SIM_DATA/ANALYSIS/MODULES')
-site.addsitedir('/Users/' + userid + '/Dropbox/IMPACT_dir/SIM_DATA/ANALYSIS/PLOTTERS')
-
-import matplotlib.pyplot as plt
-import gen_Te_lineout as TEL
-import gen_dyqy_RL_varZ as dyqy
-import gen_dBdt_bier_varZ as gdBdt
-import figure as fprl
-import matplotlib.gridspec as GS
-import matplotlib.ticker as ticker
+import sys
+import numpy as np
 from pylab import *
-import chfoil_module as cf
-import house_keeping as hk
+import matplotlib.gridspec as GS
+sys.path.extend(["./"])
+
+import PLOTTERS.gen_Te_lineout as TEL
+import PLOTTERS.gen_dyqy_RL_varZ as dyqy
+import MODULES.figure as fprl
+import MODULES.chfoil_module as cf
+import MODULES.house_keeping as hk
 #-------------------------------------------------#
 # load in initial modules
 save_name = 'modeinv'

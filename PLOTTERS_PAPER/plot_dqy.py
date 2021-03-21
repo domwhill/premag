@@ -4,21 +4,17 @@
  Plots Phase shift of kinetic/classical heat flows
 
 '''
-import numpy as np, sys, os, getpass, site, re
-userid = getpass.getuser()
-site.addsitedir('/Users/' + userid + '/Dropbox/IMPACT_dir/SIM_DATA/ANALYSIS/MODULES')
-site.addsitedir('/Users/' + userid + '/Dropbox/IMPACT_dir/SIM_DATA/ANALYSIS/PLOTTERS')
-import matplotlib.pyplot as plt
-import figure_prl_twocol as fprl
-import matplotlib.gridspec as GS
-import matplotlib.ticker as ticker
-from pylab import *
-import kinetic_ohmslaw_module_varZ as q_mod
-import pdb
+import sys
+import re
+sys.path.extend(["./"])
 
-import chfoil_module as cf
-import house_keeping as hk
-import tsi_module as tsi
+import matplotlib.gridspec as GS
+from pylab import *
+sys.path.extend(["./"])
+import MODULES.kinetic_ohmslaw_module_varZ as q_mod
+import MODULES.figure_prl_twocol as fprl
+import MODULES.chfoil_module as cf
+import MODULES.house_keeping as hk
 
 #---> constants...
 c = 3e8
@@ -152,121 +148,119 @@ def get_phase_array(grid, data):
         phase_arr[ix] = get_phase(grid, data_amp)
     return phase_arr
 
+if __name__ == "__main__":
+    slice_array_y = lambda array: array[iy, :]
 
-slice_array_y = lambda array: array[iy, :]
+    fig1 = fprl.newfig_generic_2yscale(1.0)    #(1.1,scale_width=1.5,scale_ratio=0.5)#plt.figure()
+    gs1 = GS.GridSpec(1, 2)
+    ax = plt.subplot(gs1[0])
+    ax2 = plt.subplot(gs1[1])
+    fig1.subplots_adjust(left=0.15, right=0.9, wspace=0.55, top=0.88, bottom=0.2)
 
-fig1 = fprl.newfig_generic_2yscale(1.0)    #(1.1,scale_width=1.5,scale_ratio=0.5)#plt.figure()
-gs1 = GS.GridSpec(1, 2)
-ax = plt.subplot(gs1[0])
-ax2 = plt.subplot(gs1[1])
-fig1.subplots_adjust(left=0.15, right=0.9, wspace=0.55, top=0.88, bottom=0.2)
+    fig2 = fprl.newfig_generic_2yscale(1.0)    #plt.figure()
+    ax3 = fig2.add_subplot(121)
+    ax4 = fig2.add_subplot(122)
+    ax5 = ax2.twinx()
+    fig2.subplots_adjust(left=0.15, right=0.9, wspace=0.55, top=0.88, bottom=0.2)
 
-fig2 = fprl.newfig_generic_2yscale(1.0)    #plt.figure()
-ax3 = fig2.add_subplot(121)
-ax4 = fig2.add_subplot(122)
-ax5 = ax2.twinx()
-fig2.subplots_adjust(left=0.15, right=0.9, wspace=0.55, top=0.88, bottom=0.2)
+    x_list = np.array([110, 120])
 
-x_list = np.array([110, 120])
+    dict_c_lt1, dict_k_lt1 = q_mod.repack_2D(path_list[0], time)
+    nx, ny = np.shape(dict_k_lt1['Te'])
 
-dict_c_lt1, dict_k_lt1 = q_mod.repack_2D(path_list[0], time)
-nx, ny = np.shape(dict_k_lt1['Te'])
+    data_pos = dict_k_lt1['Te'][x_list, ny // 2]
 
-data_pos = dict_k_lt1['Te'][x_list, ny // 2]
+    #------------------->>>
+    for ipp in range(len(path_list)):
+        pp = path_list[ipp]
 
-#------------------->>>
-for ipp in range(len(path_list)):
-    pp = path_list[ipp]
+        dict_c, dict_k = q_mod.repack_2D(pp, time, recompute_q_c=True)
+        np.save(pp.split('/')[-1] + 'dict_c.npy', dict_c, allow_pickle=True)
+        np.save(pp.split('/')[-1] + 'dict_k.npy', dict_k, allow_pickle=True)
+        x_grid = dict_k['x_grid']
+        y_grid = dict_k['y_grid']
+        data_k = dict_k[var]
+        ipp = path_list.index(pp)
 
-    dict_c, dict_k = q_mod.repack_2D(pp, time, recompute_q_c=True)
-    np.save(pp.split('/')[-1] + 'dict_c.npy', dict_c, allow_pickle=True)
-    np.save(pp.split('/')[-1] + 'dict_k.npy', dict_k, allow_pickle=True)
-    x_grid = dict_k['x_grid']
-    y_grid = dict_k['y_grid']
-    data_k = dict_k[var]
-    ipp = path_list.index(pp)
+        # get ratios from particular point
+        nx, ny = np.shape(dict_k['Te'])
+        pT50, = ax2.plot(x_grid * cd5.xstep_factor,
+                         dict_k['Te'][:, ny // 2] * Te_factor,
+                         c='k',
+                         linestyle='-')
 
-    # get ratios from particular point
-    nx, ny = np.shape(dict_k['Te'])
-    pT50, = ax2.plot(x_grid * cd5.xstep_factor,
-                     dict_k['Te'][:, ny // 2] * Te_factor,
-                     c='k',
-                     linestyle='-')
+        # wt
+        axwt = ax2.twinx()
+        pT50, = axwt.plot(x_grid * cd5.xstep_factor,
+                          dict_k['wt'][:, ny // 2],
+                          c='k',
+                          linestyle=style_list[ipp])
+        # te_amp
+        ax_amp = ax2.twinx()
+        te_amp = cf.get_U_dev_abs(dict_k['Te'])
+        pT_amp, = ax_amp.semilogy(x_grid * cd5.xstep_factor,
+                                  np.max(np.abs(te_amp * Te_factor), axis=1),
+                                  c='k',
+                                  linestyle='-')
 
-    # wt
-    axwt = ax2.twinx()
-    pT50, = axwt.plot(x_grid * cd5.xstep_factor,
-                      dict_k['wt'][:, ny // 2],
-                      c='k',
-                      linestyle=style_list[ipp])
-    # te_amp
-    ax_amp = ax2.twinx()
-    te_amp = cf.get_U_dev_abs(dict_k['Te'])
-    pT_amp, = ax_amp.semilogy(x_grid * cd5.xstep_factor,
-                              np.max(np.abs(te_amp * Te_factor), axis=1),
-                              c='k',
-                              linestyle='-')
+        axwt.set_ylabel(r'$\omega \tau$')
+        ax2.set_ylabel(r'$T_e$ [eV]')
+        #----->
+        c_list = cmap(np.linspace(0.0, 1.0, len(x_list)))
+        ix_list = cf.data_intersect(x_grid, dict_k['Te'][:, ny // 2], data_pos)
 
-    axwt.set_ylabel(r'$\omega \tau$')
-    ax2.set_ylabel(r'$T_e$ [eV]')
-    #----->
-    c_list = cmap(np.linspace(0.0, 1.0, len(x_list)))
-    ix_list = cf.data_intersect(x_grid, dict_k['Te'][:, ny // 2], data_pos)
+        for indx, ix in enumerate(ix_list):
+            colour = c_list[indx]
 
-    for indx, ix in enumerate(ix_list):
-        colour = c_list[indx]
+            pc, = ax.plot(y_grid * cd5.xstep_factor,
+                          get_amp1(y_grid, dict_c[var][ix, :]),
+                          c=colour,
+                          linestyle='--')
 
-        pc, = ax.plot(y_grid * cd5.xstep_factor,
-                      get_amp1(y_grid, dict_c[var][ix, :]),
-                      c=colour,
-                      linestyle='--')
+            pk, = ax.plot(y_grid * cd5.xstep_factor,
+                          get_amp1(y_grid, dict_k[var][ix, :]),
+                          c=colour,
+                          linestyle='-')
 
-        pk, = ax.plot(y_grid * cd5.xstep_factor,
-                      get_amp1(y_grid, dict_k[var][ix, :]),
-                      c=colour,
-                      linestyle='-')
+            # Plot dT lineout
+            # convert from eV -> keV
 
-        # Plot dT lineout
-        # convert from eV -> keV
+            pk, = ax3.plot(y_grid * cd5.xstep_factor,
+                           get_amp(dict_k['Te'][ix, :]) * Te_factor,
+                           c=colour,
+                           linestyle='--')
+            # Plot wte y lineout
+            pk, = ax4.plot(y_grid * cd5.xstep_factor,
+                           get_amp(dict_k['wt'][ix, :]),
+                           c=colour,
+                           linestyle='-')
 
-        pk, = ax3.plot(y_grid * cd5.xstep_factor,
-                       get_amp(dict_k['Te'][ix, :]) * Te_factor,
-                       c=colour,
-                       linestyle='--')
-        # Plot wte y lineout
-        pk, = ax4.plot(y_grid * cd5.xstep_factor,
-                       get_amp(dict_k['wt'][ix, :]),
-                       c=colour,
-                       linestyle='-')
+            # Mark points y amp is sampled at on Te
+            ax2.scatter(x_grid[ix] * cd5.xstep_factor,
+                        dict_k['Te'][ix, ny // 2] * Te_factor,
+                        c=colour,
+                        marker='x')
 
-        # Mark points y amp is sampled at on Te
-        ax2.scatter(x_grid[ix] * cd5.xstep_factor,
-                    dict_k['Te'][ix, ny // 2] * Te_factor,
-                    c=colour,
-                    marker='x')
+        ax3.set_ylabel(r'$\delta T_e$ [eV]')
+        ax4.set_ylabel(r'$\delta \omega \tau_{ei}$')
 
-    ax3.set_ylabel(r'$\delta T_e$ [eV]')
-    ax4.set_ylabel(r'$\delta \omega \tau_{ei}$')
+        ax.set_xlim(y_grid[2] * cd5.xstep_factor, y_grid[-2] * cd5.xstep_factor)
+        ax2.set_xlim(xmin, xmax)
+        ax.ticklabel_format(style='sci', scilimits=(-2, 2))
 
-    ax.set_xlim(y_grid[2] * cd5.xstep_factor, y_grid[-2] * cd5.xstep_factor)
-    ax2.set_xlim(xmin, xmax)
-    ax.ticklabel_format(style='sci', scilimits=(-2, 2))
+        ax2.ticklabel_format(style='sci', scilimits=(-2, 2))
+        ax2.set_yticks([])
+        ax3.ticklabel_format(style='sci', scilimits=(-2, 2))
+        ax4.ticklabel_format(style='sci', scilimits=(-2, 2))
 
-    ax2.ticklabel_format(style='sci', scilimits=(-2, 2))
-    ax2.set_yticks([])
-    ax3.ticklabel_format(style='sci', scilimits=(-2, 2))
-    ax4.ticklabel_format(style='sci', scilimits=(-2, 2))
+        ax.set_ylabel(ylab)
+        ax.set_xlabel(xlab)
+        ax.set_xlabel(xlab)
 
-    ax.set_ylabel(ylab)
-    ax.set_xlabel(xlab)
-    ax.set_xlabel(xlab)
+    plt.show()
+    print('saving as: ', save_name + '.png')
+    print('\n copy and paste: open -a preview ' + save_name + '_1.png')
+    print('\n copy and paste: open -a preview ' + save_name + '_2.png')
 
-#fig1.savefig(save_name + '_1.png', dpi=600)
-#fig2.savefig(save_name + '_2.png', dpi=600)
-plt.show()
-print('saving as: ', save_name + '.png')
-print('\n copy and paste: open -a preview ' + save_name + '_1.png')
-print('\n copy and paste: open -a preview ' + save_name + '_2.png')
-
-#plt.show()
-#plt.close()
+    #plt.show()
+    #plt.close()
