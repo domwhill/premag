@@ -1,20 +1,40 @@
-'''
-test plot
-'''
+"""Plot 1D lineouts of transport terms for kinetic and classical predictions.
 
-import numpy as np
-import matplotlib.pyplot as plt
+Usage example:
+
+    python PLOTTERS_PAPER/plot_qRL_abs_1D_POP.py <transport_component> <impact variable to plot> <save_directory>
+eg.
+ $  python2 PLOTTERS_PAPER/plot_qRL_abs_1D_POP.py 'RL y' 'Bz' 'OUTPUT/'
+
+Transport components that can be plotted:
+    'SH x':  diffusive heat flow x component
+    'SH y':  diffusive heat flow y component
+    'RL x':  Righi-Leduc heat flow x component
+    'RL y':  Righi-Leduc heat flow y component
+    'E x':   Ettinghausen heat flow x component
+    'E y':   Ettinghausen heat flow y component
+    'vN x':  Nernst velocity x component
+    'vN y':  Nernst velocity y component
+
+
+Also plots for reference 1D profiles of IMPACT variables
+{Te: electron temperature,
+ne: electron number density,
+Bz: magnetic field (z/out of plane) component
+}
+
+"""
+
 import sys, re, os, getpass, site, pdb
 userid = getpass.getuser()
-site.addsitedir('/Users/' + userid + '/Dropbox/IMPACT_dir/SIM_DATA/ANALYSIS')
-site.addsitedir('/Users/' + userid + '/Dropbox/IMPACT_dir/SIM_DATA/ANALYSIS/MODULES')
-import chfoil_module as cf
-import matplotlib as mpl
 from pylab import *
-import figure_prl_twocol as fprl
-import house_keeping as hk
-import kinetic_ohmslaw_module_1D_varZ as q_mod
 from matplotlib.legend_handler import HandlerBase
+import argparse
+sys.path.extend(["./" ])
+import MODULES.chfoil_module as cf
+import MODULES.figure_prl_twocol as fprl
+import MODULES.house_keeping as hk
+import MODULES.kinetic_ohmslaw_module_1D_varZ as q_mod
 q_e = 1.602e-19
 m_e = 9.11e-31
 m_p = 1.67e-27
@@ -31,14 +51,22 @@ log_file = norm_dir + 'norm.log'
 [Te_ref, n_ref, Z_ref, Bz_ref] = np.loadtxt(log_file)
 cd5 = cf.conv_factors_custom(norm_dir, Z_ref, Ar=6.51)
 #---> USER inputs
-var1 = sys.argv[1]    #'RL y'
-var2 = sys.argv[2]
+parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument("transport_component", description="Transport term to plot RL x = x component of Righi-Leduc, SH y = y component of Spitzer-HArm/diffusive heat flow,"
+                                                       "vN y = y-component of Nernst")
+parser.add_argument("thermodynamic_variable",
+                    description="string for impact variable: Te, ne, Bz, Cx (ion velocity)")
+parser.add_argument("output_directory", default="", description="output directory path (relative to root)")
+args = parser.parse_args()
+var1 = args.transport_component # eg. 'RL y' for y component of Righi-Leduc heat flow, '
+var2 = args.thermodynamic_variable
+save_path = args.output_directory
+print('Input argument= ', args)
+if save_path[-1] != '/':
+    save_path = save_path + '/'
+print "var1 = " + var1 + " var2 = " + var2 + " output_directory = " + save_path
 
-print('sys.argv = ', sys.argv)
-if len(sys.argv) > 3:
-    save_path = save_path + '/' + sys.argv[-1] + '/'
-
-save_name = '%s/qlineout_%s_abs_%s_1d.png' % (save_path, re.sub(' ', '', var1), var2)
+save_name = '%sqlineout_%s_abs_%s_1d.png' % (save_path, re.sub(' ', '', var1), var2)
 #----------------
 
 cl_index = int(cd5.cl_index)
@@ -61,8 +89,7 @@ Bz_ref = (m_e / (q_e * tau_ei))
 scale_len = 1
 dim = 1
 lambda_p_mfp = 5    # doesn't matter since looking for 2d runs
-path_0T = paths.get_path(scale_len, '0', lambda_p_mfp,
-                         dim=dim)    #path_pre + 'r5_v40_Z_FEOS_trackncrit_1D_0T_2'
+path_0T = paths.get_path(scale_len, '0', lambda_p_mfp, dim=dim)
 path_50T = paths.get_path(scale_len, '50', lambda_p_mfp, dim=dim)
 path_400T = paths.get_path(scale_len, '400', lambda_p_mfp, dim=dim)
 print('path 0 = #', path_0T, '\n', path_50T, '\n', path_400T)
@@ -84,8 +111,6 @@ lab_list = {
     'vN y': r'$v_{N,y}$'
 }
 
-#ylab = lab_list[var_list.index(var1)]
-#print(' var = ', var1, ylab,var_list.index(var1))
 # Boolean to determine whether the 400T kinetic data should set axis ylims
 # or the 50T classical
 if var1[:2] == 'RL' or var1[0] == 'E':
@@ -109,7 +134,6 @@ def unit_item(val, unit):
             lab = r'$\,[10^{%i}\,\si{%s}]$' % (pow, unit)
         else:
             lab = r'$\,[\si{%s}]$' % (unit)
-    #pdb.set_trace()
     return lab
 
 
@@ -134,15 +158,6 @@ class norm_labels(object):
                 self.lab = lab_list[var1] + v_unit
 
             else:
-                '''
-                #---> norm -- var1
-                multQ = 1e-18
-                self.factor = (n_ref*1e6)*m_e*(v_te**3)*multQ
-                # kg s^-3 => kg m^-1 s^-2 
-                q_unit = r'$\,[\SI{%0.1g}{W/m^2}]$' % (multQ**-1)
-                q_unit = unit_item(multQ**-1, 'W/m^2')
-                self.lab = lab_list[var1] +  q_unit
-                '''
 
                 norm_factor = (n_ref * 1e6) * m_e * (v_te**3)
                 if len(var_data) != 0:
@@ -236,78 +251,79 @@ def set_ylim_max_2data(ax_in, grid, data1, data2, y_mult=[1.0, 1.0], xlim=[-5.0,
 
 
 #-----------------------------------------------------------------------
-#----> data loading
-#dict_0T_c,dict_0T_k = repack(path_0T,time)
-dict_50T_c, dict_50T_k = repack(path_50T, time)
-dict_400T_c, dict_400T_k = repack(path_400T, time)
+if __name__=="__main__":
+    #----> data loading
+    #dict_0T_c,dict_0T_k = repack(path_0T,time)
+    dict_50T_c, dict_50T_k = repack(path_50T, time)
+    dict_400T_c, dict_400T_k = repack(path_400T, time)
 
-x_grid = dict_50T_k['x_grid']
+    x_grid = dict_50T_k['x_grid']
 
-#<--------------- 0T loading---
-#----> plotting
-fig = fprl.newfig_generic_twinx(1.0)
-ax = fig.add_subplot(111)
-ax2 = ax.twinx()
-ax.tick_params(which='both', direction='in')
-ax2.tick_params(which='both', direction='in')
+    #<--------------- 0T loading---
+    #----> plotting
+    fig = fprl.newfig_generic_twinx(1.0)
+    ax = fig.add_subplot(111)
+    ax2 = ax.twinx()
+    ax.tick_params(which='both', direction='in')
+    ax2.tick_params(which='both', direction='in')
 
-data_k = dict_50T_k[var1]
+    data_k = dict_50T_k[var1]
 
-#---->> initialise labels ---->>>
-if var_lim_400:
-    v1_labs = norm_labels(var1, var_data=dict_400T_k[var1])
-else:
-    v1_labs = norm_labels(var1, var_data=dict_50T_c[var1])
-v2_labs = norm_labels(var2)
-#<--------------------------------
+    #---->> initialise labels ---->>>
+    if var_lim_400:
+        v1_labs = norm_labels(var1, var_data=dict_400T_k[var1])
+    else:
+        v1_labs = norm_labels(var1, var_data=dict_50T_c[var1])
+    v2_labs = norm_labels(var2)
+    #<--------------------------------
 
-vmin = np.min(data_k[np.abs(x_grid - xmin) <= xmax]) * 0.8
-vmax = np.max(data_k[np.abs(x_grid - xmin) <= xmax]) * 1.2
+    vmin = np.min(data_k[np.abs(x_grid - xmin) <= xmax]) * 0.8
+    vmax = np.max(data_k[np.abs(x_grid - xmin) <= xmax]) * 1.2
 
-#p0, = ax.plot(x_grid,rat_0T,c='g')
+    #p0, = ax.plot(x_grid,rat_0T,c='g')
 
-p50, = ax.plot(x_grid, dict_50T_k[var1] * v1_labs.factor, c='r')
-p50, = ax.plot(x_grid, dict_50T_c[var1] * v1_labs.factor, c='r', linestyle='--')
+    p50, = ax.plot(x_grid, dict_50T_k[var1] * v1_labs.factor, c='r')
+    p50, = ax.plot(x_grid, dict_50T_c[var1] * v1_labs.factor, c='r', linestyle='--')
 
-p400, = ax.plot(x_grid, dict_400T_k[var1] * v1_labs.factor, c='b')
-p400, = ax.plot(x_grid, dict_400T_c[var1] * v1_labs.factor, c='b', linestyle='--')
+    p400, = ax.plot(x_grid, dict_400T_k[var1] * v1_labs.factor, c='b')
+    p400, = ax.plot(x_grid, dict_400T_c[var1] * v1_labs.factor, c='b', linestyle='--')
 
-pT50, = ax2.plot(x_grid, dict_50T_k[var2] * v2_labs.factor, c='k', linestyle='--')
-pT400, = ax2.plot(x_grid, dict_400T_k[var2] * v2_labs.factor, c='k', linestyle=':')
+    pT50, = ax2.plot(x_grid, dict_50T_k[var2] * v2_labs.factor, c='k', linestyle='--')
+    pT400, = ax2.plot(x_grid, dict_400T_k[var2] * v2_labs.factor, c='k', linestyle=':')
 
-leg_list = ['$\SI{50}{T}$', '$\SI{400}{T}$']
-plt.legend([("r", "--"), ("b", ":")],
-           leg_list,
-           handler_map={tuple: AnyObjectHandler()},
-           loc='lower right',
-           frameon=False)
+    leg_list = ['$\SI{50}{T}$', '$\SI{400}{T}$']
+    plt.legend([("r", "--"), ("b", ":")],
+               leg_list,
+               handler_map={tuple: AnyObjectHandler()},
+               loc='lower right',
+               frameon=False)
 
-ax.set_xlabel(xlab)
-ax.set_ylabel(v1_labs.lab)
-ax2.set_ylabel(v2_labs.lab)
-#ax.set_ylim(-0.15*v1_labs.factor,0.01*v1_labs.factor)#(-0.1,0.01) - Nernst
-if var_lim_400:
-    set_ylim_max_2data(ax,
-                       x_grid,
-                       dict_400T_c[var1] * v1_labs.factor,
-                       dict_400T_k[var1] * v1_labs.factor,
-                       y_mult=[1.0, 1.0],
-                       xlim=[xmin, xmax])
+    ax.set_xlabel(xlab)
+    ax.set_ylabel(v1_labs.lab)
+    ax2.set_ylabel(v2_labs.lab)
+    #ax.set_ylim(-0.15*v1_labs.factor,0.01*v1_labs.factor)#(-0.1,0.01) - Nernst
+    if var_lim_400:
+        set_ylim_max_2data(ax,
+                           x_grid,
+                           dict_400T_c[var1] * v1_labs.factor,
+                           dict_400T_k[var1] * v1_labs.factor,
+                           y_mult=[1.0, 1.0],
+                           xlim=[xmin, xmax])
 
-else:
-    set_ylim_max_2data(ax,
-                       x_grid,
-                       dict_50T_c[var1] * v1_labs.factor,
-                       dict_50T_k[var1] * v1_labs.factor,
-                       y_mult=[1.0, 1.0],
-                       xlim=[xmin, xmax])
-#ax2.set_ylim(0.0,1000.0)
+    else:
+        set_ylim_max_2data(ax,
+                           x_grid,
+                           dict_50T_c[var1] * v1_labs.factor,
+                           dict_50T_k[var1] * v1_labs.factor,
+                           y_mult=[1.0, 1.0],
+                           xlim=[xmin, xmax])
+    #ax2.set_ylim(0.0,1000.0)
 
-ax.set_xlim(xmin, xmax)
-plt.savefig(save_name, dpi=600)
-print('saving as: ', save_name)
-print(' copy and paste: open -a preview ' + save_name)
-os.system('open -a preview ' + save_name)
+    ax.set_xlim(xmin, xmax)
+    plt.savefig(save_name, dpi=600)
+    print('saving as: ', save_name)
+    print(' copy and paste: open -a preview ' + save_name)
+    os.system('open -a preview ' + save_name)
 
 #ax2.plot(x_grid,dict_qk['SH x'][:,1],c='r',linestyle='--')
 #plt.show()

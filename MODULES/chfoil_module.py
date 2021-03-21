@@ -19,7 +19,7 @@ import impact_norms as INN
 userid = getpass.getuser()
 paths = hk.directory_paths()
 
-class MidPointNorm(Normalize):    
+class MidPointNorm(Normalize):
     def __init__(self, midpoint=0, vmin=None, vmax=None, clip=False):
         Normalize.__init__(self,vmin, vmax, clip)
         self.midpoint = midpoint
@@ -165,7 +165,7 @@ class conv_factors_custom(object):
         self.SI_on = cd5_switches.SI_on
         self.Z = Z
         self.Ar = Ar
-        [self.T0,self.n0,self.logLambda] = np.loadtxt(norm_path + self.norm_name)
+        [self.T0, self.n0, self.logLambda] = np.loadtxt(norm_path + self.norm_name)
         dict_norm = INN.impact_inputs(self.n0,self.T0,Z,1.0,Ar)
         self.v_te = dict_norm['vte']      #     m/s  #1.93e7 # ms^-1
         self.tau_ei = dict_norm['tau_ei'] # s   7.44e-14 # s
@@ -235,13 +235,16 @@ class conv_factors_custom(object):
         '''
             out_name = search_path(regexp,path)
         '''
-        out_name = ''
+        out_name = None
         for pp in os.listdir(path):
             rr = re.search(regexp,pp)
             if rr:
                 print 'path = ', pp
                 out_name = pp
                 break
+        if out_name is None:
+            raise ValueError("File not found for regex in directory")
+
         return out_name
 #-------------------------------------------------------------------====
 def fpre(path):
@@ -262,9 +265,7 @@ def construct_fname(path,fprefix,var,time):
         suffix = '.xyv'
     else:
         suffix = '.xy'
-        
-    #fprefix = 'thydro_hi'
-    #time = '00'
+
     if var=='Z2niX' or var=='Z2niY' or var == 'Z':
         fname = path + '/' + fprefix +'_' + var+ suffix
     
@@ -309,11 +310,7 @@ def construct_label(fname,k_on=True):
     
     premag2 = re.search('_(?P<premag>\d+)T', fname)
     if premag2 and fname[:2] == 'r5':
-        #print premag.group()
-        #print premag.group('premag')
         mag = premag2.group('premag')
-        #mag2 = re.sub('_','.',mag)
-        #print 'mag = ',mag,'mag2 = ', mag2
         B_lab =  mag + '\,T' 
    
     hydro = re.search('static',fname)
@@ -387,16 +384,10 @@ def get_startline(fname):
     out_line = 9
     for i in range(len(f_list)):
         if re.match(r'\s*\n',f_list[i]):
-            ##print 'found match on line: ', i
-            #print 'f_list[i] = ', f_list[i]
             out_line = i
-            #else:
-            #out_line = 9
-            #continue
             break
     
-    #print ' out_line = ', out_line, ' fname = ', fname
-            
+
     return out_line
 #-----------------------------------------------------------------------
 
@@ -481,9 +472,7 @@ def trim_array(array,nx,ny):
             return array
         else:
             out_array = np.zeros((nx))
-            #offset_x = 0
             offset_x = (len(array[:]) % nx)/2
-            #print 'offset = ',offset_x
             out_array = array[offset_x:-offset_x]
             return out_array
     
@@ -492,7 +481,6 @@ def trim_array(array,nx,ny):
     else:
         out_array = np.zeros((nx,ny))
         offset_x,offset_y = 0,0
-        #offset_x_rh,offset_y_rh = 1,1
         offset_x_rh,offset_y_rh = -nx,-ny
         
         if nx_a != nx:
@@ -503,18 +491,13 @@ def trim_array(array,nx,ny):
         if ny_a != ny:
             offset_y = (len(array[0,:]) % ny)/2
             offset_y_rh = (len(array[0,:]) % ny)/2
-            #print ' 2.0*np.abs((len(array[0,:]) % ny)/2.0 - (len(array[0,:]) % ny)/2) = ', 2.0*np.abs((len(array[0,:]) % ny)/2.0 - (len(array[0,:]) % ny)/2)
             offset_y += int(2.0*np.abs((len(array[0,:]) % ny)/2.0 - (len(array[0,:]) % ny)/2))
-            #print ' offset_y = ', offset_y, offset_y_rh
-            #print 'offset = ',offset_x, offset_x_rh
 
         #--------------
 
         if ny == 1:
             offset_y = 1
             offset_y_rh = 1
-        #print ' nx, ny, nx_a, ny_a = ', nx, ny, nx_a,ny_a
-        #print ' offset_x = ', offset_x, offset_x_rh, offset_y, offset_y_rh
         if offset_x_rh != 0 and offset_y_rh != 0:
             out_array = array[offset_x:-offset_x_rh,offset_y:-offset_y_rh]
         elif offset_x_rh != 0 and offset_y_rh == 0:
@@ -528,9 +511,6 @@ def trim_array(array,nx,ny):
             print ' SHAPE ARRAY IN = ', np.shape(array)
             print ' SHAPE ARRAY OUT = ', np.shape(out_array), ' shape asked for = (%i,%i)' % (nx,ny)
             sys.exit()
-            return array
-        #print ' np.shape(out_array) = ', np.shape(out_array)
-        #sys.exit()
         return out_array
 
 #-----------------------------------------------------------------------
@@ -550,8 +530,6 @@ def trim_array_1D(array,nx,ny):
             offset_x_rh = (len(array) % nx)/2
             offset_x += int(2.0*np.abs((len(array) % nx)/2.0 - (len(array) % nx)/2))
 
-        #print ' nx, ny, nx_a, ny_a = ', nx, ny, nx_a
-        #print ' offset_x = ', offset_x, offset_x_rh
         if offset_x_rh != 0:
             out_array = array[offset_x:-offset_x_rh]
         elif offset_x_rh == 0:
@@ -758,7 +736,6 @@ def get_fprefix(path,var='Te'):
             tc_list.append(t_col)
             fprefix = s.group('fpre')
             break
-    ##print t_list
     return fprefix
    
 #-----------------------------------------------------------------------    
@@ -833,16 +810,10 @@ def load_path(path,var):
     if ndims ==2:
         ny = int(mat_info[3])
         y_grid = list_to_float(mat_info[4])
-        #y_grid = np.array(mat_info[4])
-        
+
         nx = int(mat_info[5])
         x_grid = list_to_float(mat_info[6])
-        ##print '========'
-        ##print 'nx: ',nx,'\nx_grid: \n',x_grid
-        ##print 'np.shape: xgrid: ', np.shape(x_grid)
-        ##print '============'
         mat = np.loadtxt(fname,skiprows=out_l)
-        ##print np.shape(mat)
         grid = [y_grid,x_grid]
         hmat_final = np.transpose(mat)
         # may also need to multiply by -1 if a vector quantity (
@@ -871,9 +842,6 @@ def load_path(path,var):
         mat = mat.reshape(dim_reverse)
         hmat_final = np.transpose(mat)
         grid = [v_grid,y_grid,x_grid] #nv,ny,nx
-        #print '############################'
-        #print '   nv, ny, nx: ',nv, ny, nx
-        #print '############################'
         dict['v_grid'] = v_grid
         dict['nv'] = nv
     #-------------------------
@@ -908,9 +876,7 @@ def load_dict(path,fprefix,var,time):
         dict = fpg_get_info(fname)
     '''
     fname = construct_fname(path,fprefix,var,time)
-    
-    #dict = MyDict()
-    #mat = np.loadtxt(fname,skiprows=out_l)
+
     
     info = open(fname, 'r')
     data = info.readlines()
@@ -918,13 +884,7 @@ def load_dict(path,fprefix,var,time):
     out_l = get_startline(fname)
     mat = np.loadtxt(fname,skiprows=out_l)
     dict = {}
-    #if var == 'Cx' or var == 'Cy':
-    #    mat = np.loadtxt(fname,skiprows=out_l)
-    #    dict['mat'] = mat
-    #    return  dict  
 
-    
-    ##print mat_info
     time = float(mat_info[1])
     
     ndims = int(mat_info[2])
@@ -935,12 +895,8 @@ def load_dict(path,fprefix,var,time):
         
         nx = int(mat_info[5])
         x_grid = list_to_float(mat_info[6])
-        ##print '========'
-        ##print 'nx: ',nx,'\nx_grid: \n',x_grid
-        ##print 'np.shape: xgrid: ', np.shape(x_grid)
-        ##print '============'
+
         mat = np.loadtxt(fname,skiprows=out_l)
-        ##print np.shape(mat)
         grid = [y_grid,x_grid]
         hmat_final = mat
         v_grid = 0.0
@@ -962,9 +918,7 @@ def load_dict(path,fprefix,var,time):
         mat = mat.reshape(dim_reverse)
         hmat_final = np.transpose(mat)
         grid = [v_grid,y_grid,x_grid] #nv,ny,nx
-        #print '############################'
-        #print '   nv, ny, nx: ',nv, ny, nx
-        #print '############################'
+
         dict['v_grid'] = v_grid
         dict['nv'] = nv
     dict['time'] = time
@@ -986,9 +940,7 @@ def load_dict_1D(path,fprefix,var,time):
         in kinetic/classical heat flow reconstructions.
     '''
     fname = construct_fname(path,fprefix,var,time)
-    
-    #dict = MyDict()
-    #mat = np.loadtxt(fname,skiprows=out_l)
+
     
     info = open(fname, 'r')
     data = info.readlines()
@@ -996,13 +948,6 @@ def load_dict_1D(path,fprefix,var,time):
     out_l = get_startline(fname)
     mat = np.loadtxt(fname,skiprows=out_l)
     dict = {}
-    #if var == 'Cx' or var == 'Cy':
-    #    mat = np.loadtxt(fname,skiprows=out_l)
-    #    dict['mat'] = mat
-    #    return  dict  
-
-    
-    ##print mat_info
     time = float(mat_info[1])
     
     ndims = int(mat_info[2])
@@ -1014,32 +959,23 @@ def load_dict_1D(path,fprefix,var,time):
         
         nx = int(mat_info[5])
         x_grid = list_to_float(mat_info[6])
-        ##print '========'
-        ##print 'nx: ',nx,'\nx_grid: \n',x_grid
-        ##print 'np.shape: xgrid: ', np.shape(x_grid)
-        ##print '============'
+
         mat = np.loadtxt(fname,skiprows=out_l)
-        ##print np.shape(mat)
         grid = [y_grid,x_grid]
         hmat_final = np.zeros((len(mat),3))
         for ii in range(3):
             hmat_final[:,ii] = mat
-        #hmat_final = mat
-        v_grid = 0.0        
+        v_grid = 0.0
         
     elif ndims ==2:
         ny = int(mat_info[3])
         y_grid = list_to_float(mat_info[4])
-        #y_grid = np.array(mat_info[4])
-        
+
         nx = int(mat_info[5])
         x_grid = list_to_float(mat_info[6])
-        ##print '========'
-        ##print 'nx: ',nx,'\nx_grid: \n',x_grid
-        ##print 'np.shape: xgrid: ', np.shape(x_grid)
-        ##print '============'
+
         mat = np.loadtxt(fname,skiprows=out_l)
-        ##print np.shape(mat)
+
         grid = [y_grid,x_grid]
         hmat_final = mat
         v_grid = 0.0
@@ -1072,9 +1008,7 @@ def load_dict_1D(path,fprefix,var,time):
             hmat_final = hmat_3
             
         grid = [v_grid,y_grid,x_grid] #nv,ny,nx
-        #print '############################'
-        #print '   nv, ny, nx: ',nv, ny, nx
-        #print '############################'
+
         dict['v_grid'] = v_grid
         dict['nv'] = nv
     dict['time'] = time
@@ -1157,16 +1091,11 @@ def fpg_load(fname):
     if ndims ==2:
         ny = int(mat_info[3])
         y_grid = list_to_float(mat_info[4])
-        #y_grid = np.array(mat_info[4])
-        
+
         nx = int(mat_info[5])
         x_grid = list_to_float(mat_info[6])
-        ##print '========'
-        ##print 'nx: ',nx,'\nx_grid: \n',x_grid
-        ##print 'np.shape: xgrid: ', np.shape(x_grid)
-        ##print '============'
+
         mat = np.loadtxt(fname,skiprows=8)
-        ##print np.shape(mat)
         grid = [y_grid,x_grid]
         hmat_final = mat
         v_grid = 0.0
@@ -1189,9 +1118,7 @@ def fpg_load(fname):
         hmat_final = np.transpose(mat)
         grid = [v_grid,y_grid,x_grid] #nv,ny,nx
         
-        #print '############################'
-        #print '   nv, ny, nx: ',nv, ny, nx
-        #print '############################'
+
     return hmat_final,v_grid,y_grid,x_grid
 
 #-----------------------------------------------------------------------
@@ -1391,7 +1318,6 @@ def calc_norms(var,sample =0.0,forced_power=[],normal_class=conv_factors_custom)
             #print 'DOING E-field - min sample = ', sample
             norm_const = (lambda_mfp/(tau_ei**2))*(m_e/q_e)
             power = extract_power(norm_const*sample)
-            #print ' power extracted = ', power
             c_fmt = '%1.1f'
             mod = r'$ 10^{' +str(power)  + '}$'
             norm_const = norm_const*(10**-power)
@@ -1404,8 +1330,7 @@ def calc_norms(var,sample =0.0,forced_power=[],normal_class=conv_factors_custom)
             power = extract_power(sample)
             norm_const = 1.0*(10**-power)
             mod = r'$ 10^{' +str(power)  + '} $'
-            #c_fmt = '%1.0e'
-            #norm_const = m_e*(v_te**3)*n_04
+
             title = r'$' + var[0] + '_' + var[1] + r'$ [ ' + mod + '$q_0$ ]'# + r' [ $Jms^{-1}$ ]'
 
         elif var[0] =='j':
@@ -2176,15 +2101,11 @@ def plot_2D_general(ax,data,label,middle=None,colormap='jet',limits=None,xlabel=
 def plot_xhlines(ax,x_grid_im,lim=[],lineout_list=[20,40,50,73],cmap=cm.bone,linestyle='--',dashes=(4,2)):
     color_lineout = cmap(np.linspace(0.0,1,len(lineout_list)+1))
     color_lineout = color_lineout[:-1]
-    ##yl,yu = lim#ax.get_ylim()
-    #xl,xu = ax.get_ylim()
-    #print ' yl yu = ', yl, yu
-    ##print ' xl,xu = ', xl,xu
+
     if len(lineout_list) ==0:
         return
     for xl in range(len(lineout_list)):
         
-        #ax.axhline(x_grid_im[lineout_list[xl]],yl,yu,c=color_lineout[xl],linestyle=linestyle)
         ax.axhline(x_grid_im[lineout_list[xl]],
                     c=color_lineout[xl],
                     linestyle=linestyle,
@@ -2199,15 +2120,11 @@ def plot_xvlines(ax,x_grid_im,lim,lineout_list=[20,40,50,73],color_lineout=[],cm
             color_lineout = color_lineout[:-1]
         else:
             color_lineout = custom_cmap    
-    ##yl,yu = lim#ax.get_ylim()
-    #xl,xu = ax.get_ylim()
-    #print ' yl yu = ', yl, yu
-    ##print ' xl,xu = ', xl,xu
+
     if len(lineout_list) ==0:
         return
     for xl in range(len(lineout_list)):
         
-        #ax.axhline(x_grid_im[lineout_list[xl]],yl,yu,c=color_lineout[xl],linestyle=linestyle)
         ax.axvline(x_grid_im[lineout_list[xl]],
                     c=color_lineout[xl],
                     linewidth=1.2,
@@ -2274,7 +2191,7 @@ def plot_twodim(ax1,path,fprefix,var,time='00',cmap='RdBu_r'):
     
     if var in neg_list:
         norm = MidPointNorm(midpoint=0.0)
-        colormap=cmap#plt.cm.seismic
+        colormap=cmap
     elif min_data == max_data:
         norm = None
     else:
@@ -2363,10 +2280,6 @@ def plot_twodim_dict(ax1,dict,var,colormap='RdBu_r'):
     y_grid = y_grid*xstep_factor
     lims = [y_grid[0],y_grid[-1],x_grid[0],x_grid[-1]]
 
-    #print '========= check shapes======='
-    ##print ' SHAPE data: ', np.shape(data),'x_grid = ', np.shape(x_c_temp), ' y_grid = ', np.shape(y_grid)
-    #print 'lims = ', lims
-    #print ' colormap = ', colormap
     x_c_grid = x_c_temp[::-1]
     X,Y = np.meshgrid(y_grid,x_grid)    
     im = ax1.imshow(data*norm_const,
@@ -2767,4 +2680,3 @@ def get_wt_1D(path,time):
     
     
     return dict_wt['mat'] / Z2ni
-    
