@@ -87,12 +87,8 @@ def convert_name_to_label(name):
     return r'$q_{' + type + ',' + comp + '}$'
 
 
-
 def fpre(path):
     return path.split('/')[-1]
-
-
-
 
 
 def vc_to_vb(vc):
@@ -106,16 +102,12 @@ def vc_to_vb(vc):
     return vb
 
 
-
-
-
 def calc_dv(vc):
     '''
         dv = calc_dv(vc)
     '''
     vb = vc_to_vb(vc)
     return vb[1:] - vb[:-1]
-
 
 
 def extend_grid_xy_to_vxy(nv, ny, nx, grid_xy):
@@ -128,9 +120,6 @@ def extend_grid_xy_to_vxy(nv, ny, nx, grid_xy):
     return grid_vyx
 
 
-
-
-
 def extend_grid_v_to_vxy(nv, ny, nx, grid_v):
     '''
         
@@ -139,9 +128,6 @@ def extend_grid_v_to_vxy(nv, ny, nx, grid_v):
     for iv in range(nv):
         grid_vyx[iv, :, :] = grid_v[iv]
     return grid_vyx
-
-
-
 
 
 def extend_grid_y_to_vxy(nv, ny, nx, grid_y):
@@ -154,9 +140,6 @@ def extend_grid_y_to_vxy(nv, ny, nx, grid_y):
     return grid_vyx
 
 
-
-
-
 def extend_grid_x_to_vxy(nv, ny, nx, grid_x):
     '''
         
@@ -167,26 +150,10 @@ def extend_grid_x_to_vxy(nv, ny, nx, grid_x):
     return grid_vyx
 
 
-
-''' 
-OBSOLETE (therefore removed) - becuause this does not work with a dynamically varying Z -
-def get_omega(v_grid,ni,Bz):
-    nu_ei = (Z**2)*ni*(v_grid**-3)
-    omega = Bz*(nu_ei**-1)
-    return omega
-    
-'''
-
-
-
 def get_v2dv(v_grid):
-    #dv = v_grid[1:] - v_grid[:-1]
     dv = calc_dv(v_grid)
     v2dv = (v_grid**2) * dv
     return v2dv
-
-
-
 
 
 def get_v2dv_vyx(v_grid):
@@ -196,21 +163,14 @@ def get_v2dv_vyx(v_grid):
     return v2dv_vyx
 
 
-
-
-
 def maxw_dist(v, vte):
     f_om = ((np.pi * (vte**2))**(-1.5)) * np.exp(-(v / vte)**2)
     return f_om
 
 
-
 def maxw_dist_impact(v, ne, vte):
     f_om = ((np.pi * (vte**2))**(-1.5)) * np.exp(-(v / vte)**2)
     return f_om
-
-
-
 
 
 def get_v_mom_m(v_grid, omega, F0, m):
@@ -240,9 +200,8 @@ def get_delta(v_grid, omega, F0):
 
     mom_8_5 = get_v_mom_m_n(v_grid, omega, F0, 8, 5)
     delta = 1.0 + (omega**2) * (mom_8_5**2)
-    ##print 'DELTA = ', delta
-    return delta
 
+    return delta
 
 
 def get_fo_mom_int(m, rho_vyx, omega_vyx, fo, v_grid):
@@ -250,7 +209,7 @@ def get_fo_mom_int(m, rho_vyx, omega_vyx, fo, v_grid):
     # omega  = Bz/Z2ni = Bz*rho
 
     nv, ny, nx = np.shape(fo)
-    #print ' nv = %i ny = %i nx = %i' % (nv,ny,nx)
+
     v2dv = get_v2dv(v_grid)
     v2dv_vyx = extend_grid_v_to_vxy(nv, ny, nx, v2dv)
     v_grid_vyx = extend_grid_v_to_vxy(nv, ny, nx, v_grid)
@@ -261,15 +220,11 @@ def get_fo_mom_int(m, rho_vyx, omega_vyx, fo, v_grid):
     return mom
 
 
-
-
-
 def get_fo_mom_int2(m, rho_vyx, omega_vyx, fo, v_grid):
     prefactor = (4.0 * np.pi / 3.0) * rho_vyx    # rho = 1/Z2ni
 
     nv, ny, nx = np.shape(fo)
-    ##print ' int 2 = '
-    ##print ' nv = %i ny = %i nx = %i' % (nv,ny,nx)
+
     v2dv = get_v2dv(v_grid)
     ones_vyx = np.ones((nv, ny, nx))
     v2dv_vyx = extend_grid_v_to_vxy(nv, ny, nx, v2dv)
@@ -280,12 +235,9 @@ def get_fo_mom_int2(m, rho_vyx, omega_vyx, fo, v_grid):
     return mom
 
 
-
-
-
 def get_dfodv_int(n, rho_vyx, omega_vyx, fo, v_grid):
     # omega  = Bz/Z2ni = Bz*rho
-    #print ' ---- dfodv --- int -----'
+
     v_mom_nm3 = get_fo_mom_int(n - 3, rho_vyx, omega_vyx, fo, v_grid)
     v_mom2_np3 = get_fo_mom_int2(n + 3, rho_vyx, omega_vyx, fo, v_grid)
     mom_out = -1.0 * (n * v_mom_nm3 - 6.0 * (omega_vyx[0, :, :]**2) * v_mom2_np3
@@ -298,7 +250,6 @@ def get_I1_vec(rho_vyx, omega_vyx, gradfo_x, gradfo_y, v_grid):
         I1 =  get_I1_vec(rho,omega,gradfo)
     '''
 
-    #print ' ---- I1 -----'
     m = 5
     mom_x = get_fo_mom_int(m, rho_vyx, omega_vyx, gradfo_x, v_grid)
     mom_y = get_fo_mom_int(m, rho_vyx, omega_vyx, gradfo_y, v_grid)
@@ -310,7 +261,7 @@ def get_I2_scalar(rho_vyx, omega_vyx, fo, v_grid):
         I2 = get_I2_scalar(rho,omega,fo)
     '''
     # omega  = Bz/Z2ni = Bz*rho
-    #print ' I2_scalar'
+
     m = 6
     mom = get_dfodv_int(m, rho_vyx, omega_vyx, fo, v_grid)
     return mom
@@ -320,7 +271,6 @@ def get_I4_scalar(rho_vyx, omega_vyx, fo, v_grid):
     '''
         I4 = get_I4_scalar(rho,omega,fo)
     '''
-    #print ' I4_scalar'
 
     m = 9
     mom = rho_vyx[0, :, :] * get_dfodv_int(m, rho_vyx, omega_vyx, fo, v_grid)
@@ -331,7 +281,7 @@ def get_I3_vec(rho_vyx, omega_vyx, gradfo_x, gradfo_y, v_grid):
     '''
         I3 =  get_I3_vec(rho,omega,gradfo)
     '''
-    #print ' ---- I3 -----'
+
     m = 8
     mom_x = rho_vyx[0, :, :] * get_fo_mom_int(m, rho_vyx, omega_vyx, gradfo_x, v_grid)
     mom_y = rho_vyx[0, :, :] * get_fo_mom_int(m, rho_vyx, omega_vyx, gradfo_y, v_grid)
@@ -343,7 +293,6 @@ def get_K1_vec(rho_vyx, omega_vyx, gradfo_x, gradfo_y, v_grid):
         I1 =  get_I1_vec(rho,omega,gradfo)
     '''
 
-    #print ' ---- K1 -----'
     m = 7
     mom_x = 0.5 * get_fo_mom_int(m, rho_vyx, omega_vyx, gradfo_x, v_grid)
     mom_y = 0.5 * get_fo_mom_int(m, rho_vyx, omega_vyx, gradfo_y, v_grid)
@@ -355,7 +304,6 @@ def get_K2_scalar(rho_vyx, omega_vyx, fo, v_grid):
         I2 = get_I2_scalar(rho,omega,fo)
     '''
     # omega  = Bz/Z2ni = Bz*rho
-    #print ' K2_scalar'
     m = 8
     mom = 0.5 * get_dfodv_int(m, rho_vyx, omega_vyx, fo, v_grid)
     return mom
@@ -366,7 +314,6 @@ def get_K3_vec(rho_vyx, omega_vyx, gradfo_x, gradfo_y, v_grid):
         I1 =  get_I1_vec(rho,omega,gradfo)
     '''
 
-    #print ' ---- K3 -----'
     m = 10
     mom_x = 0.5 * rho_vyx[0, :, :] * get_fo_mom_int(m, rho_vyx, omega_vyx, gradfo_x, v_grid)
     mom_y = 0.5 * rho_vyx[0, :, :] * get_fo_mom_int(m, rho_vyx, omega_vyx, gradfo_y, v_grid)
@@ -378,7 +325,7 @@ def get_K4_scalar(rho_vyx, omega_vyx, fo, v_grid):
         I2 = get_I2_scalar(rho,omega,fo)
     '''
     # omega  = Bz/Z2ni = Bz*rho
-    #print ' K2_scalar'
+
     m = 11
     mom = 0.5 * rho_vyx[0, :, :] * get_dfodv_int(m, rho_vyx, omega_vyx, fo, v_grid)
     return mom
@@ -392,10 +339,10 @@ def get_hallfield(grid, rho_vyx, Bz_vyx, jx_vyx, jy_vyx, fo):
     v_grid = grid['v_grid']
     omega_vyx = Bz_vyx * rho_vyx
     gradfo_x, gradfo_y = cf.get_grad_3d_varZ(grid, fo)
-    ##print ' np.shape(grad_fo) = ',np.shape(gradfo_x),np.shape(gradfo_y)
+
     I1_x, I1_y = get_I1_vec(rho_vyx, omega_vyx, gradfo_x, gradfo_y, v_grid)
     I3_x, I3_y = get_I3_vec(rho_vyx, omega_vyx, gradfo_x, gradfo_y, v_grid)
-    ##print ' got I1_X = ',I1_x, I1_y,I3_x,I3_y
+
     I2 = get_I2_scalar(rho_vyx, omega_vyx, fo, v_grid)
     I4 = get_I4_scalar(rho_vyx, omega_vyx, fo, v_grid)
 
@@ -425,10 +372,10 @@ def get_v_N(grid, rho_vyx, Bz_vyx, fo):
 
     omega_vyx = Bz_vyx * rho_vyx
     gradfo_x, gradfo_y = cf.get_grad_3d_varZ(grid, fo)
-    ##print ' np.shape(grad_fo) = ',np.shape(gradfo_x),np.shape(gradfo_y)
+
     I1_x, I1_y = get_I1_vec(rho_vyx, omega_vyx, gradfo_x, gradfo_y, v_grid)
     I3_x, I3_y = get_I3_vec(rho_vyx, omega_vyx, gradfo_x, gradfo_y, v_grid)
-    ##print ' got I1_X = ',I1_x, I1_y,I3_x,I3_y
+
     I2 = get_I2_scalar(rho_vyx, omega_vyx, fo, v_grid)
     I4 = get_I4_scalar(rho_vyx, omega_vyx, fo, v_grid)
 
@@ -457,7 +404,6 @@ def get_thermoelectricEfield_kinetic(grid, rho_vyx, Bz_vyx, fo):
     return E_x, E_y
 
 
-
 def get_pressureEfield_kinetic(grid, rho_vyx, Bz_vyx, fo):
     '''
         ----- should get the kinetic biermann term ----->
@@ -481,7 +427,6 @@ def get_pressureEfield_kinetic(grid, rho_vyx, Bz_vyx, fo):
     BierE_y = (1.0 / Eta) * (I1_y + (omega_yx**2) * (I4 / I2) * I3_y)
     #---- now take the curl?
     return BierE_x, BierE_y
-
 
 
 def get_pressureEfield_classic(grid, rho_vyx, Bz_vyx, ne, Te_vyx):
@@ -518,7 +463,6 @@ def get_pressureEfield_classic(grid, rho_vyx, Bz_vyx, ne, Te_vyx):
     BierE_x = (1.0 / Eta) * (I1_x + (omega_yx**2) * (I4 / I2) * I3_x)
     BierE_y = (1.0 / Eta) * (I1_y + (omega_yx**2) * (I4 / I2) * I3_y)
     return BierE_x, BierE_y
-
 
 
 def get_Biermann(grid, rho_vyx, Bz_vyx, fo):
@@ -559,30 +503,20 @@ def get_Biermann(grid, rho_vyx, Bz_vyx, fo):
     BierE_y = (1.0 / Eta) * (I1_y + (omega_yx**2) * (I4 / I2) * I3_y)
     #---- now take the curl?
     # --- get_grad assumes [x,y] indices
-    #print ' np.shape(BierE_x) = ', np.shape(BierE_x)
 
     x_grid_yx, xY = np.meshgrid(grid['x_grid'], np.ones(len(grid['y_grid'])))
     yY, y_grid_yx = np.meshgrid(np.ones(len(grid['x_grid'])), grid['y_grid'])
 
-    #print '\n\n x_grid = ', x_grid_yx, '\n xY = ',xY, np.shape(x_grid_yx)
-
-    #print ' y_grid = ', y_grid_yx, '\n yY = ', yY, np.shape(y_grid_yx)
-
     #dyBierE_x, dxBierE_x = cf.get_grad(grid['y_grid'],grid['x_grid'],BierE_x)
     #dyBierE_y, dxBierE_y = cf.get_grad(grid['y_grid'],grid['x_grid'],BierE_y)
-    #print ' np.shape(BierE_x) = ',np.shape(I1_x), np.shape(omega_yx), np.shape(grid['y_grid']), np.shape(grid['x_grid']), np.shape(BierE_x),np.shape(BierE_y)
 
     dxBierE_y = (BierE_y[:, 2:] - BierE_y[:, :-2]) / (x_grid_yx[:, 2:] - x_grid_yx[:, :-2])
     dyBierE_x = (BierE_x[2:, :] - BierE_x[:-2, :]) / (y_grid_yx[2:, :] - y_grid_yx[:-2, :])
 
-    #print ' np.shape(BierE_x) = ', np.shape(BierE_x), np.shape(I1_x), np.shape(omega_yx), np.shape(grid['y_grid']), np.shape(grid['x_grid']), np.shape(dyBierE_x)
-
-    #print ' np.shape(dxBierE_y) = ', np.shape(dxBierE_y), np.shape(dyBierE_x)
     kinetic_biermann_z = -1.0 * (dxBierE_y[1:-1, :] - dyBierE_x[:, 1:-1])
-    #print ' shape kinetic_biermann_z = ', np.shape(kinetic_biermann_z)
+
     #sys.exit()
     return kinetic_biermann_z
-
 
 
 def get_Biermann_classic(grid, rho_vyx, Bz_vyx, ne, Te_vyx):
@@ -641,8 +575,6 @@ def get_Biermann_classic(grid, rho_vyx, Bz_vyx, ne, Te_vyx):
     return kinetic_biermann_z
 
 
-
-
 def get_Biermann_gradncrossgradT(grid, ne, Te):
     '''
         ----- should get the kinetic biermann term ----->
@@ -660,17 +592,11 @@ def get_Biermann_gradncrossgradT(grid, ne, Te):
     return biermann
 
 
-
-
-
 def data_var(data, var):
     dict = {}
     dict['data'] = data
     dict['name'] = var
     return dict
-
-
-
 
 
 def get_qSH_kinetic(grid, rho_vyx, Bz_vyx, jx, jy, fo):
@@ -736,9 +662,6 @@ def get_qSH_kinetic(grid, rho_vyx, Bz_vyx, jx, jy, fo):
     return dict
 
 
-
-
-
 def get_alpha_perp_kinetic(grid, rho_vyx, Bz_vyx, fo):
     '''
         alpha_perp_kin = get_alpha_perp_kinetic(grid,rho_vyx,Bz_vyx,fo)
@@ -746,10 +669,10 @@ def get_alpha_perp_kinetic(grid, rho_vyx, Bz_vyx, fo):
     v_grid = grid['v_grid']
     omega_vyx = Bz_vyx * rho_vyx
     gradfo_x, gradfo_y = cf.get_grad_3d_varZ(grid, fo)
-    ##print ' np.shape(grad_fo) = ',np.shape(gradfo_x),np.shape(gradfo_y)
+
     I1_x, I1_y = get_I1_vec(rho_vyx, omega_vyx, gradfo_x, gradfo_y, v_grid)
     I3_x, I3_y = get_I3_vec(rho_vyx, omega_vyx, gradfo_x, gradfo_y, v_grid)
-    ##print ' got I1_X = ',I1_x, I1_y,I3_x,I3_y
+
     I2 = get_I2_scalar(rho_vyx, omega_vyx, fo, v_grid)
     I4 = get_I4_scalar(rho_vyx, omega_vyx, fo, v_grid)
 
@@ -759,9 +682,6 @@ def get_alpha_perp_kinetic(grid, rho_vyx, Bz_vyx, fo):
     alpha_perp_kin = -(1.0 / Eta)
 
     return alpha_perp_kin
-
-
-
 
 
 def get_alpha_perp(w, rho, ne, Te, F0, v_grid):
@@ -778,11 +698,10 @@ def get_alpha_perp(w, rho, ne, Te, F0, v_grid):
 
     v_mom_5 = get_v_mom_m(v_grid, omega, F0, 5)
     delta = get_delta(v_grid, omega, F0)
-    #print 'shapes delta vmom5 ; ',np.shape(delta), np.shape(v_mom_5)
+
     alpha = (1.5) * ((vte * vte) / (ne * rZZni)) * ((v_mom_5 * delta)**-1)
 
     return alpha
-
 
 
 def get_alpha_wedge(w, rho, ne, Te, F0, v_grid):
@@ -802,7 +721,6 @@ def get_alpha_wedge(w, rho, ne, Te, F0, v_grid):
     return alpha
 
 
-
 def get_beta_perp(w, rho, ne, Te, F0, v_grid):
     '''
         beta_perp = get_beta_perp(w,rho,ne,Te,F0,v_grid)
@@ -817,7 +735,6 @@ def get_beta_perp(w, rho, ne, Te, F0, v_grid):
 
     beta = (v_mom_7_5 + ((omega * v_mom_8_5)**2) * v_mom_10_8) / delta - 2.5
     return beta
-
 
 
 def get_beta_wedge(w, rho, ne, Te, F0, v_grid):
@@ -836,7 +753,6 @@ def get_beta_wedge(w, rho, ne, Te, F0, v_grid):
     delta = get_delta(v_grid, omega, F0)
     beta = (1.0 / (vte * vte)) * omega * v_mom_8_5 * (v_mom_10_8 - v_mom_7_5) / delta
     return beta
-
 
 
 def get_kappa_perp(w, rho, ne, Te, F0, v_grid):
@@ -862,7 +778,6 @@ def get_kappa_perp(w, rho, ne, Te, F0, v_grid):
                          ((omega**2) * v_mom_8_5 * v_mom_10_5 *
                           (v_mom_10_8 - v_mom_7_5) * v_mom_5 / delta))
     return kappa
-
 
 
 def get_kappa_wedge(w, rho, ne, Te, F0, v_grid):
@@ -891,19 +806,12 @@ def get_kappa_wedge(w, rho, ne, Te, F0, v_grid):
     return kappa
 
 
-
-
-
 def get_v_N_classical(v_grid, Z2ni, ne, Te, w, dxT, dyT, jx=0.0, jy=0.0):
 
     #Te = 0.5
     vte = (2.0 * Te)**0.5
     rho = Z2ni**-1
 
-    ##print ' ######################################'
-    ##print 'inputs : vte: %3.4f \t vmax: %3.4f \t \n \t w = %3.4f \n\t ne =  %3.4f \t rho %3.4f ' % (vte,vmax, w, ne ,rho)
-    ##print ' ######################################'
-    ##print ' v_grid ===== ', v_grid
     # ------
 
     F0 = maxw_dist(v_grid, vte)
@@ -915,9 +823,6 @@ def get_v_N_classical(v_grid, Z2ni, ne, Te, w, dxT, dyT, jx=0.0, jy=0.0):
     v_N_y = -beta_wedge * dyT / w
 
     return v_N_x, v_N_y
-
-
-
 
 
 def get_vN_from_path(path, fprefix, time):
@@ -984,11 +889,10 @@ def get_vN_from_path(path, fprefix, time):
 
             v_nx_hf[iy, ix] = qx[iy, ix] / (2.5 * ne[iy, ix] * Te[iy, ix])
             v_ny_hf[iy, ix] = qy[iy, ix] / (2.5 * ne[iy, ix] * Te[iy, ix])
-    ##print 'shapes = ',np.shape(Bz),np.shape(v_nx)
+
     v_nx = np.where(Bz == 0.0, 0.0, v_nx)
     v_ny = np.where(Bz == 0.0, 0.0, v_ny)
     return v_nx, v_ny, v_nx_hf, v_ny_hf
-
 
 
 def get_q_SH(ne, Te, w, dxT, dyT):
@@ -999,14 +903,10 @@ def get_q_SH(ne, Te, w, dxT, dyT):
     #ne = 1.0
     rho = ne
 
-    #print ' ######################################'
-    #print 'inputs : vte: %3.4f \t vmax: %3.4f \t \n \t w = %3.4f \n\t ne =  %3.4f \t rho %3.4f ' % (vte,vmax, w, ne ,rho)
-    #print ' ######################################'
-
     # ------
     F0 = maxw_dist(v_grid, vte)
     kappa_perp_c = get_kappa_perp(w, rho, ne, Te, F0, v_grid)
-    ##print 'kp'
+
     kappa_wedge_c = get_kappa_wedge(w, rho, ne, Te, F0, v_grid)
 
     kappa_perp = kappa_perp_c * (Te**2.5)
@@ -1035,8 +935,6 @@ def get_gradT(x_grid,y_grid,T_data):
 '''
 
 
-
-
 def vmom_fo(m, v_grid, fo):
     '''
      mom = vmom_fo(m,v_grid,fo)
@@ -1051,14 +949,10 @@ def vmom_fo(m, v_grid, fo):
     return mom
 
 
-
-
-
 def convert_var_to_str(var):
     for name in globals():
         if eval(name) == var:
             return name
-
 
 
 '''
@@ -1077,7 +971,7 @@ def plot_2D(ax,data,label,middle=None,colormap='jet',#limits=None,xlabel=None,yl
             plt.colorbar(im,ax=ax,aspect='auto',norm=norm,label=clabel)
         except ValueError:
             norm=None
-            #print 'setting norm to None;'
+            
             im = ax.imshow(data,aspect='auto',cmap=colormap,norm=norm,extent=#limits)
             plt.colorbar(im,ax=ax,aspect='auto',norm=norm,label=clabel)
             
@@ -1093,9 +987,8 @@ def plot_2D(ax,data,label,middle=None,colormap='jet',#limits=None,xlabel=None,yl
     ax.set_xlabel(xlabel)
     ax.set_ylabel(ylabel)
         
-    #print ' plotted ---- ', label
+    
 '''
-
 
 
 def vmom_f1(m, v_grid, f1x_c, f1y_c):
@@ -1113,9 +1006,6 @@ def vmom_f1(m, v_grid, f1x_c, f1y_c):
     vmomx = np.sum(momx, axis=0)
     vmomy = np.sum(momy, axis=0)
     return vmomx, vmomy
-
-
-
 
 
 def get_kinetic_heatflow_b(path, time):
@@ -1167,11 +1057,6 @@ def get_kinetic_heatflow_b(path, time):
     return dict
 
 
-
-
-
-
-
 def get_avgx(mat, ax=1):
     '''
         ax  = [n,..,2,1,0]
@@ -1181,7 +1066,6 @@ def get_avgx(mat, ax=1):
 
     avg = np.average(mat, axis=ax)
     return avg
-
 
 
 def get_Nernst_ratio(path, time):
@@ -1236,7 +1120,6 @@ def get_Nernst_ratio(path, time):
     #vmin,vmax = -1.0,1.0
     data_x = np.where(np.abs(data_x) > vmax, np.sign(data_x) * vmax, data_x)
     return data_x, data_y
-
 
 
 def get_Nernst_abs(path, time):
@@ -1299,7 +1182,6 @@ def get_Nernst_abs(path, time):
     return v_nx_k, v_ny_k, v_nx_c, v_ny_c
 
 
-
 def get_ratio_lim(q_yc, q_yk, vmax=1.5, thresh=1e-2):
     data_y = q_yk / q_yc
     #data_y = np.where(q_yc==0.0,1.0,data_y)
@@ -1310,9 +1192,6 @@ def get_ratio_lim(q_yc, q_yk, vmax=1.5, thresh=1e-2):
     data_y = np.where(np.abs(data_y) > vmax, np.sign(data_y) * vmax, data_y)
 
     return data_y
-
-
-
 
 
 def get_q_ratio(path, time):
@@ -1424,9 +1303,6 @@ def get_q_ratio(path, time):
     return dict_ratio
 
 
-
-
-
 def get_q_abs(path, time):
     '''
     dict_ratio = get_q_ratio(path,time)
@@ -1533,7 +1409,6 @@ def get_q_abs(path, time):
     return dict_c, dict_k
 
 
-
 def get_q_abs_c(path, time):
     '''
     dict_ratio = get_q_ratio(path,time)
@@ -1593,7 +1468,6 @@ def get_q_abs_c(path, time):
         'data'], dict['q_SH_y']['data'], dict['q_RL_x']['data'], dict['q_RL_y']['data'], dict[
             'q_TE_x']['data'], dict['q_TE_y']['data'], dict['q_E_x']['data'], dict['q_E_y']['data']
 
-    #--------------------------------------------------------------------------
     fo_m = get_fo_maxw_3D(dict_fo['v_grid'], ne_vyx, Te_vyx)
     dict_c_in = get_qSH_kinetic(grid, rho_vyx, Bz_vyx, jx, jy, fo_m)
     name_list = ['q_SH_x', 'q_SH_y', 'q_RL_x', 'q_RL_y', 'q_TE_x', 'q_TE_y', 'q_E_x', 'q_E_y']
@@ -1661,11 +1535,6 @@ def get_q_abs_c(path, time):
     return dict_c, dict_k
 
 
-
-
-
-
-
 def get_kinetic_and_classicB(path, fprefix, time, xlim=-1):
     '''
        classic_biermann,kinetic_biermann = get_kinetic_and_classicB(path,fprefix,time)
@@ -1728,15 +1597,11 @@ def get_kinetic_and_classicB(path, fprefix, time, xlim=-1):
 
     classic_biermann = get_Biermann_classic(grid, rho_vyx, Bz_vyx, ne_vyx, Te_vyx)
     kinetic_biermann = get_Biermann(grid, rho_vyx, Bz_vyx, fo)
-    #print(' bier out = ', np.shape(classic_biermann),np.shape(kinetic_biermann), classic_biermann, kinetic_biermann)
 
     classic_biermann = np.transpose(classic_biermann)
     kinetic_biermann = np.transpose(kinetic_biermann)
 
     return classic_biermann, kinetic_biermann
-
-
-
 
 
 def get_kinetic_and_classic_E_pressure(path, fprefix, time, xlim=73):
@@ -1955,9 +1820,7 @@ def get_alpha_perp_path(path, time):
     #---------------------------------------
     alpha_perp_classical = np.zeros((np.shape(T_data)))
     #------
-    #print ' shapes = ', np.shape(T_data),np.shape(n_data), np.shape(Bz_data), np.shape(alpha_perp_kinetic)
-    #for ix in range(1,len(T_data[0,:])-1):
-    #   for iy in range(1,len(T_data[:,0])-1):
+
     for ix in range(nx):
         for iy in range(ny):
             Z2ni_loc = Z2ni[iy, ix]

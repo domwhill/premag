@@ -222,9 +222,6 @@ def newfig_generic_2yscale(width, scale_width=1.0, scale_ratio=1.0):
     return fig
 
 
-
-
-
 def set_ax(ax, lim):
     ax.set_xlim(lim[0], lim[1])
     ax.set_ylim(lim[2], lim[3])
@@ -470,7 +467,6 @@ def fmt_axticker(ax, axis_type='y', fmt='%i'):
     return
 
 
-
 def set_ylim_max(ax_in, grid, data, y_mult=[1.0, 1.0], xlim=[-5.0, 20.0]):
     xmin, xmax = xlim[0], xlim[1]
     ymin = np.min(data[(grid < xmax) * (grid >= xmin)])
@@ -484,7 +480,6 @@ def set_ylim_max(ax_in, grid, data, y_mult=[1.0, 1.0], xlim=[-5.0, 20.0]):
     print('ymin = %4.4e ymax = %4.4e ' % (ymin, ymax))
 
     return
-
 
 
 def get_ylim_max(grid, data, y_mult=[1.0, 1.0], xlim=[-5.0, 20.0]):

@@ -96,7 +96,6 @@ else:
     leg_title = r'\text{$time$ [t$_{col}$ ]}'
 
 
-
 class MidPointNorm(Normalize):
 
     def __init__(self, midpoint=0, vmin=None, vmax=None, clip=False):
@@ -141,8 +140,6 @@ class MidPointNorm(Normalize):
             result = result[0]
         return result
 
-
-
     def inverse(self, value):
         if not self.scaled():
             raise ValueError("Not invertible until scaled")
@@ -163,10 +160,8 @@ class MidPointNorm(Normalize):
                 return val * abs(vmax - midpoint) + midpoint
 
 
-
 class MyDict(dict):
     pass
-
 
 
 def construct_fname(path, fprefix, var, time):
@@ -182,7 +177,6 @@ def construct_fname(path, fprefix, var, time):
     return fname
 
 
-
 def get_startline(fname):
     '''
         get the line where the data starts
@@ -191,7 +185,7 @@ def get_startline(fname):
     f_list = f.readlines()
     for i in range(len(f_list)):
         if re.match(r'\n', f_list[i]):
-            #print 'found match on line: ', i
+
             out_line = i
         else:
             out_line = 10
@@ -204,7 +198,6 @@ def list_to_float(input):
     arr = np.zeros((len(list)), dtype=float)
     arr[:] = list[:]
     return arr
-
 
 
 def fpg_get_info(fname):
@@ -254,11 +247,9 @@ def fpg_get_info(fname):
     return dict
 
 
-
 def get_index(ny, nx):
     index = ny + 2 + 1
     return index
-
 
 
 def get_time(fname):
@@ -289,7 +280,7 @@ def calc_norms(var, sample=0.0):
     '''
         norm_const, ylab = calc_norms(var)
     '''
-    #print var, np.shape(var)
+
     c_fmt = '%3.2f'
 
     if SI_on:
@@ -359,7 +350,6 @@ def calc_norms(var, sample=0.0):
     return norm_const, title, c_fmt
 
 
-
 if __name__ == "__main__":
     basedir = "$BASEDIR"
     rundir = "$RUN"
@@ -393,7 +383,6 @@ if __name__ == "__main__":
     #t_list = ['00', '01', '02']
     t_list = []
     tc_list = []
-    #print var_list
 
     list_files = os.listdir(path)
     for fname in list_files:

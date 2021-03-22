@@ -102,7 +102,6 @@ class AnyObjectHandler(HandlerBase):
         return [l1, l2]
 
 
-
 def repack(path, time):
     '''
         dict_c,dict_k = repack(path,time)
@@ -149,7 +148,7 @@ x_grid = dict_0T_k['x_grid']
 #q_mod.get_ratio_lim(dict_qc['SH x'][:,0],dict_qk['SH x'][:,iy],vmax=100.0)
 #<--------------- 0T loading---
 #----> plotting
-#print( ' shape ratio = ', np.shape(rat_50T),np.shape(dict_qc['SH x'][:,0]),np.shape(dict_qk['SH x'][:,iy]))
+
 fig = plt.figure()
 ax = fig.add_subplot(111)
 ax2 = ax.twinx()

@@ -8,15 +8,10 @@ k_b = 1.38e-23
 epsilon0 = 8.854e-12
 
 
-
-
 def extract_power(x):
     a, b = '{:.2e}'.format(x).split('e')
     b = int(b)
     return b
-
-
-
 
 
 def impact_inputs(ne, Te, Z, Bz, Ar):
@@ -107,7 +102,6 @@ def impact_inputs(ne, Te, Z, Bz, Ar):
     return dict
 
 
-
 def calc_norms(var, normal_dict, sample=0.0, forced_power=[]):
     '''
         norm_const, ylab = calc_norms(var)
@@ -147,7 +141,6 @@ def calc_norms(var, normal_dict, sample=0.0, forced_power=[]):
 
         power = extract_power(sample * norm_const)
         norm_const *= (10**-power)
-        ##print ' sample = ', sample, 'power = ', power
 
         var_name = '$B_z$'
         if power == 0:
@@ -180,10 +173,10 @@ def calc_norms(var, normal_dict, sample=0.0, forced_power=[]):
         c_fmt = '%1.1f'
 
     elif var[0] == 'E':
-        #print 'DOING E-field - min sample = ', sample
+
         norm_const = (lambda_mfp / (tau_ei**2)) * (m_e / q_e)
         power = extract_power(norm_const * sample)
-        #print ' power extracted = ', power
+
         c_fmt = '%1.1f'
         mod = r'$ 10^{' + str(power) + '}$'
         norm_const = norm_const * (10**-power)

@@ -59,7 +59,6 @@ path_0T = path_pre + 'r5_v40_Z_FEOS_trackncrit_1D_0T_2'
 path_50T = path_pre + 'r5_v40_Z_FEOS_trackncrit_50T_FF'
 path_400T = path_pre + 'r5_v40_Z_FEOS_MODNE_1D_400T_hires'
 
-#print(' var = ', var, ylab,var_list.index(var))
 save_path = '/Users/' + userid + '/Dropbox/York/UPDATE/PICS_POP/'
 save_name = save_path + 'vN_abs_1d.png'
 

@@ -83,7 +83,6 @@ else:
 ymin, ymax = y_grid[0], y_grid[-1]
 
 
-
 def custom_im(ax, xgrid, data, lab):
     cmap = kwargs.pop('cmap', cmap)
     bool_t = (xgrid >= xmin) * (xgrid < xmax)
@@ -107,8 +106,6 @@ def custom_contour(ax, xgrid, data, lab, **kwargs):
         extent=[ymin, ymax, xmin, xmax],
     )
     #ax.set_ylim(xmax,xmin)
-
-
 
 
 #<<<--- transport inputs

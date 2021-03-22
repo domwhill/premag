@@ -63,7 +63,6 @@ t_list, tc_list = cf.get_t_list(path, var='Te')
 time = t_list[-1]
 
 
-
 def custom_im(fig, ax, xgrid, ygrid, data, lab, **kwargs):
     vmin = kwargs.pop('vmin', None)
     vmax = kwargs.pop('vmax', None)
@@ -87,11 +86,8 @@ def custom_im(fig, ax, xgrid, ygrid, data, lab, **kwargs):
     return im
 
 
-
 def fpre(path):
     return path.split('/')[-1]
-
-
 
 
 log_on = True

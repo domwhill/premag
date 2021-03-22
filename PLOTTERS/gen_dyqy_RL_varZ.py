@@ -103,9 +103,6 @@ def repack_2D(path, time):
     return dict_out_c, dict_out_k
 
 
-
-
-
 def load_qdata(path, time='10'):
     #-------- LOAD q data ----------------------------------------------
     kohnew = {}
@@ -183,7 +180,6 @@ def extract_ohms(path, time, x_limit=73):
     return dict
 
 
-
 def fpre(path):
     return path.split('/')[-1]
 
@@ -242,7 +238,7 @@ def plot_dyqy_RL(fig, ax, cax, path, time):
 
     #levels= [-0.001]
     for ll in range(len(levels)):
-        #print 'levels ll = ', ll, levels[ll]
+
         levels[ll] *= divq_factor
 
     #
@@ -277,7 +273,7 @@ def plot_dyqy_RL(fig, ax, cax, path, time):
     #                    label=claby)
 
     #c2.ax.plot([0,1],[0,0],'k')
-    #print ' dir = ', dir(c2.ax)
+
     return imy
 
 
@@ -341,7 +337,7 @@ def plot_dyqy_RL_c(fig, ax, cax, path, time):
 
     #levels= [-0.001]
     for ll in range(len(levels)):
-        #print 'levels ll = ', ll, levels[ll]
+
         levels[ll] *= divq_factor
 
     #
@@ -429,7 +425,7 @@ def plot_dBdt_bier(fig, ax, cax, path, time):
 
     #levels= [-0.001]
     for ll in range(len(levels)):
-        #print 'levels ll = ', ll, levels[ll]
+
         levels[ll] *= divq_factor
 
     #
@@ -464,7 +460,7 @@ def plot_dBdt_bier(fig, ax, cax, path, time):
     #                    label=claby)
 
     #c2.ax.plot([0,1],[0,0],'k')
-    #print ' dir = ', dir(c2.ax)
+
     return imy
 
 
@@ -606,7 +602,6 @@ def plot_ylineout_qRLy_custom(fig,
     axy.grid(color='0.5', linestyle='-')
 
     return p2
-
 
 
 if __name__ == "__main__":

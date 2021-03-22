@@ -55,7 +55,6 @@ def fpre(pathy):
     return pathy.split('/')[-1]
 
 
-
 def plot_Te_xlineout(fig, ax, path_list, var_amp='Te', time='15', vert_lines='False', dict_list=[]):
     '''
         plot_Te_xlineout(fig,ax,path_list,var_amp='Te')
@@ -86,7 +85,7 @@ def plot_Te_xlineout(fig, ax, path_list, var_amp='Te', time='15', vert_lines='Fa
     style_list = ['-', '--', ':', '-', '--', ':']
     mstyle_list = [None, None, None, 'x', '^', 'o']
     for pp in range(len(path_list)):
-        #print ' path = ', path_list[pp]
+
         var = var_amp
 
         fname = cfoil.construct_fname(path_list[pp], fpre(path_list[pp]), var, time)
@@ -170,6 +169,7 @@ def plot_Te_xlineout(fig, ax, path_list, var_amp='Te', time='15', vert_lines='Fa
 
 
 #plot_custom_xlineout_amp
+
 
 def plot_custom_xlineout_amp(fig,
                              ax,
@@ -269,9 +269,6 @@ def plot_custom_xlineout_amp(fig,
     return p1
 
 
-
-
-
 def plot_custom_xlineout_amp_tevol(fig,
                                    ax,
                                    path_list,
@@ -369,7 +366,6 @@ def plot_custom_xlineout_amp_tevol(fig,
     return p_list
 
 
-
 def plot_custom_xlineout(fig,
                          ax,
                          path_list,
@@ -402,7 +398,7 @@ def plot_custom_xlineout(fig,
     style_list = ['-', '--', ':', '-', '--', ':']
     mstyle_list = [None, None, None, 'x', '^', 'o']
     for pp in range(len(path_list)):
-        #print ' path = ', path_list[pp]
+
         var = var_amp
 
         fname = cfoil.construct_fname(path_list[pp], fpre(path_list[pp]), var, time)
@@ -464,9 +460,6 @@ def plot_custom_xlineout(fig,
     return p1
 
 
-
-
-
 def plot_Te_ylineout(fig, axy, path_list, var_amp='Te', time='15', dict_list=[]):
     '''
         Plots amplitude as a function of 
@@ -497,7 +490,7 @@ def plot_Te_ylineout(fig, axy, path_list, var_amp='Te', time='15', dict_list=[])
     mstyle_list = [None, None, None, 'x', '^', 'o']
     save_name = '2D1_' + var_amp + 'amp'
     for pp in range(len(path_list)):
-        #print ' path = ', path_list[pp]
+
         var = var_amp
 
         fname = cfoil.construct_fname(path_list[pp], fpre(path_list[pp]), var, time)
@@ -591,7 +584,6 @@ def plot_Te_ylineout(fig, axy, path_list, var_amp='Te', time='15', dict_list=[])
     axy.grid(color='0.5', linestyle='-')
 
     return p2
-
 
 
 def plot_ylineout_custom(fig,
@@ -696,10 +688,8 @@ def plot_ylineout_custom(fig,
     return p2
 
 
-
 def fpre(path_in):
     return path_in.split('/')[-1]
-
 
 
 if __name__ == "__main__":

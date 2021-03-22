@@ -98,15 +98,11 @@ def get_startline(fname):
     return out_line
 
 
-
 def list_to_float(input):
     list = input.split()
     arr = np.zeros((len(list)), dtype=float)
     arr[:] = list[:]
     return arr
-
-
-
 
 
 def construct_fname(path, fprefix, var, time):
@@ -120,7 +116,6 @@ def construct_fname(path, fprefix, var, time):
     #time = '00'
     fname = path + '/' + fprefix + '_' + var + '_' + time + suffix
     return fname
-
 
 
 def load_dict(path, fprefix, var, time):
@@ -140,7 +135,6 @@ def load_dict(path, fprefix, var, time):
     mat = np.loadtxt(fname, skiprows=out_l)
     dict = {}
 
-    ##print mat_info
     time = float(mat_info[1])
 
     ndims = int(mat_info[2])
@@ -151,12 +145,9 @@ def load_dict(path, fprefix, var, time):
 
         nx = int(mat_info[5])
         x_grid = list_to_float(mat_info[6])
-        ##print '========'
-        ##print 'nx: ',nx,'\nx_grid: \n',x_grid
-        ##print 'np.shape: xgrid: ', np.shape(x_grid)
-        ##print '============'
+
         mat = np.loadtxt(fname, skiprows=out_l)
-        ##print np.shape(mat)
+
         grid = [y_grid, x_grid]
         hmat_final = mat
         v_grid = 0.0
@@ -178,9 +169,7 @@ def load_dict(path, fprefix, var, time):
         mat = mat.reshape(dim_reverse)
         hmat_final = np.transpose(mat)
         grid = [v_grid, y_grid, x_grid]    #nv,ny,nx
-        #print '############################'
-        #print '   nv, ny, nx: ',nv, ny, nx
-        #print '############################'
+
         dict['v_grid'] = v_grid
         dict['nv'] = nv
     dict['time'] = time
@@ -191,9 +180,6 @@ def load_dict(path, fprefix, var, time):
     dict['mat'] = hmat_final
 
     return dict
-
-
-
 
 
 def trim_array(array, nx, ny):
@@ -254,8 +240,6 @@ def trim_array(array, nx, ny):
         return out_array
 
 
-
-
 def get_grad(x_grid, y_grid, T_data):
     '''
         ONLY FOR CC cells - centred differencing
@@ -278,11 +262,6 @@ def get_grad(x_grid, y_grid, T_data):
         for ii in range(len(dy)):
             dxT[:, ii] = (T_data[2:, ii] - T_data[:-2, ii]) / dx
         return dxT, dyT
-
-
-
-
-
 
 
 def trim_array_1D(array, nx, ny):
@@ -421,9 +400,7 @@ def load_data_all(path, fprefix, time):
 
     dict_fo = load_dict(path, fprefix, 'fo', time)
     fo = dict_fo['mat']
-    #print '-------------------------------------------'
-    #print ' \n\ndict ----- time ===== ', dict_fo['time']
-    #print '-------------------------------------------'
+
     grid = dict_fo
     nv, ny, nx = np.shape(fo)
     print('--- loading grid ---', nv, ny, nx)

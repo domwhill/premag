@@ -37,7 +37,7 @@ def set_vars():
     #x0 = 0.0
     #xmin = -0.000866666666667 #1e-5#-(15.0e-6)*100.0
     #xmax = (15e-6)*100.0 # 15 mu m
-    #print 'dict: ', dict.keys()
+
     return dict
 
 
@@ -135,8 +135,6 @@ def load_EHcoeffs():
         f_data = np.zeros((xlen - 1), dtype=float)
         f_data[:] = data[nn, 1:]
         dict[data[nn, 0]] = f_data[:]
-        #print data[nn,0],'f_data: ', f_data
-        #print 'dict[data[nn,0]: ', dict[data[nn,0]]
 
     return dict
 
@@ -151,16 +149,12 @@ def interp_data(x_in, y_in, x_data_smooth):
     return y_data_smooth
 
 
-
-
-
 def get_coeff(coeff_name, Z):
     dict = load_EHcoeffs()
     Z_arr = dict['Z']
     Z_arr[-1] = 1000.0
     coeff_val = interp_data(Z_arr, dict[coeff_name], Z)
     return coeff_val
-
 
 
 def get_coeff_dict(Z):
@@ -172,9 +166,6 @@ def get_coeff_dict(Z):
         coeff_val = interp_data(Z_arr, dict[name], Z)
         out_dict[name] = coeff_val
     return out_dict
-
-
-
 
 
 def coeff_poly_fit(chi, Z):
@@ -248,7 +239,6 @@ def coeff_poly_fit(chi, Z):
     coeff_dict = get_coeff_dict(Z)
 
     return t_dict, coeff_dict
-
 
 
 def coeff_poly_fit_diff(chi, Z):
@@ -345,4 +335,3 @@ if __name__ == "__main__":
     t_dict, coeff_dict = coeff_poly_fit(chi, Z)
     print t_dict
     #alpha_0'= coeff'oly_fit(Z)
-    #print '\n\nalpha_0' at Z=13= ',alpha_0'

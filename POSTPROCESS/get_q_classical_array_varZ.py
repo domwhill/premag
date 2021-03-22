@@ -87,9 +87,7 @@ dv = calc_dv(v_grid)
 #====================================
 
 print 'Z0 = ', Z0
-#print 'T0 = ',T0
-#print 'n0 = ',n0
-#print 'v_te = ', v_te
+
 xstep_factor = 1.0
 tstep_factor = 1.0
 #------------------------------------------------
@@ -117,7 +115,6 @@ def fpg_get_info(fname):
     mat_info = data[:10]
     mat = np.loadtxt(fname, skiprows=10)
 
-    #print mat_info[0]
     time = float(mat_info[1])
     ndims = int(mat_info[2])
     if ndims == 2:
@@ -166,7 +163,7 @@ def get_startline(fname):
     out_line = 9
     for i in range(len(f_list)):
         if re.match(r'\n', f_list[i]):
-            ##print 'found match on line: ', i
+
             out_line = i
             #else:
             #out_line = 9
@@ -200,7 +197,7 @@ def fpg_load(fname):
     mat_info = data[:10]
     mat = np.loadtxt(fname, skiprows=10)
     out_l = get_startline(fname)
-    ##print mat_info
+
     time = float(mat_info[1])
     ndims = int(mat_info[2])
     if ndims == 2:
@@ -210,12 +207,9 @@ def fpg_load(fname):
 
         nx = int(mat_info[5])
         x_grid = list_to_float(mat_info[6])
-        #print '========'
-        ##print 'nx: ',nx,'\nx_grid: \n',x_grid
-        #print 'np.shape: xgrid: ', np.shape(x_grid)
-        #print '============', 'out_l = ====', out_l
+
         mat = np.loadtxt(fname, skiprows=8)
-        #print np.shape(mat)
+
         grid = [y_grid, x_grid]
         hmat_final = mat
         v_grid = 0.0
@@ -238,9 +232,6 @@ def fpg_load(fname):
         hmat_final = np.transpose(mat)
         grid = [v_grid, y_grid, x_grid]    #nv,ny,nx
 
-        #print '############################'
-        #print '   nv, ny, nx: ',nv, ny, nx
-        #print '############################'
     return hmat_final, v_grid, y_grid, x_grid
 
 
@@ -252,7 +243,7 @@ def get_v2dv(v_grid):
 
 
 def maxw_dist(v, vte):
-    #print ' vte = ', vte
+
     # --- hang on a sec here ... v should already be normalised with respect to vte?
     #sys.exit()
     #f_om = ((np.pi*(vte**2))**(-1.5)) * np.exp(-(v/vte)**2)
@@ -289,9 +280,8 @@ def get_delta(v_grid, omega, F0):
 
     mom_8_5 = get_v_mom_m_n(v_grid, omega, F0, 8, 5)
     delta = 1.0 + (omega**2) * (mom_8_5**2)
-    ##print 'DELTA = ', delta
-    return delta
 
+    return delta
 
 
 def get_alpha_perp(w, rho, ne, Te, F0, v_grid):
@@ -308,11 +298,10 @@ def get_alpha_perp(w, rho, ne, Te, F0, v_grid):
 
     v_mom_5 = get_v_mom_m(v_grid, omega, F0, 5)
     delta = get_delta(v_grid, omega, F0)
-    #print 'shapes delta vmom5 ; ',np.shape(delta), np.shape(v_mom_5)
+
     alpha = (1.5) * ((vte * vte) / (ne * rZZni)) * ((v_mom_5 * delta)**-1)
 
     return alpha
-
 
 
 def get_alpha_wedge(w, rho, ne, Te, F0, v_grid):
@@ -332,7 +321,6 @@ def get_alpha_wedge(w, rho, ne, Te, F0, v_grid):
     return alpha
 
 
-
 def get_beta_perp(w, rZZni, ne, Te, F0, v_grid):
     '''
         beta_perp = get_beta_perp(w,rho,ne,Te,F0,v_grid)
@@ -349,11 +337,9 @@ def get_beta_perp(w, rZZni, ne, Te, F0, v_grid):
     test_mom_7 = np.sum(np.exp(-(v_grid / vte)**2) * (v_grid**9) * dv)
     test_mom_5 = np.sum(np.exp(-(v_grid / vte)**2) * (v_grid**7) * dv)
 
-    ###print ' v_mom_7_5 = ', v_mom_7_5,'\n\n tes_mom_7_5 = ', test_mom_7/test_mom_5, test_mom_7, test_mom_5
     beta = (1.0 / (2.0 * Te)) * (v_mom_7_5 + ((omega * v_mom_8_5)**2) * v_mom_10_8) / delta - 2.5
     #---- NOTE 30/11/17 found error in beta_perp, missing factor (1.0/2.0*Te)
     return beta
-
 
 
 def get_beta_wedge(w, rho, ne, Te, F0, v_grid):
@@ -370,7 +356,6 @@ def get_beta_wedge(w, rho, ne, Te, F0, v_grid):
     delta = get_delta(v_grid, omega, F0)
     beta = (1.0 / (vte * vte)) * omega * v_mom_8_5 * (v_mom_10_8 - v_mom_7_5) / delta
     return beta
-
 
 
 def get_kappa_perp(w, rho, ne, Te, F0, v_grid):
@@ -396,7 +381,6 @@ def get_kappa_perp(w, rho, ne, Te, F0, v_grid):
                          ((omega**2) * v_mom_8_5 * v_mom_10_5 *
                           (v_mom_10_8 - v_mom_7_5) * v_mom_5 / delta))
     return kappa
-
 
 
 def get_kappa_wedge(w, rho, ne, Te, F0, v_grid):
@@ -425,7 +409,6 @@ def get_kappa_wedge(w, rho, ne, Te, F0, v_grid):
     return kappa
 
 
-
 def get_q_SH(Z2ni, ne, Te, w, dxT, dyT, jx=0.0, jy=0.0):
     '''
         MAIN ROUTINE - calculates the classical heat flow components
@@ -437,29 +420,25 @@ def get_q_SH(Z2ni, ne, Te, w, dxT, dyT, jx=0.0, jy=0.0):
     #ne = 1.0
     rho = Z2ni**-1
 
-    #print ' ######################################'
-    #print 'inputs : vte: %3.4f \t vmax: %3.4f \t \n \t w = %3.4f \n\t ne =  %3.4f \t rho %3.4f ' % (vte,vmax, w, ne ,rho)
-    #print ' ######################################'
-    ##print ' v_grid ===== ', v_grid
     # ------
 
     F0 = maxw_dist(v_grid, vte)
 
     #alpha_perp = get_alpha_perp(w,rho,ne,Te,F0,v_grid)
-    ##print ' ap'
+
     #alpha_wedge = get_alpha_wedge(w,rho,ne,Te,F0,v_grid)
-    ##print ' aw'
+
     beta_perp_c = get_beta_perp(w, rho, ne, Te, F0, v_grid)
-    ##print 'bp'
+
     beta_wedge_c = get_beta_wedge(w, rho, ne, Te, F0, v_grid)
-    ##print 'bw'
+
     #beta_wedge_c,beta_perp_c = 0.0,0.0
 
     beta_perp = beta_perp_c * (Te)
     beta_wedge = beta_wedge_c * (Te)
 
     kappa_perp_c = get_kappa_perp(w, rho, ne, Te, F0, v_grid)
-    ##print 'kp'
+
     kappa_wedge_c = get_kappa_wedge(w, rho, ne, Te, F0, v_grid)
 
     #kappa_perp = kappa_perp_c*((2.0*Te)**2.5)
@@ -467,10 +446,6 @@ def get_q_SH(Z2ni, ne, Te, w, dxT, dyT, jx=0.0, jy=0.0):
 
     kappa_perp = kappa_perp_c
     kappa_wedge = kappa_wedge_c
-
-    #print 'kappa_perp: ', kappa_perp, 'kappa_wedge = ', kappa_wedge, 'dxT = ', dxT, ' dyT = ', dyT
-    ##print ' v_grid = ', v_grid
-    ##print ' F0 = ', F0
 
     q_SH_x = -kappa_perp * dxT
     q_SH_y = -kappa_perp * dyT
@@ -484,10 +459,7 @@ def get_q_SH(Z2ni, ne, Te, w, dxT, dyT, jx=0.0, jy=0.0):
     q_E_x = -(beta_perp * jx - beta_wedge * jy)
     q_E_y = -(beta_perp * jy + beta_wedge * jx)
 
-    #print 'q_SH_x: ', q_SH_x,'q_RL_x = ', q_RL_x,'q_E_x = ', q_E_x
-
     return q_SH_x, q_RL_x, q_E_x, q_SH_y, q_RL_y, q_E_y
-
 
 
 def get_gradT(x_grid, y_grid, T_data):
@@ -505,13 +477,13 @@ def get_gradT(x_grid, y_grid, T_data):
         dxT = np.zeros((len(dx), len(dy)))
         dyT = np.zeros((len(dx), len(dy)))
         ldx, ldy = len(dx), len(dy)
-        #print 'SHAPE DX DY = ', ldx,ldy
+
         for ii in range(len(dx)):
-            #print 'ii=  ', ii
+
             dyT[ii, :] = (T_data[ii, 2:] - T_data[ii, :-2]) / dy
 
         for ii in range(len(dy)):
-            #print 'ix = ', ii, np.shape((T_data[2:,ii] - T_data[:-2,ii])), np.shape(dxT), np.shape(dx)
+
             dxT[:, ii] = (T_data[2:, ii] - T_data[:-2, ii]) / dx
         return dxT, dyT
 
@@ -532,13 +504,13 @@ def get_grad_centred(x_grid, y_grid, T_data):
         dxT = np.zeros((len(dx), len(dy)))
         dyT = np.zeros((len(dx), len(dy)))
         ldx, ldy = len(dx), len(dy)
-        #print 'SHAPE DX DY = ', ldx,ldy
+
         for ii in range(len(dx)):
-            #print 'ii=  ', ii
+
             dyT[ii, :] = (T_data[ii, 1:] - T_data[ii, :-1]) / dy
 
         for ii in range(len(dy)):
-            #print 'ix = ', ii, np.shape((T_data[2:,ii] - T_data[:-2,ii])), np.shape(dxT), np.shape(dx)
+
             dxT[:, ii] = (T_data[1:, ii] - T_data[:-1, ii]) / dx
 
         dyT = dyT[1:, :-1]
@@ -594,7 +566,7 @@ if __name__ == "__main__":
             t_list.append(t_l)
             t_col = get_time(fname)
             tc_list.append(t_col)
-            ##print t_list
+
             fprefix = s.group('fpre')
 
     fprefix = path.split('/')[-1]
@@ -667,25 +639,21 @@ if __name__ == "__main__":
 
         for ix in range(1, len(T_data[0, :]) - 1):
             for iy in range(1, len(T_data[:, 0]) - 1):
-                #print 'tt== ', tt, 'ix: = ', ix,'iy = ', iy, np.shape(T_data), np.shape(dxT),np.shape(n_data), np.shape(Bz_data),np.shape(dyT),'jx: ', np.shape(jx),'jy: ',np.shape(jy)
+
                 Z2ni = Z_data[iy, ix] * n_data[iy, ix]
                 q_SH_xp, q_RL_xp, q_E_xp, q_SH_yp, q_RL_yp, q_E_yp = get_q_SH(
                     Z2ni, n_data[iy, ix], T_data[iy, ix], Bz_data[iy - 1, ix - 1],
                     dxT[iy - 1, ix - 1], dyT[iy - 1, ix - 1], jx[iy - 1, ix - 1], jy[iy - 1,
                                                                                      ix - 1])
                 q_SH_x[tt, iy - 1, ix - 1] = q_SH_xp
-                #print ' q_SH_x: ', q_SH_x[tt,iy-1,ix-1]
+
                 q_RL_x[tt, iy - 1, ix - 1] = q_RL_xp
-                #print 'RL  q_SH_x: ', q_SH_x[tt,iy-1,ix-1]
 
                 q_E_x[tt, iy - 1, ix - 1] = q_E_xp
-                #print ' E q_SH_x: ', q_SH_x[tt,iy-1,ix-1]
 
                 q_SH_y[tt, iy - 1, ix - 1] = q_SH_yp
-                #print 'SH y q_SH_x: ', q_SH_x[tt,iy-1,ix-1]
 
                 q_RL_y[tt, iy - 1, ix - 1] = q_RL_yp
-                #print ' RL y q_SH_x: ', q_SH_x[tt,iy-1,ix-1]
 
                 q_E_y[tt, iy - 1, ix - 1] = q_E_yp
     #--------- end loop
@@ -702,8 +670,7 @@ if __name__ == "__main__":
     #------------------------------
     q_x = q_SH_x + q_RL_x + q_E_x
     f_lim = 0.15
-    ##print q_SH_x
-    #print ' np.shape(x_grid): ', np.shape(x_grid), np.shape(q_SH_x),np.shape(q_xX)
+
     fig1, ax1 = plt.subplots(1, 1)
     #q_F_x = -0.5*n_data*((T_data)**1.5)*f_lim # 2.52 Ridgers, 0.5*ne*me*vt**3
     x_grid = x_grid * xstep_factor

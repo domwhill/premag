@@ -25,7 +25,6 @@ m_e = 9.11e-31
 fpre = lambda path_in: path_in.split('/')[-1]
 
 
-
 def clear_yax(ax):
     fprl.clear_yax(ax)
     ax.set_ylabel('')
@@ -38,18 +37,12 @@ def format_yax(ax):
     pass
 
 
-
-
-
 def b_lab(bz_in):
     if int(bz_in) == -1:
         lab = 'no B'
     else:
         lab = r'$%i\,\si{T}$' % (bz_in)
     return lab
-
-
-
 
 
 def custom_im(ax, xgrid, data, lab, lim, **kwargs):
@@ -64,16 +57,10 @@ def custom_im(ax, xgrid, data, lab, lim, **kwargs):
     return im
 
 
-
-
-
 def colourbar(fig, im, ax, cax, lab):
     cbar = fig.colorbar(im, ax=ax, cax=cax, label=lab)
     #cbar = fprl.sci_fmt_colorbar(fig, im, ax, cax= cax, lab=lab)
     return cbar
-
-
-
 
 
 def custom_contour(ax, xgrid, data, lab, lim, **kwargs):
@@ -105,9 +92,6 @@ def custom_contour(ax, xgrid, data, lab, lim, **kwargs):
     return lvls
 
 
-
-
-
 def ensure_list(s):
     # Ref: https://stackoverflow.com/a/56641168/
     return s if isinstance(
@@ -115,16 +99,10 @@ def ensure_list(s):
                                             (tuple, set, np.ndarray)) else [] if s is None else [s]
 
 
-
-
-
 def convert_lists_to_set(a_list, b_list, c_list, d_list):
     var_list = set((a, b, c, d) for a in ensure_list(a_list) for b in ensure_list(b_list)
                    for c in ensure_list(c_list) for d in ensure_list(d_list))
     return var_list
-
-
-
 
 
 class run_obj_list:
@@ -177,9 +155,6 @@ class run_obj_list:
         self.tmax_col = tc_list[time_in]
 
 
-
-
-
 class run_obj:
 
     def __init__(self, scale_length=1, bz_in=400.0, lambda_p=5, pert_amp='0p'):
@@ -209,9 +184,6 @@ class run_obj:
         else:
             tag = r'$%i \, [\si{T}]$' % self.bz
         return tag
-
-
-
 
 
 class PlotContour():
@@ -314,9 +286,6 @@ class PlotContour():
     def get_lim(self):
         lim = [self.xmin, self.xmax, self.ymin, self.ymax]
         return lim
-
-
-
 
 
 def main():

@@ -355,7 +355,6 @@ def set_ylim_max(ax_in, grid, data, y_mult=[1.0, 1.0], xlim=[-5.0, 20.0]):
     return
 
 
-
 def annotate_axis(ax, lett='(a)', dx_mult=1.0, dy_mult=1.0, fontsize=0):
     xmin, xmax = ax.get_xlim()
     ymin, ymax = ax.get_ylim()

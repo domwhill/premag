@@ -83,6 +83,3 @@ class directory_paths(object):
         path = dir_path + fprefix
 
         return path
-
-
-

@@ -40,9 +40,6 @@ def b_lab(bz_in):
     return lab
 
 
-
-
-
 def custom_im(ax, xgrid, data, lab, lim):
 
     xmin, xmax, ymin, ymax = lim
@@ -88,9 +85,6 @@ def convert_lists_to_set(a_list, b_list, c_list, d_list):
     var_list = set((a, b, c, d) for a in ensure_list(a_list) for b in ensure_list(b_list)
                    for c in ensure_list(c_list) for d in ensure_list(d_list))
     return var_list
-
-
-
 
 
 class run_obj_list:

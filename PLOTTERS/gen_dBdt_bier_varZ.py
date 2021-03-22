@@ -147,7 +147,6 @@ def extract_ohms(path, time, x_limit=73):
     return dict
 
 
-
 def fpre(path):
     return path.split('/')[-1]
 
@@ -359,7 +358,6 @@ def plot_ylineout_dtBz_custom(fig,
     axy.grid(color='0.5', linestyle='-')
 
     return p2
-
 
 
 if __name__ == "__main__":
