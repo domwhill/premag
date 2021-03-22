@@ -244,7 +244,7 @@ class conv_factors_custom(object):
                 out_name = pp
                 break
         if out_name is None:
-            raise ValueError("File not found for regex in directory")
+            raise ValueError("File not found for regex in directory: {}".format(path))
 
         return out_name
 

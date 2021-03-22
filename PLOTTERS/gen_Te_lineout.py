@@ -270,7 +270,7 @@ def plot_custom_xlineout_amp_tevol(fig,
                                    style_list=('-', '--', ':', '-', '--', ':'),
                                    mstyle_list=(None, None, None, 'x', '^', 'o'),
                                    leg_dict=(),
-                                   axleg=()):
+                                   axleg=(), **kwargs):
     '''
         p2 = plot_custom_xlineout(fig,ax,path_list,var_amp='Te')
     '''
@@ -594,11 +594,6 @@ def plot_ylineout_custom(fig,
     # ---- loop over paths
     leg2_list = []
     lab_lineout_list = []
-    leg_list_x = []
-    lab_list_x = []
-    #style_list = ['-','--',':','-','--',':']
-    #mstyle_list = [None,None,None,'x','^','o']
-    save_name = '2D1_' + var_amp + 'amp'
     for pp in range(len(path_list)):
         var = var_amp
 
@@ -639,8 +634,7 @@ def plot_ylineout_custom(fig,
                            marker=mstyle,
                            markersize=MSIZE,
                            markevery=3)
-            #if lstyle=='--':
-            #    p2.set_dashes(dashes)
+
             p2.set_linewidth = 2
             leg2_list.append(p2)
             lab_lineout_list.append(ylab_lineout)

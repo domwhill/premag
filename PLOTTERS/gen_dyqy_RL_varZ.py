@@ -1,24 +1,16 @@
 '''
     plots the divergence of q_RL
 '''
-import numpy as np, re, os, sys, getpass, matplotlib.pyplot as plt
-import getpass, site
-userid = getpass.getuser()
-site.addsitedir('/Users/' + userid + '/Dropbox/IMPACT_dir/SIM_DATA/ANALYSIS')
+import numpy as np, re, os, sys, matplotlib.pyplot as plt
 
+sys.path.extend(["./"])
 import MODULES.chfoil_module as cf
-from MODULES.chfoil_module import conv_factors_eos
 from MODULES.chfoil_module import cd5_switches
-#import plot_comparison as pc
 import MODULES.figure_prl_twocol as fprl
 import MODULES.kinetic_ohmslaw_module_varZ as kohb
-from mpl_toolkits.axes_grid1 import make_axes_locatable
 from matplotlib import ticker
-#import load_names as LN
 
-userid = getpass.getuser()
 
-#path_tag = cfoil.retrieve_path_tag(path_list[0])
 
 SI_on = cd5_switches.SI_on
 save_on = cd5_switches.save_on

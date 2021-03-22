@@ -67,7 +67,7 @@ pgf_with_latex = {    # setup matplotlib to use latex for output
     "font.sans-serif": [],
     "font.monospace": [],
     "axes.labelsize": 12,    # LaTeX default is 10pt font.
-    "text.fontsize": 12,
+    "font.size": 12,
     "legend.fontsize": 10,    # Make the legend/label fonts a little smaller
     "xtick.labelsize": 10,
     "ytick.labelsize": 10,
@@ -94,7 +94,7 @@ pgf_with_latex = {    # setup matplotlib to use latex for output
     "font.sans-serif": [],
     "font.monospace": [],
     "axes.labelsize": 12,    # LaTeX default is 10pt font.
-    "text.fontsize": 12,
+    "font.size": 12,
     "legend.fontsize": 10,    # Make the legend/label fonts a little smaller
     "xtick.labelsize": 10,
     "ytick.labelsize": 10,

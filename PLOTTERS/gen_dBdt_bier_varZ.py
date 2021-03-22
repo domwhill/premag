@@ -2,23 +2,13 @@
     plots the divergence of q_RL
 '''
 import numpy as np, re, os, sys, getpass, matplotlib.pyplot as plt
-import getpass, site
-userid = getpass.getuser()
-site.addsitedir('/Users/' + userid + '/Dropbox/IMPACT_dir/SIM_DATA/ANALYSIS')
 
+sys.path.extend(["./"])
 import MODULES.chfoil_module as cf
-from MODULES.chfoil_module import conv_factors_eos
 from MODULES.chfoil_module import cd5_switches
-import plot_comparison as pc
 import MODULES.figure_prl_twocol as fprl
 import MODULES.kinetic_ohmslaw_module_varZ as kohb
-from mpl_toolkits.axes_grid1 import make_axes_locatable
 from matplotlib import ticker
-#import load_names as LN
-
-userid = getpass.getuser()
-
-#path_tag = cfoil.retrieve_path_tag(path_list[0])
 
 SI_on = cd5_switches.SI_on
 save_on = cd5_switches.save_on
@@ -76,7 +66,6 @@ def load_qdata(path, time='10'):
 
     tt = int(time)
     string_tt_glb = '%2.2i' % int(time)
-    #string_tt_glb = '%02i' %  int(time)
     time = string_tt_glb
     print ' ---------- tt ==== ', tt
     print '--------'
@@ -91,21 +80,10 @@ def extract_ohms(path, time, x_limit=73):
     '''
     dict = extract_ohms(path,time)
     '''
-    #data_x2d_vN,data_y2d_vN = get_Nernst_ratio(path,time)
-    #data_x2d_vN_k,data_y2d_vN_k = data_x2d_vN['kinetic'],data_y2d_vN['kinetic']
-    #data_x2d_vN_c,data_y2d_vN_c = data_x2d_vN['classical'],data_y2d_vN['classical']
-    ##classic_biermann,kinetic_biermann = kbier.get_kinetic_and_classicB(path,path,time)
-    #E_P_classical,E_P_kinetic =kbier.get_kinetic_and_classic_E_pressure(path,fpre(path),time,xlim=73)
-    #E_x,E_y = kbier.get_hallfield(grid,rho_vyx,Bz_vyx,jx_vyx,jy_vyx,fo)
-    #E_TEwedgex,E_TEwedgey = kbier.get_thermoelectricEfield_kinetic(grid,rho_vyx,Bz_vyx,fo)
 
-    #E_P_c_x, E_P_c_y = E_P_classical['E_P_x'],E_P_classical['E_P_y']
-    #E_P_k_x, E_P_k_y = E_P_kinetic['E_P_x'],E_P_kinetic['E_P_y']
     fprefix = fpre(path)
-    dict_kinetic = kbier.get_kinetic_E(path, fprefix, time, xlim=73)
+    dict_kinetic = kohb.get_kinetic_E(path, fprefix, time, xlim=73)
 
-    ##data_x2d_vN,data_y2d_vN =
-    ##alpha_perp_classical,alpha_perp_kinetic = get_alpha_perp_path(path,time):
 
     dict = {}
     dict['E_betawedge_x'] = {}
@@ -151,9 +129,8 @@ def fpre(path):
     return path.split('/')[-1]
 
 
-def plot_dBdt_bier(fig, ax, cax, path, time):
+def plot_dBdt_bier(fig, ax, cax, path, time, **kwargs):
 
-    #kohnew = load_qdata(path,time)
     classic_biermann, kinetic_biermann = kohb.get_kinetic_and_classicB(path, fpre(path), time)
     dict_t = cf.load_dict_1D(path, fpre(path), 'fo', time)
     x_grid_SI = dict_t['x_grid'] * xstep_factor
@@ -171,7 +148,6 @@ def plot_dBdt_bier(fig, ax, cax, path, time):
     tt = int(time)
 
     #--- do everything in units of 10 eV/ps
-    #dyqy = np.transpose(dyqy)#q_SH_y[path][tt,:,:]
     data_bier_k = np.transpose(kinetic_biermann)[::-1]
     data_bier_c = np.transpose(classic_biermann)[::-1]
 
@@ -206,7 +182,6 @@ def plot_dBdt_bier(fig, ax, cax, path, time):
                      levels=levels,
                      colors=('k'),
                      extent=lims_im)
-    #ax.clabel(CSy,[0.0],inline=True,fmt='%1.1f')
 
     #--- plot hlines
     lim = ax.get_ylim()
@@ -297,14 +272,8 @@ def plot_ylineout_dtBz_custom(fig,
 
         print('dtb 283 = ', np.shape(data_bier_k), np.shape(data_bier_c))
         print(' shape x y grid = ', np.shape(x_c_grid), np.shape(y_c_grid))
-        min_data = np.min(T_data)
-        #dict = cf.calc_norms_2(var, min_data)
-        norm_const = 1.0
-        #c_title = dict['title']
-        #c_fmt = dict['c_fmt']
-        #var_name = dict['var_name']
-        #units = dict['units']
 
+        norm_const = 1.0
         final_lab = r'$\partial_t \mathbf{B}|_{B}$ ' + dtBz_unit
         lstyle = style_list[pp]
         mstyle = mstyle_list[pp]
@@ -364,11 +333,10 @@ if __name__ == "__main__":
     #-- generate new axis for color bar with gridspec here....
     fig, ax = fprl.newfig(1.0)
     path, time = 'chfoil_default5_heat11_2D1--cx1', '15'
-    #matplotlib.rc('font', **{'family':"sans-serif"})
 
     params = {'text.latex.preamble': [r'\usepackage{siunitx}']}
     plt.rcParams.update(params)
 
     cax = []
-    imy = plot_dyqy_RL(fig, ax, cax, path, time)
+    imy = dyqy.plot_dyqy_RL(fig, ax, cax, path, time)
     plt.show()

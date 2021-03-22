@@ -4,16 +4,16 @@
      + the Biermann + the div.q_RL - i.e. where dyqyrl intersect and have same sign? We have TS instability...
 '''
 
-import numpy as np, sys, os, getpass, site
-sys.path.extend(["./"])
-
-import matplotlib.pyplot as plt
-import PLOTTERS.gen_Te_lineout as TEL
-import PLOTTERS.gen_dyqy_RL_varZ as dyqy
-import PLOTTERS.gen_dBdt_bier_varZ as gdBdt
-import MODULES.figure as fprl
+import sys
+import os
 import matplotlib.gridspec as GS
 from pylab import *
+
+sys.path.extend(["./"])
+
+import PLOTTERS.gen_Te_lineout as TEL
+import PLOTTERS.gen_dBdt_bier_varZ as gdBdt
+import MODULES.figure as fprl
 import MODULES.chfoil_module as cf
 import MODULES.house_keeping as hk
 #-------------------------------------------------#
@@ -183,8 +183,7 @@ p1wt = TEL.plot_custom_xlineout_amp_tevol(fig,
                                           leg_dict=dict_list,
                                           axleg=cax_dyqy,
                                           cmap=[shade_of_grey(0.5),
-                                                shade_of_grey(0.0)],
-                                          log_on=True)
+                                                shade_of_grey(0.0)])
 ax_dyqy.set_ylim(1e-7, 0.1)
 
 cax_dyqy.get_xaxis().set_visible(False)
@@ -200,8 +199,7 @@ p2 = TEL.plot_ylineout_custom(fig,
                               time=time_list[-1],
                               style_list=style_list,
                               mstyle_list=mstyle_list,
-                              dict_list=dict_list,
-                              cfg=cd5)
+                              dict_list=dict_list)
 
 # plot Bz ---
 #--> disable plot dyqy
