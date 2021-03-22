@@ -5,13 +5,11 @@
 
 '''
 import numpy as np, sys, os, getpass, site, re
-userid = getpass.getuser()
-site.addsitedir('/Users/' + userid + '/Dropbox/IMPACT_dir/SIM_DATA/ANALYSIS/MODULES')
-site.addsitedir('/Users/' + userid + '/Dropbox/IMPACT_dir/SIM_DATA/ANALYSIS/PLOTTERS')
-import figure_prl_twocol as fprl
+sys.path.extend(["./"])
+import MODULES.figure_prl_twocol as fprl
 from pylab import *
-import chfoil_module as cf
-import house_keeping as hk
+import MODULES.chfoil_module as cf
+import MODULES.house_keeping as hk
 from matplotlib import ticker
 import impact_norms as inorm
 import tsi_module as tsi
@@ -25,7 +23,7 @@ m_e = 9.11e-31
 #-----
 # functions
 fpre = lambda path_in: path_in.split('/')[-1]
-#-------------------------------------------------------------------------
+
 
 
 def clear_yax(ax):
@@ -40,7 +38,7 @@ def format_yax(ax):
     pass
 
 
-#-------------------------------------------------------------------------
+
 
 
 def b_lab(bz_in):
@@ -51,7 +49,7 @@ def b_lab(bz_in):
     return lab
 
 
-#-------------------------------------------------------------------------
+
 
 
 def ensure_list(s):
@@ -61,7 +59,7 @@ def ensure_list(s):
                                             (tuple, set, np.ndarray)) else [] if s is None else [s]
 
 
-#-------------------------------------------------------------------------
+
 
 
 def convert_lists_to_set(a_list, b_list, c_list, d_list):
@@ -70,7 +68,7 @@ def convert_lists_to_set(a_list, b_list, c_list, d_list):
     return var_list
 
 
-#-------------------------------------------------------------------------
+
 
 
 def absmaxND(a, axis=None):
@@ -133,11 +131,10 @@ class run_obj_list:
         self.tmax_col = tc_list[time_in]
 
 
-#-------------------------------------------------------------------------
+
 
 
 class run_obj:
-
     def __init__(self, scale_length=1, bz_in=400.0, lambda_p=5, pert_amp='0p', dim='2D'):
         paths = hk.directory_paths()
         self.dim = dim

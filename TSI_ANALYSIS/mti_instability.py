@@ -33,7 +33,7 @@ lambda_mfp_ref = cd5.lambda_mfp
 v_th_ref = cd5.v_te
 tau_ref = cd5.tau_ei
 Bz_ref = cd5.Bz_ref
-##---------------------------------------------------------------------------##
+#----##
 
 
 def get_wt_grad(wt,
@@ -57,7 +57,7 @@ def get_wt_grad(wt,
     return dict_out
 
 
-##---------------------------------------------------------------------------##
+#----##
 
 
 def load_all_SI(path, fprefix, time, iy, ix):
@@ -108,7 +108,7 @@ def load_all_SI(path, fprefix, time, iy, ix):
     return dict_out
 
 
-##---------------------------------------------------------------------------##
+#----##
 
 
 def get_growth(k, Z_in, lambda_T_in, tau_ei_in, n_e_in, T_e_in, Bz_in, wt_in, dxn_in, dxT_in,
@@ -200,7 +200,7 @@ def get_growth(k, Z_in, lambda_T_in, tau_ei_in, n_e_in, T_e_in, Bz_in, wt_in, dx
     return roots
 
 
-##---------------------------------------------------------------------------##
+#----##
 
 fprefix = path.split('/')[-1]
 #dict_all = cf.load_data_all(path,fprefix,time)
@@ -219,7 +219,7 @@ dxT = dict_out['dxT']
 dxBz = dict_out['dxBz']
 Bz = dict_out['Bz']
 x_grid = dict_out['x_grid']
-#------------------------------------------------------------------------------
+
 fig = plt.figure()
 
 ix_min, ix_max = 70, 220

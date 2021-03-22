@@ -69,7 +69,7 @@ save_path = args.output_directory
 print('Input argument= ', args)
 if save_path[-1] != '/':
     save_path = save_path + '/'
-print( "var1 = " + var1 + " var2 = " + var2 + " output_directory = " + save_path)
+print("var1 = " + var1 + " var2 = " + var2 + " output_directory = " + save_path)
 
 save_name = '%sqlineout_%s_abs_%s_1d.png' % (save_path, re.sub(' ', '', var1), var2)
 #----------------
@@ -184,9 +184,6 @@ class norm_labels(object):
         return var_lim
 
 
-#-----------------------------------------------------------------------
-
-
 class AnyObjectHandler(HandlerBase):
 
     def create_artists(self, legend, orig_handle, x0, y0, width, height, fontsize, trans):
@@ -198,7 +195,8 @@ class AnyObjectHandler(HandlerBase):
 
 
 #--- functions
-#-----------------------------------------------------------------------
+
+
 def repack(path, time):
     '''
         dict_c,dict_k = repack(path,time)
@@ -255,7 +253,6 @@ def set_ylim_max_2data(ax_in, grid, data1, data2, y_mult=[1.0, 1.0], xlim=[-5.0,
     return
 
 
-#-----------------------------------------------------------------------
 if __name__ == "__main__":
     #----> data loading
     #dict_0T_c,dict_0T_k = repack(path_0T,time)

@@ -7,7 +7,7 @@
 import numpy as np, sys, os, getpass, site, re
 sys.path.extend(["./"])
 import matplotlib.pyplot as plt
-import figure_prl_twocol as fprl
+import MODULES.figure_prl_twocol as fprl
 from pylab import *
 import MODULES.kinetic_ohmslaw_module_varZ as kohb
 import matplotlib.gridspec as GS
@@ -40,7 +40,7 @@ def b_lab(bz_in):
     return lab
 
 
-#-------------------------------------------------------------------------
+
 
 
 def custom_im(ax, xgrid, data, lab, lim):
@@ -90,7 +90,7 @@ def convert_lists_to_set(a_list, b_list, c_list, d_list):
     return var_list
 
 
-#-------------------------------------------------------------------------
+
 
 
 class run_obj_list:

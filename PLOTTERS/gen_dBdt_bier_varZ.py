@@ -10,7 +10,7 @@ import MODULES.chfoil_module as cf
 from chfoil_module import conv_factors_eos
 from chfoil_module import cd5_switches
 import plot_comparison as pc
-import figure_prl_twocol as fprl
+import MODULES.figure_prl_twocol as fprl
 import MODULES.kinetic_ohmslaw_module_varZ as kohb
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from matplotlib import ticker
@@ -147,7 +147,7 @@ def extract_ohms(path, time, x_limit=73):
     return dict
 
 
-#-----------------------------------------------------------------------
+
 def fpre(path):
     return path.split('/')[-1]
 
@@ -361,7 +361,7 @@ def plot_ylineout_dtBz_custom(fig,
     return p2
 
 
-#-----------------------------------------------------------------------
+
 if __name__ == "__main__":
     #-- generate new axis for color bar with gridspec here....
     fig, ax = fprl.newfig(1.0)

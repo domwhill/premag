@@ -23,7 +23,7 @@ m_e = 9.11e-31
 #-----
 # functions
 fpre = lambda path_in: path_in.split('/')[-1]
-#-------------------------------------------------------------------------
+
 
 
 def clear_yax(ax):
@@ -38,7 +38,7 @@ def format_yax(ax):
     pass
 
 
-#-------------------------------------------------------------------------
+
 
 
 def b_lab(bz_in):
@@ -49,7 +49,7 @@ def b_lab(bz_in):
     return lab
 
 
-#-------------------------------------------------------------------------
+
 
 
 def custom_im(ax, xgrid, data, lab, lim, **kwargs):
@@ -64,7 +64,7 @@ def custom_im(ax, xgrid, data, lab, lim, **kwargs):
     return im
 
 
-#-------------------------------------------------------------------------
+
 
 
 def colourbar(fig, im, ax, cax, lab):
@@ -73,7 +73,7 @@ def colourbar(fig, im, ax, cax, lab):
     return cbar
 
 
-#-------------------------------------------------------------------------
+
 
 
 def custom_contour(ax, xgrid, data, lab, lim, **kwargs):
@@ -105,7 +105,7 @@ def custom_contour(ax, xgrid, data, lab, lim, **kwargs):
     return lvls
 
 
-#-------------------------------------------------------------------------
+
 
 
 def ensure_list(s):
@@ -115,7 +115,7 @@ def ensure_list(s):
                                             (tuple, set, np.ndarray)) else [] if s is None else [s]
 
 
-#-------------------------------------------------------------------------
+
 
 
 def convert_lists_to_set(a_list, b_list, c_list, d_list):
@@ -124,7 +124,7 @@ def convert_lists_to_set(a_list, b_list, c_list, d_list):
     return var_list
 
 
-#-------------------------------------------------------------------------
+
 
 
 class run_obj_list:
@@ -177,7 +177,7 @@ class run_obj_list:
         self.tmax_col = tc_list[time_in]
 
 
-#-------------------------------------------------------------------------
+
 
 
 class run_obj:
@@ -211,7 +211,7 @@ class run_obj:
         return tag
 
 
-#-------------------------------------------------------------------------
+
 
 
 class PlotContour():
@@ -316,7 +316,7 @@ class PlotContour():
         return lim
 
 
-#-------------------------------------------------------------------------
+
 
 
 def main():

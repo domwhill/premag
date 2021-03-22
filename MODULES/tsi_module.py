@@ -11,7 +11,7 @@ m_p = 1.67e-27
 k_b = 1.38e-23
 epsilon0 = 8.854e-12
 cB = 3.0 * np.sqrt(np.pi) / 4.0
-#---------------------------------------------------------------------------
+
 
 
 def get_wt_grad(wt,
@@ -40,7 +40,7 @@ def get_wt_grad(wt,
     return dict_out
 
 
-#---------------------------------------------------------------------------
+
 def get_dimensionful_coeff(val_dimensionless, var, ref_vals, dimensionless=True):
     n_e_m3 = ref_vals['n_e'] * 1e6
     T_eJ = q_e * ref_vals['T_e']
@@ -56,7 +56,7 @@ def get_dimensionful_coeff(val_dimensionless, var, ref_vals, dimensionless=True)
     return val_out
 
 
-#------------------------------------------------------------------------------
+
 def get_dimensionless_transport_c(wte, Z):
     '''
        dict,grad_dict= gget_dimensionless_transport_c(wte,Z)
@@ -69,7 +69,7 @@ def get_dimensionless_transport_c(wte, Z):
     return transport_dict, t_grad_dict
 
 
-#------------------------------------------------------------------------------
+
 def get_dimensionful_transport_c(wte, Z, ref_vals):
     '''
        dict,grad_dict= get_dimensionful_tranpsort_c(wte,Z)
@@ -92,7 +92,7 @@ def get_dimensionful_transport_c(wte, Z, ref_vals):
     return dict, grad_dict
 
 
-#-----------------------------------------------------------------------
+
 def get_dimensionful_transport_kinetic(wte, Z, ref_vals):
     '''
        dict,grad_dict= get_dimensionful_tranpsort_c(wte,Z)
@@ -119,7 +119,7 @@ def get_dimensionful_transport_kinetic(wte, Z, ref_vals):
     return dict, grad_dict
 
 
-#-----------------------------------------------------------------------
+
 def compute_growth(k, ne_ref, Te_ref, Z, Bz, Ar, LT, LB):
     '''
         w_p_2,w_m_2, dict_n = compute_growth(k,ne_ref,Te_ref,Z,Bz,Ar,LT,LB)
@@ -216,7 +216,7 @@ def compute_growth(k, ne_ref, Te_ref, Z, Bz, Ar, LT, LB):
     return w_p_2, w_m_2, dict_n
 
 
-#-----------------------------------------------------------------------
+
 def compute_growth_array(k, ne_ref, Te_ref, Z, Bz, Ar, LT, LB):
     '''
         w_p_2,w_m_2, dict_n = compute_growth(k,ne_ref,Te_ref,Z,Bz,Ar,LT,LB)
@@ -304,7 +304,7 @@ def compute_growth_array(k, ne_ref, Te_ref, Z, Bz, Ar, LT, LB):
     return w_p_2, w_m_2, dict_n
 
 
-#-----------------------------------------------------------------------
+
 def compute_growth_array_kinetic(k, ne_ref, Te_ref, Z, Bz, Ar, LT, LB, dict_ratios):
     '''
         w_p_2,w_m_2, dict_n = compute_growth(k,ne_ref,Te_ref,Z,Bz,Ar,LT,LB)
@@ -397,7 +397,7 @@ def compute_growth_array_kinetic(k, ne_ref, Te_ref, Z, Bz, Ar, LT, LB, dict_rati
     return w_p_2, w_m_2, dict_n
 
 
-#-----------------------------------------------------------------------
+
 def compute_growth_k(k, ne_ref, Te_ref, Z, Bz, Ar, LT, LB, cfg):
     '''
         w_p_2,w_m_2 = compute_growth(k,ne_ref,Te_ref,Z,Bz,6.5)
@@ -494,4 +494,4 @@ def compute_growth_k(k, ne_ref, Te_ref, Z, Bz, Ar, LT, LB, cfg):
     return w_p_1, w_m_1, w_p_2, w_m_2, dict_n
 
 
-#-----------------------------------------------------------------------
+

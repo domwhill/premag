@@ -7,12 +7,12 @@
 import numpy as np, sys, os, getpass, site, re
 sys.path.extend(["./"])
 import matplotlib.pyplot as plt
-import figure_prl_twocol as fprl
+import MODULES.figure_prl_twocol as fprl
 import matplotlib.gridspec as GS
 import matplotlib.ticker as ticker
 from pylab import *
 import MODULES.kinetic_ohmslaw_module_varZ as q_mod
-import gen_Te_lineout as TEL
+import PLOTTERS.gen_Te_lineout as TEL
 import MODULES.chfoil_module as cf
 import MODULES.house_keeping as hk
 import MODULES.tsi_module as tsi

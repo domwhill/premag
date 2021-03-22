@@ -96,7 +96,7 @@ else:
     leg_title = r'\text{$time$ [t$_{col}$ ]}'
 
 
-#-----------------------------------------------------------------------
+
 class MidPointNorm(Normalize):
 
     def __init__(self, midpoint=0, vmin=None, vmax=None, clip=False):
@@ -141,7 +141,7 @@ class MidPointNorm(Normalize):
             result = result[0]
         return result
 
-#-----------------------------------------------------------------------
+
 
     def inverse(self, value):
         if not self.scaled():
@@ -163,12 +163,12 @@ class MidPointNorm(Normalize):
                 return val * abs(vmax - midpoint) + midpoint
 
 
-#-----------------------------------------------------------------------
+
 class MyDict(dict):
     pass
 
 
-#-----------------------------------------------------------------------
+
 def construct_fname(path, fprefix, var, time):
 
     if var == 'fo' or var == 'fxX' or var == 'fxY' or var == 'fyX' or var == 'fyY':
@@ -182,7 +182,7 @@ def construct_fname(path, fprefix, var, time):
     return fname
 
 
-#-----------------------------------------------------------------------
+
 def get_startline(fname):
     '''
         get the line where the data starts
@@ -206,7 +206,7 @@ def list_to_float(input):
     return arr
 
 
-#-----------------------------------------------------------------------
+
 def fpg_get_info(fname):
     '''
         Gets the IMPACT header info
@@ -254,13 +254,13 @@ def fpg_get_info(fname):
     return dict
 
 
-#-----------------------------------------------------------------------
+
 def get_index(ny, nx):
     index = ny + 2 + 1
     return index
 
 
-#-----------------------------------------------------------------------
+
 def get_time(fname):
     f = open(fname)
     data = f.readlines()
@@ -359,7 +359,7 @@ def calc_norms(var, sample=0.0):
     return norm_const, title, c_fmt
 
 
-#-----------------------------------------------------------------------
+
 if __name__ == "__main__":
     basedir = "$BASEDIR"
     rundir = "$RUN"

@@ -12,15 +12,15 @@ import matplotlib.gridspec as GS
 import matplotlib.ticker as ticker
 from pylab import *
 
-import gen_Te_lineout as TEL
+import PLOTTERS.gen_Te_lineout as TEL
 import gen_dyqy_RL_varZ as dyqy
 import gen_dBdt_bier_varZ as gdBdt
-import figure_prl_twocol as fprl
+import MODULES.figure_prl_twocol as fprl
 import MODULES.chfoil_module as cf
 import MODULES.house_keeping as hk
 import MODULES.tsi_module as tsi
-import impact_norms as inorm
-from plot_utils import run_obj
+import MODULES.impact_norms as inorm
+from MODULES.plot_utils import run_obj
 import EH_poly_coeff_module as ep
 # ---> constants...
 c = 3e8

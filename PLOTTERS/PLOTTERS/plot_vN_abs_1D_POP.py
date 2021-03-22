@@ -11,7 +11,7 @@ import MODULES.chfoil_module as cf
 #import q_SH_Te_tsteps as q_mod
 import matplotlib as mpl
 from pylab import *
-import figure_prl_twocol as fprl
+import MODULES.figure_prl_twocol as fprl
 import kinetic_ohmslaw_module_1D_varZ as q_mod
 from matplotlib.legend_handler import HandlerBase
 

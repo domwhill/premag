@@ -7,7 +7,7 @@
 import numpy as np, sys, os, getpass, site, re
 sys.path.extend(["./"])
 import matplotlib.pyplot as plt
-import figure_prl_twocol as fprl
+import MODULES.figure_prl_twocol as fprl
 import matplotlib.gridspec as GS
 import matplotlib.ticker as ticker
 from pylab import *

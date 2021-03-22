@@ -36,7 +36,7 @@ lambda_mfp_ref = cd5.lambda_mfp
 v_th_ref = cd5.v_te
 tau_ref = cd5.tau_ei
 Bz_ref = cd5.Bz_ref
-##---------------------------------------------------------------------------##
+#----##
 # fix Bz
 Bz = 0.1
 

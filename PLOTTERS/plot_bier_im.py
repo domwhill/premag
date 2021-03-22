@@ -10,7 +10,7 @@ site.addsitedir('/Users/' + userid + '/Dropbox/IMPACT_dir/SIM_DATA/ANALYSIS/MODU
 import matplotlib.pyplot as plt
 #---> kinetic/classical transport post processing module
 import MODULES.kinetic_ohmslaw_module_varZ as kohb
-import figure_prl_twocol as fprl
+import MODULES.figure_prl_twocol as fprl
 from pylab import *
 import MODULES.chfoil_module as cf
 import MODULES.house_keeping as hk
@@ -63,7 +63,7 @@ t_list, tc_list = cf.get_t_list(path, var='Te')
 time = t_list[-1]
 
 
-#-----------------------------------------------------------------------------------------------------
+
 def custom_im(fig, ax, xgrid, ygrid, data, lab, **kwargs):
     vmin = kwargs.pop('vmin', None)
     vmax = kwargs.pop('vmax', None)
@@ -87,12 +87,12 @@ def custom_im(fig, ax, xgrid, ygrid, data, lab, **kwargs):
     return im
 
 
-#-----------------------------------------------------------------------------------------------------
+
 def fpre(path):
     return path.split('/')[-1]
 
 
-#-----------------------------------------------------------------------------------------------------
+
 
 log_on = True
 lab_list = []

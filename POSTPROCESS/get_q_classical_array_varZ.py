@@ -293,7 +293,7 @@ def get_delta(v_grid, omega, F0):
     return delta
 
 
-#-----------------------------------------------------------------------
+
 def get_alpha_perp(w, rho, ne, Te, F0, v_grid):
     '''
     w = eBz/m_e (gyrofreq)
@@ -314,7 +314,7 @@ def get_alpha_perp(w, rho, ne, Te, F0, v_grid):
     return alpha
 
 
-#-----------------------------------------------------------------------
+
 def get_alpha_wedge(w, rho, ne, Te, F0, v_grid):
     '''
         alpha_wedge = K *omega*( (1.5 V_8_5/(V_5*Delta)) - 1.0)
@@ -332,7 +332,7 @@ def get_alpha_wedge(w, rho, ne, Te, F0, v_grid):
     return alpha
 
 
-#-----------------------------------------------------------------------
+
 def get_beta_perp(w, rZZni, ne, Te, F0, v_grid):
     '''
         beta_perp = get_beta_perp(w,rho,ne,Te,F0,v_grid)
@@ -355,7 +355,7 @@ def get_beta_perp(w, rZZni, ne, Te, F0, v_grid):
     return beta
 
 
-#-----------------------------------------------------------------------
+
 def get_beta_wedge(w, rho, ne, Te, F0, v_grid):
     '''
         beta_wedge = get_beta_wedge(w,rho,ne,Te,F0,v_grid)
@@ -372,7 +372,7 @@ def get_beta_wedge(w, rho, ne, Te, F0, v_grid):
     return beta
 
 
-#-----------------------------------------------------------------------
+
 def get_kappa_perp(w, rho, ne, Te, F0, v_grid):
     rZZni = rho
     vte = (2.0 * Te)**0.5
@@ -398,7 +398,7 @@ def get_kappa_perp(w, rho, ne, Te, F0, v_grid):
     return kappa
 
 
-#-----------------------------------------------------------------------
+
 def get_kappa_wedge(w, rho, ne, Te, F0, v_grid):
     rZZni = rho
     vte = (2.0 * Te)**0.5
@@ -425,7 +425,7 @@ def get_kappa_wedge(w, rho, ne, Te, F0, v_grid):
     return kappa
 
 
-#-----------------------------------------------------------------------
+
 def get_q_SH(Z2ni, ne, Te, w, dxT, dyT, jx=0.0, jy=0.0):
     '''
         MAIN ROUTINE - calculates the classical heat flow components
@@ -489,7 +489,7 @@ def get_q_SH(Z2ni, ne, Te, w, dxT, dyT, jx=0.0, jy=0.0):
     return q_SH_x, q_RL_x, q_E_x, q_SH_y, q_RL_y, q_E_y
 
 
-#-----------------------------------------------------------------------
+
 def get_gradT(x_grid, y_grid, T_data):
     '''
         ONLY FOR CC cells - centred differencing

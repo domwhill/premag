@@ -10,7 +10,7 @@ import MODULES.chfoil_module as cfoil
 from chfoil_module import conv_factors_eos
 from chfoil_module import cd5_switches
 import MODULES.house_keeping as hk
-import figure_prl_twocol as fprl
+import MODULES.figure_prl_twocol as fprl
 import matplotlib.ticker as ticker
 from pylab import *
 userid = getpass.getuser()
@@ -55,7 +55,7 @@ def fpre(pathy):
     return pathy.split('/')[-1]
 
 
-#-----------------------------------------------------------------------
+
 def plot_Te_xlineout(fig, ax, path_list, var_amp='Te', time='15', vert_lines='False', dict_list=[]):
     '''
         plot_Te_xlineout(fig,ax,path_list,var_amp='Te')
@@ -170,7 +170,7 @@ def plot_Te_xlineout(fig, ax, path_list, var_amp='Te', time='15', vert_lines='Fa
 
 
 #plot_custom_xlineout_amp
-#-----------------------------------------------------------------------
+
 def plot_custom_xlineout_amp(fig,
                              ax,
                              path_list,
@@ -269,7 +269,7 @@ def plot_custom_xlineout_amp(fig,
     return p1
 
 
-#-----------------------------------------------------------------------
+
 
 
 def plot_custom_xlineout_amp_tevol(fig,
@@ -369,7 +369,7 @@ def plot_custom_xlineout_amp_tevol(fig,
     return p_list
 
 
-#-----------------------------------------------------------------------
+
 def plot_custom_xlineout(fig,
                          ax,
                          path_list,
@@ -464,7 +464,7 @@ def plot_custom_xlineout(fig,
     return p1
 
 
-#-----------------------------------------------------------------------
+
 
 
 def plot_Te_ylineout(fig, axy, path_list, var_amp='Te', time='15', dict_list=[]):
@@ -593,7 +593,7 @@ def plot_Te_ylineout(fig, axy, path_list, var_amp='Te', time='15', dict_list=[])
     return p2
 
 
-#-----------------------------------------------------------------------
+
 def plot_ylineout_custom(fig,
                          axy,
                          path_list,
@@ -696,12 +696,12 @@ def plot_ylineout_custom(fig,
     return p2
 
 
-#-----------------------------------------------------------------------
+
 def fpre(path_in):
     return path_in.split('/')[-1]
 
 
-#-----------------------------------------------------------------------
+
 if __name__ == "__main__":
 
     fig, ax = fprl.newfig(1.0)

@@ -44,8 +44,6 @@ save_path = paths.save_dir
 
 xmin, xmax = -10.0, 25.0
 
-#-----------------------------------------------------------------------
-
 
 def plot_ax(ax1, x_grid, data, norm_const, c='b', tlab='00', cfg=cfg):
     if len(np.shape(data)) > 1:
@@ -64,7 +62,6 @@ def plot_ax(ax1, x_grid, data, norm_const, c='b', tlab='00', cfg=cfg):
     return
 
 
-#-----------------------------------------------------------------------
 if __name__ == "__main__":
     var_list = ['Cx', 'n', 'Te', 'Bz', 'wt']
     t_list = []

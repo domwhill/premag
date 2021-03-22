@@ -13,9 +13,9 @@ import matplotlib.ticker as ticker
 import matplotlib as mpl
 from scipy import interpolate as SI
 import pdb
-import house_keeping as hk
+import MODULES.house_keeping as hk
 import impact_norms as INN
-#-----------------------------------------------------------------------
+
 userid = getpass.getuser()
 paths = hk.directory_paths()
 
@@ -64,7 +64,7 @@ class MidPointNorm(Normalize):
             result = result[0]
         return result
 
-#-----------------------------------------------------------------------
+
 
     def inverse(self, value):
         if not self.scaled():
@@ -86,12 +86,12 @@ class MidPointNorm(Normalize):
                 return val * abs(vmax - midpoint) + midpoint
 
 
-#-----------------------------------------------------------------------
+
 class MyDict(dict):
     pass
 
 
-#-----------------------------------------------------------------------
+
 
 
 class DraggableLegend:
@@ -149,10 +149,10 @@ class cd5_switches(object):
     marker_on = False
 
 
-#-----------------------------------------------------------------------
 
 
-#-----------------------------------------------------------------------
+
+
 class conv_factors_custom(object):
     # --- arguments given to the class are passed straight to init...
     #
@@ -264,7 +264,7 @@ def fpre(path):
     return path.split('/')[-1]
 
 
-#-----------------------------------------------------------------------
+
 
 
 def list_to_float(input):
@@ -274,7 +274,7 @@ def list_to_float(input):
     return arr
 
 
-#-----------------------------------------------------------------------
+
 
 
 def construct_fname(path, fprefix, var, time):
@@ -292,13 +292,13 @@ def construct_fname(path, fprefix, var, time):
     return fname
 
 
-#-----------------------------------------------------------------------
+
 def index_time_to_string_time(time_index):
     time_str = '%.2i' % time_index
     return time_str
 
 
-#-----------------------------------------------------------------------
+
 
 
 def construct_label(fname, k_on=True):
@@ -364,7 +364,7 @@ def construct_label(fname, k_on=True):
     return final_lab, k_lab, h_lab, B_lab
 
 
-#-----------------------------------------------------------------------
+
 
 
 def get_tloop(path, var='Te'):
@@ -398,7 +398,7 @@ def search_path(regexp, path):
     return out_name
 
 
-#-----------------------------------------------------------------------
+
 
 
 def get_startline(fname):
@@ -416,7 +416,7 @@ def get_startline(fname):
     return out_line
 
 
-#-----------------------------------------------------------------------
+
 
 
 def retrieve_path_tag(path):
@@ -448,7 +448,7 @@ def retrieve_path_tag(path):
     return final_lab
 
 
-#-----------------------------------------------------------------------
+
 def interp_data(x_in, y_in, x_data_smooth):
     '''
         SI.PchipInterpolater
@@ -459,7 +459,7 @@ def interp_data(x_in, y_in, x_data_smooth):
     return y_data_smooth
 
 
-#-----------------------------------------------------------------------
+
 
 
 def extract_power(x):
@@ -468,7 +468,7 @@ def extract_power(x):
     return b
 
 
-#-----------------------------------------------------------------------
+
 
 
 def fmt(x, pos=0.0):
@@ -477,7 +477,7 @@ def fmt(x, pos=0.0):
     return r'${} \times 10^{{{}}}$'.format(a, b)
 
 
-#-----------------------------------------------------------------------
+
 
 
 def fmt_ord(x, pos):
@@ -494,7 +494,7 @@ def limit_by(array, lim):
     return array
 
 
-#-----------------------------------------------------------------------
+
 
 
 def trim_array(array, nx, ny):
@@ -556,7 +556,7 @@ def trim_array(array, nx, ny):
         return out_array
 
 
-#-----------------------------------------------------------------------
+
 
 
 def trim_array_1D(array, nx, ny):
@@ -677,7 +677,7 @@ def get_l_num_lmfp(fname):
     return float(l_num)
 
 
-#-----------------------------------------------------------------------
+
 def get_it_list(path):
     '''                                                                                                                                 
     last_dump_index,last_time =  get_last_dump(path)                                                                                    
@@ -697,7 +697,7 @@ def get_it_list(path):
     return t_list
 
 
-#-----------------------------------------------------------------------
+
 def get_last_dump(path):
     '''                                                                                                                                 
     last_dump_index,last_time =  get_last_dump(path)                                                                                    
@@ -719,7 +719,7 @@ def get_last_dump(path):
     return last_dump_index
 
 
-#-----------------------------------------------------------------------
+
 def get_tau_n(ne0, Te0):
     '''
         tau_n = get_tau_n(ne0,Te0)
@@ -729,7 +729,7 @@ def get_tau_n(ne0, Te0):
     return tau_n
 
 
-#-----------------------------------------------------------------------
+
 def fpg_get_info(fname):
     '''
         Gets the IMPACT header info
@@ -769,7 +769,7 @@ def fpg_get_info(fname):
     return time, ndims, dim_array
 
 
-#-----------------------------------------------------------------------
+
 def get_fprefix(path, var='Te'):
     '''
         Gets the IMPACT header info
@@ -794,7 +794,7 @@ def get_fprefix(path, var='Te'):
     return fprefix
 
 
-#-----------------------------------------------------------------------
+
 def get_t_list(path, var='Te'):
     '''
         Gets the IMPACT header info
@@ -818,7 +818,7 @@ def get_t_list(path, var='Te'):
     return t_list, tc_list
 
 
-#-----------------------------------------------------------------------
+
 def load_path(path, var):
     '''
         Gets the IMPACT header info
@@ -926,7 +926,7 @@ def load_path(path, var):
     return dict
 
 
-#-----------------------------------------------------------------------
+
 def load_dict(path, fprefix, var, time):
     '''
         Gets the IMPACT header info
@@ -987,8 +987,8 @@ def load_dict(path, fprefix, var, time):
     return dict
 
 
-#-----------------------------------------------------------------------
-#-----------------------------------------------------------------------
+
+
 def load_dict_1D(path, fprefix, var, time):
     '''
         Gets the IMPACT header info
@@ -1076,7 +1076,7 @@ def load_dict_1D(path, fprefix, var, time):
     return dict
 
 
-#-----------------------------------------------------------------------
+
 
 
 def load_dict_OLD(path, fprefix, var, time):
@@ -1132,7 +1132,7 @@ def load_dict_OLD(path, fprefix, var, time):
     return dict
 
 
-#-----------------------------------------------------------------------
+
 def fpg_load(fname):
     '''
         loads the file
@@ -1180,7 +1180,7 @@ def fpg_load(fname):
     return hmat_final, v_grid, y_grid, x_grid
 
 
-#-----------------------------------------------------------------------
+
 
 
 def get_index(ny, nx):
@@ -1188,7 +1188,7 @@ def get_index(ny, nx):
     return index
 
 
-#-----------------------------------------------------------------------
+
 
 
 def get_time(fname):
@@ -1198,7 +1198,7 @@ def get_time(fname):
     return t
 
 
-#-----------------------------------------------------------------------
+
 
 
 def get_hallparam(Bz_norm, vte_norm, Z2ni_norm):
@@ -1604,7 +1604,7 @@ def calc_norms_2(var, sample=0.0, SI_on=True, normal_class=conv_factors_custom()
     return dict
 
 
-#-----------------------------------------------------------------------
+
 def get_grad_1d(x_grid, T_data):
     '''
         ONLY FOR CC cells - centred differencing
@@ -1639,7 +1639,7 @@ def add_grid_bcs(grid_in):
     return grid
 
 
-#-----------------------------------------------------------------------
+
 def get_grad(x_grid, y_grid, T_data, bc='none'):
     '''
         ONLY FOR CC cells - centred differencing
@@ -1687,7 +1687,7 @@ def get_grad(x_grid, y_grid, T_data, bc='none'):
             return dxT, dyT
 
 
-#-----------------------------------------------------------------------
+
 
 
 def get_grad_varZ(x_grid, y_grid, T_data):
@@ -1721,8 +1721,8 @@ def get_grad_varZ(x_grid, y_grid, T_data):
             return dxT, dyT
 
 
-#-----------------------------------------------------------------------
-#-----------------------------------------------------------------------
+
+
 
 
 def load_data_all(path, fprefix, time):
@@ -1836,7 +1836,7 @@ def load_data_all(path, fprefix, time):
     return dict
 
 
-#-----------------------------------------------------------------------
+
 def load_mat_1D(path_in, fprefix, time, var, nx, ny):
     dict_te = load_dict_1D(path_in, fprefix, var, time)
     mat = dict_te['mat']
@@ -1950,7 +1950,7 @@ def load_data_all_1D(path, fprefix, time):
     return dict
 
 
-#-----------------------------------------------------------------------
+
 def get_grad_3d(grid, data):
     '''
         ONLY FOR CC cells - centred differencing
@@ -2003,7 +2003,7 @@ def get_grad_3d(grid, data):
         return dxT, dyT
 
 
-#-----------------------------------------------------------------------
+
 def get_grad_3d_varZ(grid, data):
     '''
         ONLY FOR CC cells - centred differencing
@@ -2056,7 +2056,7 @@ def get_grad_3d_varZ(grid, data):
         return dxT, dyT
 
 
-#-----------------------------------------------------------------------
+
 
 
 def calc_q_T(qx_c, qy_c, jx_c, jy_c, ne, Cx, Cy, Ue):
@@ -2125,7 +2125,7 @@ def get_q_T(path, fprefix, time):
     return qxT, qyT
 
 
-#-----------------------------------------------------------------------
+
 
 
 def plot_ax(ax1, x_grid, data, norm_const, c='b', tlab='00', ls='-'):
@@ -2157,7 +2157,7 @@ def plot_ax(ax1, x_grid, data, norm_const, c='b', tlab='00', ls='-'):
     return
 
 
-#-----------------------------------------------------------------------
+
 def plot_2D_general(ax,
                     data,
                     label,
@@ -2194,7 +2194,7 @@ def plot_2D_general(ax,
     #print ' plotted ---- ', label
 
 
-#-----------------------------------------------------------------------
+
 
 
 def plot_xhlines(ax,
@@ -2217,7 +2217,7 @@ def plot_xhlines(ax,
                    dashes=dashes)
 
 
-#-----------------------------------------------------------------------
+
 def plot_xvlines(ax,
                  x_grid_im,
                  lim,
@@ -2245,7 +2245,7 @@ def plot_xvlines(ax,
                    dashes=dashes)
 
 
-#-----------------------------------------------------------------------
+
 
 
 def load_labeldict():
@@ -2265,7 +2265,7 @@ def load_labeldict():
     return dict
 
 
-#-----------------------------------------------------------------------
+
 
 
 def produce_2D_fig(x_grid, data, lab_dict, lineout_list=[20, 40, 50, 73]):
@@ -2304,7 +2304,7 @@ def produce_2D_fig(x_grid, data, lab_dict, lineout_list=[20, 40, 50, 73]):
     plt.close(fig)
 
 
-#-----------------------------------------------------------------------
+
 
 
 def plot_twodim(ax1, path, fprefix, var, time='00', cmap='RdBu_r'):
@@ -2369,7 +2369,7 @@ def plot_twodim(ax1, path, fprefix, var, time='00', cmap='RdBu_r'):
     plt.colorbar(im, format=fmt_cbar, shrink=0.9, label=c_title)
 
 
-#-----------------------------------------------------------------------
+
 def plot_twodim_dict(ax1, dict, var, colormap='RdBu_r'):
     norm_const, c_title, c_fmt = calc_norms(var)
     leg_list = []
@@ -2437,7 +2437,7 @@ def plot_twodim_dict(ax1, dict, var, colormap='RdBu_r'):
     plt.colorbar(im, format=fmt_cbar, shrink=0.9, label=c_title)
 
 
-#-----------------------------------------------------------------------
+
 
 
 def get_path_style(final_lab, h_lab, B_lab):
@@ -2471,7 +2471,7 @@ def get_path_style(final_lab, h_lab, B_lab):
     return lstyle, marker
 
 
-#-----------------------------------------------------------------------
+
 
 
 def get_path_style_path(fprefix):
@@ -2497,7 +2497,7 @@ def get_path_style_path(fprefix):
     return lstyle, marker
 
 
-#-----------------------------------------------------------------------
+
 
 
 def get_q_over_qFS(path, fprefix, time):
@@ -2525,7 +2525,7 @@ def get_q_over_qFS(path, fprefix, time):
     return qx_over_qFS, qy_over_qFS
 
 
-#-----------------------------------------------------------------------
+
 
 
 def get_Ptotal(path, fprefix, time, Z=6.51):
@@ -2605,7 +2605,7 @@ def get_speckle_fname_detail(name):
     return tcoh, rad, B
 
 
-#-----------------------------------------------------------------------
+
 def get_avgx(mat, ax=1):
     '''
         ax  = [n,..,2,1,0]
@@ -2617,7 +2617,7 @@ def get_avgx(mat, ax=1):
     return avg
 
 
-#-----------------------------------------------------------------------
+
 def get_U_dev(U_data, lim=0.01):
     '''
         Gets a measure of the fractional deviation from average
@@ -2632,7 +2632,7 @@ def get_U_dev(U_data, lim=0.01):
     return U_dev
 
 
-#-----------------------------------------------------------------------
+
 def get_U_dev_abs(U_data):
     '''
         Gets a measure of the fractional deviation from average
@@ -2648,8 +2648,8 @@ def get_U_dev_abs(U_data):
     return U_dev
 
 
-#-----------------------------------------------------------------------
-#-----------------------------------------------------------------------
+
+
 def get_U_dev_frac(U_data):
     '''
         Gets a measure of the fractional deviation from average
@@ -2665,7 +2665,7 @@ def get_U_dev_frac(U_data):
     return U_dev
 
 
-#-----------------------------------------------------------------------
+
 def get_sigma_rms(U_data, reduced=True):
     '''
         Gets a measure of the fractional deviation from average
@@ -2682,7 +2682,7 @@ def get_sigma_rms(U_data, reduced=True):
     return summy
 
 
-#-----------------------------------------------------------------------
+
 
 
 def annotate_time(ax, lett='(a)', dx_mult=1.0, dy_mult=1.0, loc='top', fontsize=0):
@@ -2726,7 +2726,7 @@ def get_atomic_Z(fname):
     return Z_fl
 
 
-#------------------------------------------------------------------------------
+
 def get_dims(fname):
     '''
         Searches fname - which should be either fort.10 or an IMPACT rundeck to retrieve the run dimensions
@@ -2753,7 +2753,7 @@ def get_dims(fname):
 
 
 #------=================================================================
-#-----------------------------------------------------------------------
+
 def set_ylim_max(ax_in, x_grid, data, xlim, y_mult=[1.0, 1.0]):
     '''
         This funciton sets the max and min y values of a particular plot
@@ -2775,7 +2775,7 @@ def set_ylim_max(ax_in, x_grid, data, xlim, y_mult=[1.0, 1.0]):
     return
 
 
-#------------------------------------------------------------------------------
+
 def data_intersect(x_grid,
                    data,
                    data_pos=np.array([100.0, 200.0, 300.0, 400.0, 500.0, 600.0, 800.0])):
@@ -2790,7 +2790,7 @@ def data_intersect(x_grid,
     return i_out
 
 
-#-----------------------------------------------------------------------
+
 def get_wt(path, time):
     '''
         CURRENT IMPACT RUNS HAVE INCORRECT HALL PARAMETER OUTPUTS
@@ -2820,7 +2820,7 @@ def get_wt(path, time):
     return wte_uncorrected / Z2ni
 
 
-#-----------------------------------------------------------------------
+
 def get_wt_1D(path, time):
     '''
         CURRENT IMPACT RUNS HAVE INCORRECT HALL PARAMETER OUTPUTS

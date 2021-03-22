@@ -151,7 +151,7 @@ def interp_data(x_in, y_in, x_data_smooth):
     return y_data_smooth
 
 
-#-----------------------------------------------------------------------
+
 
 
 def get_coeff(coeff_name, Z):
@@ -162,7 +162,7 @@ def get_coeff(coeff_name, Z):
     return coeff_val
 
 
-#-----------------------------------------------------------------------
+
 def get_coeff_dict(Z):
     dict = load_EHcoeffs()
     Z_arr = dict['Z']
@@ -174,7 +174,7 @@ def get_coeff_dict(Z):
     return out_dict
 
 
-#-----------------------------------------------------------------------
+
 
 
 def coeff_poly_fit(chi, Z):
@@ -250,7 +250,7 @@ def coeff_poly_fit(chi, Z):
     return t_dict, coeff_dict
 
 
-#-----------------------------------------------------------------------
+
 def coeff_poly_fit_diff(chi, Z):
     '''
         Finds the differential forms of the EH transport coefficients.

@@ -7,7 +7,7 @@ m_p = 1.67e-27
 k_b = 1.38e-23
 epsilon0 = 8.854e-12
 
-#-----------------------------------------------------------------------
+
 
 
 def extract_power(x):
@@ -16,7 +16,7 @@ def extract_power(x):
     return b
 
 
-#-----------------------------------------------------------------------
+
 
 
 def impact_inputs(ne, Te, Z, Bz, Ar):
@@ -107,7 +107,7 @@ def impact_inputs(ne, Te, Z, Bz, Ar):
     return dict
 
 
-#-----------------------------------------------------------------------
+
 def calc_norms(var, normal_dict, sample=0.0, forced_power=[]):
     '''
         norm_const, ylab = calc_norms(var)

@@ -2,7 +2,7 @@
     This script is the same as 'plot_ohms_law_components_2D_varZ.py'
     except it calls 
 '''
-#-----------------------------------------------------------------------
+
 
 import sys, os, re, getpass, site, numpy as np
 userid = getpass.getuser()
@@ -18,7 +18,7 @@ from pylab import *
 from matplotlib import ticker
 #
 import MODULES.chfoil_module as cf
-#import figure_prl_twocol as fprl
+#import MODULES.figure_prl_twocol as fprl
 from chfoil_module import conv_factors_cd5
 from chfoil_module import cd5_switches
 import figure as fprl
@@ -60,7 +60,7 @@ save_path = '/Users/' + userid + '/Dropbox/York/Pre-magnetised/RESULTS/' + path.
 if not os.path.exists(save_path):
     os.system('mkdir ' + save_path)
 path_tag = cf.retrieve_path_tag(path)
-#-----------------------------------------------------------------------
+
 log_on = True
 
 SI_on = cd5_switches.SI_on
@@ -101,7 +101,7 @@ fcmap = fprl.plotting_params.lineouts_cmap
 ratios_savename = 'qSHqRLvN_ratios_' + ptag
 
 
-#-----------------------------------------------------------------------
+
 def extend_grid_xy_to_vxy(nv, ny, nx, grid_xy):
     '''
         
@@ -142,7 +142,7 @@ def extend_grid_x_to_vxy(nv, ny, nx, grid_x):
     return grid_vyx
 
 
-#-----------------------------------------------------------------------
+
 def get_omega(v_grid, ni, Bz):
     nu_ei = (Z**2) * ni * (v_grid**-3)
     omega = Bz * (nu_ei**-1)
@@ -197,7 +197,7 @@ def get_delta(v_grid, omega, F0):
     return delta
 
 
-#-----------------------------------------------------------------------
+
 def get_fo_mom_int(m, rho_vyx, omega_vyx, fo):
     prefactor = (4.0 * np.pi / 3.0) * rho_vyx    # rho = 1/Z2ni
     # omega  = Bz/Z2ni = Bz*rho
@@ -213,7 +213,7 @@ def get_fo_mom_int(m, rho_vyx, omega_vyx, fo):
     return mom
 
 
-#-----------------------------------------------------------------------
+
 
 
 def get_fo_mom_int2(m, rho_vyx, omega_vyx, fo):
@@ -231,7 +231,7 @@ def get_fo_mom_int2(m, rho_vyx, omega_vyx, fo):
     return mom
 
 
-#-----------------------------------------------------------------------
+
 
 
 def get_dfodv_int(n, rho_vyx, omega_vyx, fo):
@@ -446,7 +446,7 @@ def get_qSH_kinetic(grid, rho_vyx, Bz_vyx, jx, jy, fo):
     return dict
 
 
-#-----------------------------------------------------------------------
+
 
 
 def get_alpha_perp(w, rho, ne, Te, F0, v_grid):
@@ -469,7 +469,7 @@ def get_alpha_perp(w, rho, ne, Te, F0, v_grid):
     return alpha
 
 
-#-----------------------------------------------------------------------
+
 def get_alpha_wedge(w, rho, ne, Te, F0, v_grid):
     '''
         alpha_wedge = K *omega*( (1.5 V_8_5/(V_5*Delta)) - 1.0)
@@ -487,7 +487,7 @@ def get_alpha_wedge(w, rho, ne, Te, F0, v_grid):
     return alpha
 
 
-#-----------------------------------------------------------------------
+
 def get_beta_perp(w, rho, ne, Te, F0, v_grid):
     '''
         beta_perp = get_beta_perp(w,rho,ne,Te,F0,v_grid)
@@ -504,7 +504,7 @@ def get_beta_perp(w, rho, ne, Te, F0, v_grid):
     return beta
 
 
-#-----------------------------------------------------------------------
+
 def get_beta_wedge(w, rho, ne, Te, F0, v_grid):
     '''
         beta_wedge = get_beta_wedge(w,rho,ne,Te,F0,v_grid)
@@ -523,7 +523,7 @@ def get_beta_wedge(w, rho, ne, Te, F0, v_grid):
     return beta
 
 
-#-----------------------------------------------------------------------
+
 def get_kappa_perp(w, rho, ne, Te, F0, v_grid):
     rZZni = rho
     vte = (2.0 * Te)**0.5
@@ -549,7 +549,7 @@ def get_kappa_perp(w, rho, ne, Te, F0, v_grid):
     return kappa
 
 
-#-----------------------------------------------------------------------
+
 def get_kappa_wedge(w, rho, ne, Te, F0, v_grid):
     rZZni = rho
     vte = (2.0 * Te)**0.5
@@ -576,7 +576,7 @@ def get_kappa_wedge(w, rho, ne, Te, F0, v_grid):
     return kappa
 
 
-#-----------------------------------------------------------------------
+
 
 
 def get_v_N_classical(Z2ni, ne, Te, w, dxT, dyT, jx=0.0, jy=0.0):
@@ -602,7 +602,7 @@ def get_v_N_classical(Z2ni, ne, Te, w, dxT, dyT, jx=0.0, jy=0.0):
     return v_N_x, v_N_y
 
 
-#-----------------------------------------------------------------------
+
 
 
 def get_vN_from_path(path, fprefix, time):
@@ -677,7 +677,7 @@ def get_vN_from_path(path, fprefix, time):
     return v_nx, v_ny, v_nx_hf, v_ny_hf
 
 
-#-----------------------------------------------------------------------
+
 def get_q_SH(ne, Te, w, dxT, dyT):
 
     #Te = 0.5
@@ -784,7 +784,7 @@ def plot_2D(ax,
     #print ' plotted ---- ', label
 
 
-#-----------------------------------------------------------------------
+
 def vmom_f1(m, v_grid, f1x_c, f1y_c):
     '''
     
@@ -1021,10 +1021,10 @@ def get_avgx(mat, ax=1):
     return avg
 
 
-#-----------------------------------------------------------------------
 
 
-#-----------------------------------------------------------------------
+
+
 def get_Nernst_ratio(path, time, sep_var=False):
     '''
     data_x,data_y = get_Nernst_ratio(path,time)
@@ -1121,7 +1121,7 @@ def get_Nernst_ratio(path, time, sep_var=False):
     return data_x, data_y
 
 
-#-----------------------------------------------------------------------
+
 def get_ratio_lim(q_yc, q_yk, vmax=1.5):
     print ' np.max(q_yc) min = ', np.min(np.abs(q_yc)), np.max(np.abs(q_yc))
     ratio_factor = np.abs(q_yk / q_yc)
@@ -1136,7 +1136,7 @@ def get_ratio_lim(q_yc, q_yk, vmax=1.5):
     return data_y
 
 
-#-----------------------------------------------------------------------
+
 def get_combined_dict(q_yc, q_yk):
     comb_dict = {}
     comb_dict['classical'] = q_yc
@@ -1144,7 +1144,7 @@ def get_combined_dict(q_yc, q_yk):
     return comb_dict
 
 
-#-----------------------------------------------------------------------
+
 
 
 def get_q_ratio(path, time):
@@ -1752,7 +1752,7 @@ def extract_ohms(path, time, x_limit=73):
     return dict
 
 
-#-----------------------------------------------------------------------
+
 def extract_ohms(path, time, x_limit=73):
     '''
     dict = extract_heatflow(path,time)

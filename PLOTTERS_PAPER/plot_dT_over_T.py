@@ -7,12 +7,12 @@
 import numpy as np, sys, os, getpass, site, re
 sys.path.extend(["./"])
 import matplotlib.pyplot as plt
-import figure_prl_twocol as fprl
+import MODULES.figure_prl_twocol as fprl
 import matplotlib.gridspec as GS
 import matplotlib.ticker as ticker
 from pylab import *
 import MODULES.kinetic_ohmslaw_module_varZ as q_mod
-import gen_Te_lineout as TEL
+import PLOTTERS.gen_Te_lineout as TEL
 import gen_dyqy_RL_varZ as qrl
 import MODULES.chfoil_module as cf
 import MODULES.house_keeping as hk
@@ -81,7 +81,7 @@ if scale_len == 2:
 else:
     xmin, xmax = 0.0, 20.0
 ymin, ymax = y_grid[0], y_grid[-1]
-#-------------------------------------------------------------------------
+
 
 
 def custom_im(ax, xgrid, data, lab):
@@ -109,7 +109,7 @@ def custom_contour(ax, xgrid, data, lab, **kwargs):
     #ax.set_ylim(xmax,xmin)
 
 
-#-------------------------------------------------------------------------
+
 
 #<<<--- transport inputs
 

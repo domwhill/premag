@@ -8,7 +8,7 @@ import numpy as np, sys, os, getpass, site
 sys.path.extend(["./"])
 
 import matplotlib.pyplot as plt
-import gen_Te_lineout as TEL
+import PLOTTERS.gen_Te_lineout as TEL
 import gen_dyqy_RL_varZ as dyqy
 import gen_dBdt_bier_varZ as gdBdt
 import figure as fprl
