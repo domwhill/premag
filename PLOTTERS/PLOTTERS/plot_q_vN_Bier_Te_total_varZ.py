@@ -16,8 +16,8 @@ import matplotlib as mpl
 from pylab import *
 import figure as fprl
 import MODULES.chfoil_module as cf
-from chfoil_module import conv_factors_cd5
-from chfoil_module import cd5_switches
+from MODULES.chfoil_module import conv_factors_cd5
+from MODULES.chfoil_module import cd5_switches
 import MODULES.kinetic_ohmslaw_module_varZ as kbier
 
 nv = 100

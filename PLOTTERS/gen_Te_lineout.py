@@ -4,16 +4,12 @@
 '''
 
 import numpy as np, re, os, sys, getpass, matplotlib.pyplot as plt, site
-userid = getpass.getuser()
-site.addsitedir('/Users/' + userid + '/Dropbox/IMPACT_dir/SIM_DATA/ANALYSIS')
+sys.path.extend(["./"])
 import MODULES.chfoil_module as cfoil
-from chfoil_module import conv_factors_eos
-from chfoil_module import cd5_switches
+from MODULES.chfoil_module import cd5_switches
 import MODULES.house_keeping as hk
 import MODULES.figure_prl_twocol as fprl
-import matplotlib.ticker as ticker
 from pylab import *
-userid = getpass.getuser()
 
 #path_tag = cfoil.retrieve_path_tag(path_list[0])
 
@@ -64,9 +60,6 @@ def plot_Te_xlineout(fig, ax, path_list, var_amp='Te', time='15', vert_lines='Fa
         color_lineout = dict_list['color_lineout']
         lineout_list = dict_list['lineout_list']
 
-    #SI_on = True
-    #norm_name = '/Users/' + userid + '/Dropbox/IMPACT_dir/chfoil_d5/chfoil_default5_norm.txt'
-    #cd5 = cfoil.conv_factors_cd5(SI_on,norm_name)
     # --- init stuff
     leg_list = []
     lab_list = []
@@ -93,12 +86,10 @@ def plot_Te_xlineout(fig, ax, path_list, var_amp='Te', time='15', vert_lines='Fa
         T_data = dict_T['mat']
         time_col = float(dict_T['time']) * tstep_factor
         x_c_grid = dict_T['x_grid'] * xstep_factor
-        #x_c_grid = x_c_grid[:len(T_data[cl_index:c_index,0])]
         y_c_grid = dict_T['y_grid'] * xstep_factor
         print ' x_c_grid shape = ', np.shape(x_c_grid), np.shape(T_data[cl_index:c_index])
 
         ax.yaxis.set_ticks(np.array([0.6, 0.8, 1.0]))
-        #ax.yaxis.set_major_formatter(ticker.FormatStrFormatter('%0.1f'))
 
         min_data = np.min(T_data[cl_index:c_index, :])
         dict = cfoil.calc_norms_2('Te keV', min_data)
@@ -273,32 +264,32 @@ def plot_custom_xlineout_amp_tevol(fig,
                                    ax,
                                    path_list,
                                    var_amp='Te',
-                                   time_list=['15'],
+                                   time_list=('15'),
                                    vert_lines='False',
-                                   style_list=['-', '--', ':', '-', '--', ':'],
-                                   mstyle_list=[None, None, None, 'x', '^', 'o'],
-                                   leg_dict=[],
-                                   axleg=[]):
+                                   cmap=None,
+                                   style_list=('-', '--', ':', '-', '--', ':'),
+                                   mstyle_list=(None, None, None, 'x', '^', 'o'),
+                                   leg_dict=(),
+                                   axleg=()):
     '''
         p2 = plot_custom_xlineout(fig,ax,path_list,var_amp='Te')
     '''
     # --- init stuff
 
     leg_list = []
-    lab_list = []
     lim_data = 0.01
-    min, max = 0.0, lim_data
 
     # ---- loop over paths
-    leg2_list = []
-    lab_lineout_list = []
-    leg_list_x = []
-    lab_list_x = []
-    save_name = '2D1_' + var_amp + 'amp'
+    if cmap is None:
+        c_list = cm.plasma(np.linspace(0, 1, len(time_list)))
+    elif isinstance(cmap, (list,tuple)):
+        c_list = cmap
+    else:
+        c_list = cmap(np.linspace(0,1,len(time_list)))
+
     for pp in range(len(path_list)):
         p_list = []
         leg_list = []
-        c_list = cm.plasma(np.linspace(0, 1, len(time_list)))
         for tt in range(len(time_list)):
             time = time_list[tt]
             var = var_amp
@@ -323,14 +314,10 @@ def plot_custom_xlineout_amp_tevol(fig,
 
             time_col = float(dict_T['time']) * tstep_factor
             x_c_grid = dict_T['x_grid'] * xstep_factor
-            y_c_grid = dict_T['y_grid'] * xstep_factor
             min_data = np.min(T_data[cl_index:c_index, :])
             dict = cfoil.calc_norms_2(var, min_data, normal_class=cd5, forced_power=[0])
             norm_const = dict['norm_const']
             c_title = r'$\delta$ ' + dict['title']
-            c_fmt = dict['c_fmt']
-            var_name = dict['var_name']
-            units = dict['units']
 
             final_lab, k_lab, h_lab, B_lab = cfoil.construct_label(fname)
             final_lab = r'$' + final_lab + '$'
@@ -340,7 +327,6 @@ def plot_custom_xlineout_amp_tevol(fig,
             lstyle = style_list[pp]
             mstyle = mstyle_list[pp]
             print 'lstyle = ', lstyle, mstyle
-            yminax, ymaxax = ax.get_ylim()
             data_amp_2D = cfoil.get_U_dev_abs(T_data[cl_index:c_index, :])
             data_amp = np.max(data_amp_2D, axis=1)
 
@@ -377,9 +363,6 @@ def plot_custom_xlineout(fig,
     '''
         p2 = plot_custom_xlineout(fig,ax,path_list,var_amp='Te')
     '''
-    #SI_on = True
-    #norm_name = '/Users/' + userid + '/Dropbox/IMPACT_dir/chfoil_d5/chfoil_default5_norm.txt'
-    #cd5 = cfoil.conv_factors_cd5(SI_on,norm_name)
     # --- init stuff
     leg_list = []
     lab_list = []
@@ -637,7 +620,6 @@ def plot_ylineout_custom(fig,
 
         final_lab, k_lab, h_lab, B_lab = cfoil.construct_label(fname)
         final_lab = r'$' + final_lab + '$'
-        #b00 = re.search('=0$', B_lab)
         lstyle = style_list[pp]
         mstyle = mstyle_list[pp]
         for xl in range(len(lineout_list)):

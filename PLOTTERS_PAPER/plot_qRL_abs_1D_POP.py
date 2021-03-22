@@ -90,7 +90,7 @@ Bz_ref = (m_e / (q_e * tau_ei))
 
 #<--------------
 # inputs
-#-------------------------------------------->
+#------------->
 scale_len = 1
 dim = 1
 lambda_p_mfp = 5    # doesn't matter since looking for 2d runs

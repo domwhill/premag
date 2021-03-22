@@ -1,76 +1,28 @@
 '''
 27/08/2019
-- Rehash of plot_q_lineout.py
+
+plot lineouts of dTe (the perturbed electron temperature).
+
 
 
 '''
-import numpy as np, sys, os, getpass, site, re
+import sys
 sys.path.extend(["./"])
-import matplotlib.pyplot as plt
 import MODULES.figure_prl_twocol as fprl
 import matplotlib.gridspec as GS
-import matplotlib.ticker as ticker
-import pdb
 from pylab import *
-import MODULES.kinetic_ohmslaw_module_varZ as q_mod
 import PLOTTERS.gen_Te_lineout as TEL
 import MODULES.chfoil_module as cf
-import MODULES.house_keeping as hk
 import MODULES.plot_utils as utils
-import MODULES.tsi_module as tsi
-'''
 
-#---> constants...
-c = 3e8
-q_e = 1.602e-19
-k_B = 1.38e-23
-m_e = 9.11e-31
-#-----
-# functions
-fpre = lambda path_in: path_in.split('/')[-1]
-def b_lab(bz_in):
-    if int(bz_in) == -1:
-        lab = 'no B'
-    else:
-        lab = r'$%i\,\si{T}$' % (bz_in)
-    return lab
-
-
-#---> file inputs
-paths = hk.directory_paths()
-src_dir = paths.src_dir
-data_dir = paths.data_dir_2D
-save_path = paths.save_dir
-norm_dir = paths.norm_dir
-log_file = norm_dir + 'norm.log'
-[T_ref,n_ref,Z_ref,Bz_ref] = np.loadtxt(log_file)
-cd5 = cf.conv_factors_custom(norm_dir,Z_ref,Ar=6.51)
-
-
-Te_factor = 2.0*T_ref*1e-3
-#--->  getting path ->
-lambda_p = 5
-
-path_list = []
-#--- generating  path_list
-scale_len = 1
-save_tag = 'LT%i_' % (scale_len)
-bz_list = [-1,50.0,100.0]
-lab_list = []
-for ip in range(len(bz_list)):    
-    path_loc = paths.get_path(scale_len,bz_list[ip],lambda_p)
-    path_list.append(path_loc)
-    lab_list.append(b_lab(bz_list[ip]))
-'''
 #aesthetics
 cmap = cm.viridis
-
-#<<<--- transport inputs
-time = '07'
+# impact y index to plot (for x lineout iy = 0..40, pick iy=20 for as central coord,)
 iy = 20
 c_list = ['r', 'g', 'b']
 
-#-------------------------------------->
+#<<<--- transport inputs
+
 
 fpre = lambda path_in: path_in.split('/')[-1]
 
@@ -88,8 +40,10 @@ def set_yax(ax, xlab, ylab, xlim):
     ax.tick_params(which='both', direction='in')
 
 
-class plot_dT_vs_x:
+class PlotdTx:
+    """Class to plot a line out dTe vs spatial coordinate along the x direction.
 
+    """
     def __init__(self, run_obj_list, time_list):
         self.style_list = [':', '--', '-', '-', '--', ':']
         self.mstyle_list = [None, None, None, 'x', '^', 'o']
@@ -111,8 +65,7 @@ class plot_dT_vs_x:
             mstyle_list=self.mstyle_list,
             cmap=['gray', 'b', 'k'],
             axleg=ax_t,
-            leg_dict=[])    #{'title': self.norm.tlab, 'some_other thing': 1.0})
-        # leg = ax_t.legend(p1dt, leg_list,loc = 'bottom right')
+            leg_dict=[])
 
         var = 'Te'
         p_list = []
@@ -146,12 +99,13 @@ class plot_dT_vs_x:
         idx_list = run_obj.get_idx_list()
         for ix, idx in enumerate(idx_list):
             ax.scatter(x_grid[idx], data[idx], c=c_list[ix], marker='x')
-
         pass
 
 
-class plot_dT_vs_y:
+class PlotdTy:
+    """Plot a lineout of dT (perturbed electron temperature) along the y axis
 
+    """
     def __init__(self, run_obj, **kwargs):
         # assuming norms are the same for all run objs which is the case for all premag runs.
         self.run_obj = run_obj
@@ -172,7 +126,7 @@ class plot_dT_vs_y:
         path = self.run_obj.path
         leg_tag = self.run_obj.tag
         idx_list = self.run_obj.get_idx_list()
-        #-->--->
+
         dict_all = cf.load_data_all(path, cf.fpre(path), self.time)
         data = dict_all['Te'].T
         y_grid = dict_all['y_grid'][1:-1]
@@ -194,40 +148,31 @@ class plot_dT_vs_y:
             set_yax(ax, xlab, ylab, [ymin, ymax])
 
 
-#-------------------------------------->
+if __name__ == "__main__":
+    # times to plot - 06 is IMPACT time dump number 6
+    time_to_plot = '06'
+    # magnetic field strengths (T) being plot
+    bz_list = [0.0, 50.0, 400.0]
 
-fig = fprl.newfig_generic_twinx(1.0, scale_width=1.0, scale_ratio=1.4)
-gs = GS.GridSpec(2, 3, height_ratios=[1.0, 0.4])
-gs.update(wspace=0.5, hspace=0.5, left=0.15, right=0.88)
-ax_t = plt.subplot(gs[0, :])
-ax1 = plt.subplot(gs[1, 0])
-ax2 = plt.subplot(gs[1, 1])
-ax3 = plt.subplot(gs[1, 2])
+    fig = fprl.newfig_generic_twinx(1.0, scale_width=1.0, scale_ratio=1.4)
+    gs = GS.GridSpec(2, 3, height_ratios=[1.0, 0.4])
+    gs.update(wspace=0.5, hspace=0.5, left=0.15, right=0.88)
+    ax_t = plt.subplot(gs[0, :])
+    ax1 = plt.subplot(gs[1, 0])
+    ax2 = plt.subplot(gs[1, 1])
+    ax3 = plt.subplot(gs[1, 2])
 
-time_list = ['06']
-bz_list = [0.0, 50.0, 400.0]
-run_obj_list = utils.run_obj_list('bz', scale_length=1, bz_in=bz_list, pert_amp='1p')
-time_max = run_obj_list.tmax_index
-# sort by bz
+    run_obj_list = utils.run_obj_list('bz', scale_length=1, bz_in=bz_list, pert_amp='1p', time=time_to_plot)
+    # sort by bz - note plot_dT_vs_x expects a list of times)
+    PlotdTx(run_obj_list, [time_to_plot]).plot(ax_t)
+    PlotdTy(run_obj_list.run_obj_dict['0']).plot(ax1, time_to_plot)
+    PlotdTy(run_obj_list.run_obj_dict['50']).plot(ax2, time_to_plot)
+    PlotdTy(run_obj_list.run_obj_dict['400']).plot(ax3, time_to_plot)
 
-plot_dT_vs_x(run_obj_list, time_list).plot(ax_t)
-plot_dT_vs_y(run_obj_list.run_obj_dict['0']).plot(ax1, time_max)
-plot_dT_vs_y(run_obj_list.run_obj_dict['50']).plot(ax2, time_max)
-plot_dT_vs_y(run_obj_list.run_obj_dict['400']).plot(ax3, time_max)
+    ax2.set_ylabel('')
+    ax3.set_ylabel('')
+    save_name = '%s_%s.png' % (run_obj_list.save_tag, '4plotdT')
 
-ax2.set_ylabel('')
-ax3.set_ylabel('')
-save_name = '%s_%s.png' % (run_obj_list.save_tag, '4plotdT')
-#------------------->>>
-
-#====================================================
-
-#=======
-#plt.show()
-
-plt.savefig(save_name, dpi=600)
-print('saving as: ', save_name)
-print(' copy and paste: open -a preview ' + save_name)
-
-#plt.show()
-#plt.close()
+    plt.savefig(save_name, dpi=600)
+    print('saving as: ', save_name)
+    print(' copy and paste: open -a preview ' + save_name)

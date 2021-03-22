@@ -17,8 +17,8 @@ from matplotlib import ticker
 #
 import MODULES.chfoil_module as cf
 #import MODULES.figure_prl_twocol as fprl
-from chfoil_module import conv_factors_cd5
-from chfoil_module import cd5_switches
+from MODULES.chfoil_module import conv_factors_cd5
+from MODULES.chfoil_module import cd5_switches
 import figure as fprl
 
 nv = 100

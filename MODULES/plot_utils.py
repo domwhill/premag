@@ -76,7 +76,6 @@ class run_obj_list:
         self.var_type = var_type
         self.var_list = convert_lists_to_set(self.scale_length, self.bz_in, self.lambda_p,
                                              self.pert_amp)
-
         #--->
         self.path_list = {}
         paths = hk.directory_paths()
@@ -102,9 +101,10 @@ class run_obj_list:
             self.save_tag = self.save_tag + 'LT' + str(scale_length) + '_'
 
         # find maximum simulation dump time in obj_list
-        self.tmax_index = '00'
+        self.tmax_index = None
         self.get_max_time()
-        self.save_tag = self.save_tag + str(self.tmax_index)
+
+        self.save_tag = self.save_tag + str(kwargs.get("time", self.tmax_index))
 
     def get_max_time(self):
         time_in_list = []
@@ -113,7 +113,7 @@ class run_obj_list:
             time_in_list.append(int(t_list[-1]))
 
         self.time_in_list = time_in_list
-        time_in = int(np.min(time_in_list))
+        time_in = int(np.max(time_in_list))
         self.tmax_index = '%02i' % (time_in)
         self.tmax_col = tc_list[time_in]
 
