@@ -5,11 +5,12 @@
 '''
 
 import sys
+import os
 import numpy as np
 from pylab import *
 import matplotlib.gridspec as GS
-sys.path.extend(["./"])
 
+sys.path.extend(["./"])
 import PLOTTERS.gen_Te_lineout as TEL
 import PLOTTERS.gen_dyqy_RL_varZ as dyqy
 import MODULES.figure as fprl

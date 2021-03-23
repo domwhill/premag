@@ -5,16 +5,17 @@
 
 '''
 import numpy as np, sys, os, getpass, site, re
-sys.path.extend(["./"])
-import matplotlib.pyplot as plt
-import MODULES.figure_prl_twocol as fprl
 from pylab import *
-import MODULES.kinetic_ohmslaw_module_varZ as kohb
+import matplotlib.pyplot as plt
 import matplotlib.gridspec as GS
+
+sys.path.extend(["./"])
+import MODULES.figure_prl_twocol as fprl
+import MODULES.kinetic_ohmslaw_module_varZ as kohb
 import MODULES.chfoil_module as cf
 import MODULES.house_keeping as hk
 import MODULES.tsi_module as tsi
-import gen_dyqy_RL_varZ as qrl
+import PLOTTERS.gen_dyqy_RL_varZ as qrl
 
 #---> constants...
 c = 3e8
