@@ -231,7 +231,7 @@ class PlotContour():
 
     def load_RL(self):
 
-        dyqy, qlab = qrl.get_divqRL(self.path, self.time)
+        dyqy, qlab = qrl.get_divqRL(self.path, self.time, switch_kinetic_on=True)
         self.data_k = np.transpose(dyqy * 1.0)
 
         dyqy_c, qlab_c = qrl.get_divqRL(self.path, self.time, switch_kinetic_on=False)
@@ -262,7 +262,7 @@ class PlotContour():
             x_grid_b = self.x_grid[1:-1]
 
         self.im = custom_im(ax, self.x_grid, self.data, self.lab, lim, **self.kwargs)
-        # contour plots - set contour levels using kinetic data
+        # contour plots - set contour levels using classical data
         lvls = custom_contour(ax, x_grid_b, self.data_c, self.lab, lim=lim, colors='xkcd:green')
         lvls = custom_contour(ax,
                               x_grid_b,
