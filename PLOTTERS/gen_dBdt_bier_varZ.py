@@ -67,8 +67,6 @@ def load_qdata(path, time='10'):
     tt = int(time)
     string_tt_glb = '%2.2i' % int(time)
     time = string_tt_glb
-    print ' ---------- tt ==== ', tt
-    print '--------'
     print '\n\nkinetic model time = ', time
     dict = kohb.get_kinetic_heatflow_b(path, str(time))
     kohnew[path] = dict

@@ -101,10 +101,7 @@ def load_qdata(path, time='10'):
 
     tt = int(time)
     string_tt_glb = '%2.2i' % int(time)
-    #string_tt_glb = '%02i' %  int(time)
     time = string_tt_glb
-    print ' ---------- tt ==== ', tt
-    print '--------'
     print '\n\nkinetic model time = ', time
     dict = kohb.get_kinetic_heatflow_b(path, str(time))
     kohnew[path] = dict
@@ -324,7 +321,7 @@ def _get_divqRL(path, time, switch_kinetic_on=True):
     x_grid_SI = kohnew[path]['x_grid'] * xstep_factor
     y_grid_SI = kohnew[path]['y_grid'] * xstep_factor
     # --- do everything in units of 10 eV/ps
-    data_yk = np.transpose(kohnew[path][var + '_y']['data'])  # q_SH_y[path][tt,:,:]
+    data_yk = dict_k['RL y']
     data_yc = dict_c['RL y']
 
     if switch_kinetic_on:
