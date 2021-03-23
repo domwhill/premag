@@ -828,7 +828,7 @@ def get_vN_from_path(path, fprefix, time):
     v_nx_hf = np.zeros((ny, nx))
     v_ny_hf = np.zeros((ny, nx))
 
-    print('shape after = ', np.shape(Z2ni), np.shape(Te), np.shape(dxT), np.shape(dyT), ny, nx)
+
     for ix in range(nx):
         for iy in range(ny):
             Z2ni_loc = Z2ni[iy, ix]
