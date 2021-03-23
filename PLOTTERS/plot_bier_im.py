@@ -3,18 +3,14 @@
     This script plots image plots of dBdt due to biermann
 
 '''
-import numpy as np, sys, os, getpass, site
-userid = getpass.getuser()
-site.addsitedir('/Users/' + userid + '/Dropbox/IMPACT_dir/SIM_DATA/ANALYSIS')
-site.addsitedir('/Users/' + userid + '/Dropbox/IMPACT_dir/SIM_DATA/ANALYSIS/MODULES')
-import matplotlib.pyplot as plt
-#---> kinetic/classical transport post processing module
+import sys
+
+sys.path.extend(["./"])
 import MODULES.kinetic_ohmslaw_module_varZ as kohb
 import MODULES.figure_prl_twocol as fprl
 from pylab import *
 import MODULES.chfoil_module as cf
 import MODULES.house_keeping as hk
-import pdb
 
 q_e = 1.602e-19
 m_e = 9.11e-31
@@ -58,10 +54,7 @@ ylab_bier = r'$\partial_t \mathbf{B}|_{B}$'
 ylab_bier = r'$\partial_t \mathbf{B}|_{B}$ [$\si{Ts^{-1}}$]'
 
 xmin, xmax = 0.0, 20.0
-t_list = [6]
-t_list, tc_list = cf.get_t_list(path, var='Te')
-time = t_list[-1]
-
+time = "06"
 
 def custom_im(fig, ax, xgrid, ygrid, data, lab, **kwargs):
     vmin = kwargs.pop('vmin', None)
@@ -71,7 +64,6 @@ def custom_im(fig, ax, xgrid, ygrid, data, lab, **kwargs):
     xmax = 20.0
     ymin, ymax = np.min(ygrid), np.max(ygrid)
     bool_t = (xgrid >= xmin) * (xgrid < xmax)
-    treat_data = lambda a: np.sign(data[bool_t, :]) * np.log10(np.abs(a[bool_t, :]))
     treat_data = lambda a: a[bool_t]
 
     im = ax.imshow(treat_data(data),
@@ -80,9 +72,7 @@ def custom_im(fig, ax, xgrid, ygrid, data, lab, **kwargs):
                    vmin=vmin,
                    vmax=vmax,
                    cmap='RdBu_r')
-    #cax = ax
     fprl.custom_colorbar(fig, im, ax, cax='', lab=lab)
-    #plt.colorbar(im,ax=ax,label = lab)
     return im
 
 
@@ -90,21 +80,21 @@ def fpre(path):
     return path.split('/')[-1]
 
 
-log_on = True
-lab_list = []
-plot_list = []
+if __name__=="__main__":
+    log_on = True
+    lab_list = []
+    plot_list = []
 
-dict_fo = cf.load_dict(path, path.split('/')[-1], 'fo', '00')
-x_grid_SI = dict_fo['x_grid'][1:-1] * xstep_factor
-y_grid_SI = dict_fo['y_grid'] * xstep_factor
+    dict_fo = cf.load_dict(path, path.split('/')[-1], 'fo', '00')
+    x_grid_SI = dict_fo['x_grid'][1:-1] * xstep_factor
+    y_grid_SI = dict_fo['y_grid'] * xstep_factor
 
-classic_biermann, kinetic_biermann = kohb.get_kinetic_and_classicB_c(path, fpre(path), time)
+    classic_biermann, kinetic_biermann = kohb.get_kinetic_and_classicB_c(path, fpre(path), time)
 
-fig = fprl.newfig_generic_2yscale(1.0)
-ax1, ax2 = fig.add_subplot(121), fig.add_subplot(122)
-im = custom_im(fig, ax1, x_grid_SI, y_grid_SI, classic_biermann, ylab_bier)
+    fig = fprl.newfig_generic_2yscale(1.0)
+    ax1, ax2 = fig.add_subplot(121), fig.add_subplot(122)
+    im = custom_im(fig, ax1, x_grid_SI, y_grid_SI, classic_biermann, ylab_bier)
 
-custom_im(fig, ax2, x_grid_SI, y_grid_SI, kinetic_biermann, ylab_bier)
+    custom_im(fig, ax2, x_grid_SI, y_grid_SI, kinetic_biermann, ylab_bier)
 
-plt.show()
-#------------> plotting
+    plt.show()
