@@ -4,7 +4,6 @@ import pylab
 import matplotlib.gridspec as GS
 from matplotlib import ticker
 import re
-import pdb
 userid = getpass.getuser()
 mpl.use('pgf')
 

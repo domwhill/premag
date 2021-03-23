@@ -21,5 +21,5 @@ python PLOTTERS_PAPER/plot_dT_4plot.py
 # Fig. 5 - Hall-parameter contour plot + Righi-Leduc heating 
 
 # Fig. 6 - Hall-parameter contour plot + self-generated magnetic field generation
-
+python PLOTTERS_PAPER/plot_dqy_contour.py
 # Fig 7 - dqy lineouts

@@ -144,15 +144,20 @@ class run_obj_list:
         self.save_tag = self.save_tag + str(self.tmax_index)
 
     def get_max_time(self):
+        """Check all IMPACT runs in paths find the latest time dump in each sim.
+        return the highest time step that exists in all simulations.
+
+        :return:
+        """
         time_in_list = []
         for path in self.paths:
             t_list, tc_list = cf.get_t_list(path, var='Te')
-            time_in_list.append(int(t_list[-1]))
+            time_in_list.append(np.max(list(map(int, t_list))))
 
-        self.time_in_list = time_in_list
-        time_in = int(np.min(time_in_list))
-        self.tmax_index = '%02i' % (time_in)
-        self.tmax_col = tc_list[time_in]
+        tmax_index = int(np.max(time_in_list))
+        self.tmax_index = '%02i' % (tmax_index)
+        # time in collision times
+        self.tmax_col = tc_list[tmax_index]
 
 
 class run_obj:
@@ -291,13 +296,11 @@ class PlotContour():
 def main():
 
     #<<<--- transport inputs
-
+    time = "06"
     #------------------->>>
-    #plt.show()
     bz_list = [50.0, 400.0]
 
     # Generate run obj list
-    #var_type, scale_length=1, bz_in=50.0, lambda_p=5, pert_amp='1p'
     obj_list = run_obj_list(var_type='bz', scale_length=1, bz_in=bz_list, lambda_p=5, pert_amp='1p')
 
     #fig = fprl.newfig_generic_twinx(1.0, scale_width=1.0, scale_ratio=1.0)
@@ -312,11 +315,11 @@ def main():
     # plot contour
     transport_opt = 'RL'    # can be 'RL' = Righi-Leduc heat flow divergence or 'bier' = biermann
     cont1 = PlotContour(obj_list.run_objs[0],
-                        time=obj_list.tmax_index,
+                        time=time,
                         var='wt',
                         transport_opt=transport_opt)
     cont2 = PlotContour(obj_list.run_objs[1],
-                        time=obj_list.tmax_index,
+                        time=time,
                         var='wt',
                         transport_opt=transport_opt)
     cont1.run(fig, ax1)
@@ -334,5 +337,5 @@ def main():
     fig.savefig(save_name)
     print(' copy and paste:\n open -a preview ' + save_name)
 
-
-main()
+if __name__=="__main__":
+    main()

@@ -119,18 +119,15 @@ def extract_ohms(path, time, x_limit=73):
     #data_x2d_vN,data_y2d_vN = get_Nernst_ratio(path,time)
     #data_x2d_vN_k,data_y2d_vN_k = data_x2d_vN['kinetic'],data_y2d_vN['kinetic']
     #data_x2d_vN_c,data_y2d_vN_c = data_x2d_vN['classical'],data_y2d_vN['classical']
-    ##classic_biermann,kinetic_biermann = kbier.get_kinetic_and_classicB(path,path,time)
-    #E_P_classical,E_P_kinetic =kbier.get_kinetic_and_classic_E_pressure(path,fpre(path),time,xlim=73)
-    #E_x,E_y = kbier.get_hallfield(grid,rho_vyx,Bz_vyx,jx_vyx,jy_vyx,fo)
-    #E_TEwedgex,E_TEwedgey = kbier.get_thermoelectricEfield_kinetic(grid,rho_vyx,Bz_vyx,fo)
+    ##classic_biermann,kinetic_biermann = kohb.get_kinetic_and_classicB(path,path,time)
+    #E_P_classical,E_P_kinetic =kohb.get_kinetic_and_classic_E_pressure(path,fpre(path),time,xlim=73)
+    #E_x,E_y = kohb.get_hallfield(grid,rho_vyx,Bz_vyx,jx_vyx,jy_vyx,fo)
+    #E_TEwedgex,E_TEwedgey = kohb.get_thermoelectricEfield_kinetic(grid,rho_vyx,Bz_vyx,fo)
 
     #E_P_c_x, E_P_c_y = E_P_classical['E_P_x'],E_P_classical['E_P_y']
     #E_P_k_x, E_P_k_y = E_P_kinetic['E_P_x'],E_P_kinetic['E_P_y']
     fprefix = fpre(path)
-    dict_kinetic = kbier.get_kinetic_E(path, fprefix, time, xlim=73)
-
-    ##data_x2d_vN,data_y2d_vN =
-    ##alpha_perp_classical,alpha_perp_kinetic = get_alpha_perp_path(path,time):
+    dict_kinetic = kohb.get_kinetic_E(path, fprefix, time, xlim=73)
 
     dict = {}
     dict['E_betawedge_x'] = {}
@@ -196,7 +193,6 @@ def plot_dyqy_RL(fig, ax, cax, path, time):
     tt = int(time)
 
     #--- do everything in units of 10 eV/ps
-    #data_x = np.transpose(kohnew[path][var +'_x']['data'])#q_SH_x[path][tt,:,:]
     data_y = np.transpose(kohnew[path][var + '_y']['data'])    #q_SH_y[path][tt,:,:]
     dxqy, dyqy = cf.get_grad(x_grid_SI, y_grid_SI, data_y)
     dyqy = np.transpose(dyqy)    #q_SH_y[path][tt,:,:]
@@ -204,17 +200,10 @@ def plot_dyqy_RL(fig, ax, cax, path, time):
     dyqy *= divq_factor * 0.1
 
     MULT = -1.0
-    #vmin,vmax = np.min(MULT*dyqy),np.max(MULT*dyqy)
-    #vmin,vmax = -1,2
     multtemp = 0.9
     vmin, vmax = np.min(MULT * dyqy[:, cl_index:c_index]) * multtemp, np.max(
         MULT * dyqy[:, cl_index:c_index]) * multtemp
-    print ' vmin, vmax = ', vmin, vmax
-    print ' np.shape(dyqy) = ', np.shape(dyqy)
-    #sys.exit()
-    #vmin, vmax =  -0.00189426831011, 0.000207009514978
-    lims_im = [y_grid_SI[0], y_grid_SI[-1], x_grid_SI[cl_index], x_grid_SI[c_index]]    #
-    lims_rev = [y_grid_SI[0], y_grid_SI[-1], x_grid_SI[c_index], x_grid_SI[cl_index]]
+
     lims_im = [x_grid_SI[cl_index], x_grid_SI[c_index], y_grid_SI[0], y_grid_SI[-1]]    #
 
     norm = cf.MidPointNorm(0.0)
@@ -240,10 +229,6 @@ def plot_dyqy_RL(fig, ax, cax, path, time):
                      levels=levels,
                      colors=('k'),
                      extent=lims_im)
-    #ax.clabel(CSy,[0.0],inline=True,fmt='%1.1f')
-    #ax.clabel(CSy,levels,inline=True,fmt='%3.4f')
-
-    #ax.set_title('dyqy at ' + str(time_col))
 
     #--- plot hlines
     lim = ax.get_ylim()
@@ -252,8 +237,7 @@ def plot_dyqy_RL(fig, ax, cax, path, time):
 
     ax.set_xlabel(xlab_rel)
     ax.set_ylabel(ylab)
-    #divider = make_axes_locatable(ax)
-    #cax = divider.append_axes("right", size="5%", pad=0.05)
+
     #---
     c2 = fig.colorbar(imy, cax=cax, ax=ax, format='%1i', label=claby)
     c2.add_lines(CSy)
@@ -261,22 +245,14 @@ def plot_dyqy_RL(fig, ax, cax, path, time):
     tick_locator = ticker.MaxNLocator(nbins=3)
     c2.locator = tick_locator
     c2.update_ticks()
-    #c2 = fig.colorbar(CSy,cax=cax,ax=ax,
-    #                    label=claby)
 
-    #c2.ax.plot([0,1],[0,0],'k')
 
     return imy
 
 
 def plot_dyqy_RL_c(fig, ax, cax, path, time):
+    dyqy, x_grid_SI, y_grid_SI, qlaby = _get_divqRL(path, time, switch_kinetic_on=False)
 
-    kohnew = load_qdata(path, time)
-    dict_c, dict_k = repack_2D(path, time)
-
-    x_grid_SI = kohnew[path]['x_grid'] * xstep_factor
-    y_grid_SI = kohnew[path]['y_grid'] * xstep_factor
-    time_col = kohnew[path]['time'] * tstep_factor
     asp = 'auto'
     lab_dict = {}
     lab_dict['figsize'] = (8, 8)    # x,y inches
@@ -286,34 +262,11 @@ def plot_dyqy_RL_c(fig, ax, cax, path, time):
     lab_dict['cbar_title'] = '   '
     lab_dict['title'] = '   '
     cmap = 'RdBu_r'    #'hot'
-    var = 'q_RL'
-    print ' shape = ', np.shape(kohnew[path][var + '_x']['data'])
-    tt = int(time)
-
-    #--- do everything in units of 10 eV/ps
-    #data_x = np.transpose(kohnew[path][var +'_x']['data'])#q_SH_x[path][tt,:,:]
-    data_y = np.transpose(kohnew[path][var + '_y']['data'])    #q_SH_y[path][tt,:,:]
-
-    data_yc = dict_c['RL y']
-    print('shape classical = ', np.shape(data_yc), 'shape kinetic qrl = ', np.shape(data_y))
-    data_y = data_yc * 1.0
-    dxqy, dyqy = cf.get_grad(x_grid_SI, y_grid_SI, data_y)
-    dyqy = np.transpose(dyqy)    #q_SH_y[path][tt,:,:]
-
-    dyqy *= divq_factor * 0.1
-
     MULT = -1.0
-    #vmin,vmax = np.min(MULT*dyqy),np.max(MULT*dyqy)
-    #vmin,vmax = -1,2
+
     multtemp = 0.9
     vmin, vmax = np.min(MULT * dyqy[:, cl_index:c_index]) * multtemp, np.max(
         MULT * dyqy[:, cl_index:c_index]) * multtemp
-    print ' vmin, vmax = ', vmin, vmax
-    print ' np.shape(dyqy) = ', np.shape(dyqy)
-    #sys.exit()
-    #vmin, vmax =  -0.00189426831011, 0.000207009514978
-    lims_im = [y_grid_SI[0], y_grid_SI[-1], x_grid_SI[cl_index], x_grid_SI[c_index]]    #
-    lims_rev = [y_grid_SI[0], y_grid_SI[-1], x_grid_SI[c_index], x_grid_SI[cl_index]]
     lims_im = [x_grid_SI[cl_index], x_grid_SI[c_index], y_grid_SI[0], y_grid_SI[-1]]    #
 
     norm = cf.MidPointNorm(0.0)
@@ -327,22 +280,15 @@ def plot_dyqy_RL_c(fig, ax, cax, path, time):
     levels = np.arange(vmin, vmax, (vmax - vmin) / 4.0)
     levels = levels.tolist()
 
-    #levels= [-0.001]
     for ll in range(len(levels)):
-
         levels[ll] *= divq_factor
 
-    #
     levels = [0.0]
-    claby = r'-$\partial_y q_{y,RL,c}$ '    #+ divq_unit
+    claby = qlaby
     CSy = ax.contour(MULT * dyqy[::-1, cl_index:c_index] * divq_factor,
                      levels=levels,
                      colors=('k'),
                      extent=lims_im)
-    #ax.clabel(CSy,[0.0],inline=True,fmt='%1.1f')
-    #ax.clabel(CSy,levels,inline=True,fmt='%3.4f')
-
-    #ax.set_title('dyqy at ' + str(time_col))
 
     #--- plot hlines
     lim = ax.get_ylim()
@@ -351,7 +297,7 @@ def plot_dyqy_RL_c(fig, ax, cax, path, time):
 
     ax.set_xlabel(xlab_rel)
     ax.set_ylabel(ylab)
-    #---
+
     c2 = fig.colorbar(imy, cax=cax, ax=ax, format='%1i', label=claby)
     c2.add_lines(CSy)
 
@@ -362,10 +308,47 @@ def plot_dyqy_RL_c(fig, ax, cax, path, time):
     return imy
 
 
+def _get_divqRL(path, time, switch_kinetic_on=True):
+    """Get the y contribution to the divergence of the Righi-Leduc heat flow, dyqy_RL
+
+    :param path:
+    :param time:
+    :param switch_kinetic_on:
+    :return:
+    """
+    var = 'q_RL'
+    qlaby = r'-$\partial_y q_{y,RL}$ '    #+ divq_unit
+    kohnew = load_qdata(path, time)
+    dict_c, dict_k = repack_2D(path, time)
+
+    x_grid_SI = kohnew[path]['x_grid'] * xstep_factor
+    y_grid_SI = kohnew[path]['y_grid'] * xstep_factor
+    # --- do everything in units of 10 eV/ps
+    data_yk = np.transpose(kohnew[path][var + '_y']['data'])  # q_SH_y[path][tt,:,:]
+    data_yc = dict_c['RL y']
+
+    if switch_kinetic_on:
+        print("Returning divergence of non-local Righi-Leduc heat flow")
+        data_y = data_yk * 1.0
+    else:
+        print("Returning divergence of local Righi-Leduc heat flow")
+        data_y = data_yc * 1.0
+
+    dxqy, dyqy = cf.get_grad(x_grid_SI, y_grid_SI, data_y)
+    dyqy = np.transpose(dyqy)  # q_SH_y[path][tt,:,:]
+    dyqy *= divq_factor * 0.1
+    return dyqy, x_grid_SI, y_grid_SI, qlaby
+
+
+def get_divqRL(path, time, switch_kinetic_on=False):
+    dyqy, x_grid_SI, y_grid_SI, qlaby = _get_divqRL(path, time, switch_kinetic_on)
+    return dyqy, qlaby
+
+
 def plot_dBdt_bier(fig, ax, cax, path, time):
 
     #kohnew = load_qdata(path,time)
-    kohnew = kbier.get_kinetic_E(path, fpre(path), time, xlim=73)
+    kohnew = kohb.get_kinetic_E(path, fpre(path), time, xlim=73)
     x_grid_SI = kohnew[path]['x_grid'] * xstep_factor
     y_grid_SI = kohnew[path]['y_grid'] * xstep_factor
     time_col = kohnew[path]['time'] * tstep_factor
@@ -383,16 +366,13 @@ def plot_dBdt_bier(fig, ax, cax, path, time):
     tt = int(time)
 
     #--- do everything in units of 10 eV/ps
-    #data_x = np.transpose(kohnew[path][var +'_x']['data'])#q_SH_x[path][tt,:,:]
-    data_y = np.transpose(kohnew[path][var + '_y']['data'])    #q_SH_y[path][tt,:,:]
+    data_y = np.transpose(kohnew[path][var + '_y']['data'])
     dxqy, dyqy = cf.get_grad(x_grid_SI, y_grid_SI, data_y)
     dyqy = np.transpose(dyqy)    #q_SH_y[path][tt,:,:]
 
     dyqy *= divq_factor * 0.1
 
     MULT = -1.0
-    #vmin,vmax = np.min(MULT*dyqy),np.max(MULT*dyqy)
-    #vmin,vmax = -1,2
     multtemp = 0.9
     vmin, vmax = np.min(MULT * dyqy[:, cl_index:c_index]) * multtemp, np.max(
         MULT * dyqy[:, cl_index:c_index]) * multtemp
@@ -427,10 +407,6 @@ def plot_dBdt_bier(fig, ax, cax, path, time):
                      levels=levels,
                      colors=('k'),
                      extent=lims_im)
-    #ax.clabel(CSy,[0.0],inline=True,fmt='%1.1f')
-    #ax.clabel(CSy,levels,inline=True,fmt='%3.4f')
-
-    #ax.set_title('dyqy at ' + str(time_col))
 
     #--- plot hlines
     lim = ax.get_ylim()
@@ -448,11 +424,6 @@ def plot_dBdt_bier(fig, ax, cax, path, time):
     tick_locator = ticker.MaxNLocator(nbins=3)
     c2.locator = tick_locator
     c2.update_ticks()
-    #c2 = fig.colorbar(CSy,cax=cax,ax=ax,
-    #                    label=claby)
-
-    #c2.ax.plot([0,1],[0,0],'k')
-
     return imy
 
 
@@ -541,8 +512,7 @@ def plot_ylineout_qRLy_custom(fig,
         lstyle = style_list[pp]
         mstyle = mstyle_list[pp]
         take_amp_on = True
-        print(' shape qrL = ', np.shape(y_c_grid))
-        print(' shape qrL = ', np.shape(T_data))
+
         for xl in range(len(lineout_list)):
             x_lineout = lineout_list[xl]
             ylab_lineout = r'$%3.1f$' % x_c_grid[x_lineout]
@@ -590,7 +560,6 @@ def plot_ylineout_qRLy_custom(fig,
     if leg_on:
         leg_list = [p2c, p2]
         lab_list = [r'$\delta q_{y,RL,c}$', r'$\delta q_{y,RL,k}$']
-        #axy.legend(leg_list,lab_list,numpoints=1)
     axy.grid(color='0.5', linestyle='-')
 
     return p2
@@ -608,3 +577,4 @@ if __name__ == "__main__":
     cax = []
     imy = plot_dyqy_RL(fig, ax, cax, path, time)
     plt.show()
+

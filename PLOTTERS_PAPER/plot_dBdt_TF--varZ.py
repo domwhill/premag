@@ -6,6 +6,7 @@
 
 import sys
 import os
+
 import matplotlib.gridspec as GS
 from pylab import *
 
@@ -18,7 +19,6 @@ import MODULES.chfoil_module as cf
 import MODULES.house_keeping as hk
 #-------------------------------------------------#
 # load in initial modules
-save_name = 'modeinv'
 paths = hk.directory_paths()
 src_dir = paths.src_dir    #'/Users/dominichill/Dropbox/IMPACT_dir/SIM_DATA/ANALYSIS'
 data_dir = paths.data_dir_2D
@@ -102,7 +102,7 @@ if not os.path.exists(save_path):
     os.system('mkdir ' + save_path)
 
 print ' SAVE_PATH = ', save_path
-fname = 'BZ_amp_premag_' + time_glb + str(scale_length) + sys.argv[0].split('.')[0]
+fname = 'BZ_amp_premag_' + time_glb + str(scale_length) + __file__.split("/")[-1]
 
 savename = save_path + fname
 
