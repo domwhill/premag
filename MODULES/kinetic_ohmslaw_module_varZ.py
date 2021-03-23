@@ -21,53 +21,18 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
-import sys, re, os, getpass, site
+import sys
+import re
+
 sys.path.extend(["./"])
 import chfoil_module as cf
-#import q_SH_Te_tsteps as q_mod
-import matplotlib as mpl
 from pylab import *
 
-#nv = 100
 Z = 6.51
-#ones_nv = np.ones((nv))
-#vmax = 10.0
-#xmin,xmax,nx = 0.0,142.662,40
-#ymin,ymax,ny = 0.0,35.0,10
-#vmin,vmax,nv = 0.0,10.0,100
 
-#vb_grid = np.arange(vmin,vmax,(vmax-vmin)/(nv+1))
-#v_grid = 0.5*(vb_grid[1:] + vb_grid[:-1])
-#dv = v_grid[1] - v_grid[0]
-#v2dv = (v_grid**2)*dv
-#---->
-#v_grid = np.arange(vmin,vmax,(vmax-vmin)/nv)
-#---- get vel grid---
-#ic = np.arange(nv)
-#ib = np.arange(-0.5,nv+0.5)
-#vb_grid = cf.interp_data(ic,v_grid,ib)
-#dvc = vb_grid[1:] - vb_grid[:-1]
 
 Y1_weight = 4.0 * np.pi / 3.0
 Y0_weight = 4.0 * np.pi
-'''
-cd5 = cf.conv_factors_custom(norm_path,Z0,Ar=6.51)
-
-print 'Z0 = ', Z0
-print 'T0 = ', T0
-print 'n0 = ', n0
-cl_index = int(cd5.cl_index)
-c_index = int(cd5.c_index)
-cl_index,c_index = 0,-1
-SI_on = cd5.SI_on
-tau_ei = cd5.tau_ei
-nu_ei = cd5.nu_ei
-lambda_mfp = cd5.lambda_mfp
-xstep_factor = cd5.xstep_factor
-tstep_factor = cd5.tstep_factor
-xlab = cd5.xlab_rel
-ylab = cd5.ylab
-'''
 
 
 def convert_name_to_label(name):
@@ -144,30 +109,11 @@ def extend_grid_x_to_vxy(nv, ny, nx, grid_x):
     return grid_vyx
 
 
-''' 
-OBSOLETE (therefore removed) - becuause this does not work with a dynamically varying Z -
-def get_omega(v_grid,ni,Bz):
-    nu_ei = (Z**2)*ni*(v_grid**-3)
-    omega = Bz*(nu_ei**-1)
-    return omega
-    
-'''
-
-
 def get_v2dv(v_grid):
     #dv = v_grid[1:] - v_grid[:-1]
     dv = calc_dv(v_grid)
     v2dv = (v_grid**2) * dv
     return v2dv
-
-
-'''
-def get_v2dv_vyx(v_grid):
-    dv = calc_dv(v_grid)
-    v2dv = (v_grid**2)*dv
-    v2dv_vyx = extend_grid_v_to_vxy(nv,ny,nx,v_grid)
-    return v2dv_vyx
-'''
 
 
 def maxw_dist(v, vte):
@@ -466,7 +412,7 @@ def get_pressureEfield_classic(grid, rho_vyx, Bz_vyx, ne, Te_vyx):
     v_grid = grid['v_grid']
     nv, ny, nx = np.shape(Bz_vyx)
     v = extend_grid_v_to_vxy(nv, ny, nx, v_grid)
-    #Te_vyx = extend_grid_xy_to_vxy(nv,ny,nx,Te)
+
     vte = (2.0 * Te_vyx)**0.5
     fo_unnorm = ((np.pi * (vte**2))**(-1.5)) * np.exp(-(v / vte)**2)
     sum_array = np.sum(fo_unnorm, axis=0)
@@ -496,22 +442,6 @@ def get_Biermann(grid, rho_vyx, Bz_vyx, fo):
     '''
         ----- should get the kinetic biermann term ----->
        kinetic_biermann =  get_Biermann(grid,rho_vyx,Bz_vyx,fo)
-    '''
-    #--
-    '''
-    nv,ny,nx = np.shape(fo)
-    
-    v2dv = get_v2dv(v_grid)
-    mom2 = np.zeros((ny,nx))
-    for iy in range(ny):
-        for ix in range(nx):
-           mom2[iy,ix] =  get_v_mom_m(v_grid,0.0,fo[:,iy,ix],0)
-    fig = plt.figure()
-    ax = fig.add_subplot(1,1,1)
-    im = ax.imshow(mom2)
-    plt.colorbar(im,ax=ax)
-    plt.show()
-    sys.exit()    
     '''
     v_grid = grid['v_grid']
 
@@ -573,15 +503,11 @@ def get_Biermann_classic(grid, rho_vyx, Bz_vyx, ne, Te_vyx):
     Eta = (I2 + (omega_yx**2) * ((I4**2) / I2))
     BierE_x = (1.0 / Eta) * (I1_x + (omega_yx**2) * (I4 / I2) * I3_x)
     BierE_y = (1.0 / Eta) * (I1_y + (omega_yx**2) * (I4 / I2) * I3_y)
-    #---- now take the curl?
-    # --- get_grad assumes [x,y] indices
-    print ' np.shape(BierE_x) = ', np.shape(BierE_x)
 
+    #---- now take the curl
+    # --- get_grad assumes [x,y] indices
     x_grid_yx, xY = np.meshgrid(grid['x_grid'], np.ones(len(grid['y_grid'])))
     yY, y_grid_yx = np.meshgrid(np.ones(len(grid['x_grid'])), grid['y_grid'])
-
-    print ' np.shape(BierE_x) = ', np.shape(I1_x), np.shape(omega_yx), np.shape(
-        grid['y_grid']), np.shape(grid['x_grid']), np.shape(BierE_x), np.shape(BierE_y)
 
     dxBierE_y = (BierE_y[:, 2:] - BierE_y[:, :-2]) / (x_grid_yx[:, 2:] - x_grid_yx[:, :-2])
     dyBierE_x = (BierE_x[2:, :] - BierE_x[:-2, :]) / (y_grid_yx[2:, :] - y_grid_yx[:-2, :])
@@ -601,8 +527,6 @@ def get_Biermann_gradncrossgradT(grid, ne, Te):
     dxTe, dyTe = cf.get_grad(x_grid, y_grid, Te)
     dxne, dyne = cf.get_grad(x_grid, y_grid, ne)
 
-    print 'shapes biermann cross grad = ', np.shape(dxne), np.shape(dyne), np.shape(ne)
-    #sys.exit()
 
     biermann = (1.0 / ne[1:-1, 1:-1]) * (dyTe * dyne - dyTe * dxne)
     return biermann
@@ -809,7 +733,6 @@ def get_kappa_wedge(w, rho, ne, Te, F0, v_grid):
     #v_mom_5 = get_v_mom_m(v_grid,omega,F0,5)
     v_mom_7 = get_v_mom_m(v_grid, omega, F0, 7)
     v_mom_8 = get_v_mom_m(v_grid, omega, F0, 8)
-    #v_mom_9 = get_v_mom_m(v_grid,omega,F0,9)
     v_mom_12 = get_v_mom_m(v_grid, omega, F0, 12)
 
     delta = get_delta(v_grid, omega, F0)
@@ -824,7 +747,6 @@ def get_kappa_wedge(w, rho, ne, Te, F0, v_grid):
 
 def get_v_N_classical(v_grid, Z2ni, ne, Te, w, dxT, dyT, jx=0.0, jy=0.0):
 
-    #Te = 0.5
     vte = (2.0 * Te)**0.5
     rho = Z2ni**-1
 
@@ -921,49 +843,10 @@ def get_vN_from_path(path, fprefix, time):
     return v_nx, v_ny, v_nx_hf, v_ny_hf
 
 
-def get_q_SH(ne, Te, w, dxT, dyT):
-
-    #Te = 0.5
-    vte = (2.0 * Te)**0.5
-    w = 0.1
-    rho = ne
-
-    # ------
-    F0 = maxw_dist(v_grid, vte)
-    kappa_perp_c = get_kappa_perp(w, rho, ne, Te, F0, v_grid)
-
-    kappa_wedge_c = get_kappa_wedge(w, rho, ne, Te, F0, v_grid)
-
-    kappa_perp = kappa_perp_c * (Te**2.5)
-    kappa_wedge = kappa_wedge_c * (Te**2.5)
-    q_SH_x = -kappa_perp * dxT
-    q_SH_y = -kappa_perp * dyT
-    q_RL_x = +kappa_wedge * dyT
-    q_RL_y = -kappa_wedge * dxT
-    return q_SH_x
-
-
 def convert_var_to_str(var):
     for name in globals():
         if eval(name) == var:
             return name
-
-
-def vmom_f1(m, v_grid, f1x_c, f1y_c):
-    '''
-    
-    '''
-    #dvc = get_dvc(v_grid)
-
-    if len(np.shape(f1x_c)) > 1:
-        momx = np.einsum('ijk,i->ijk', f1x_c, Y1_weight * (v_grid**(m + 3)) * dvc)
-        momy = np.einsum('ijk,i->ijk', f1y_c, Y1_weight * (v_grid**(m + 3)) * dvc)
-    else:
-        momx = Y1_weight * f1x_c * (v_grid**(m + 3)) * dvc
-        momy = Y1_weight * f1y_c * (v_grid**(m + 3)) * dvc
-    vmomx = np.sum(momx, axis=0)
-    vmomy = np.sum(momy, axis=0)
-    return vmomx, vmomy
 
 
 def get_kinetic_heatflow_b(path, time):
@@ -1080,20 +963,17 @@ def get_Nernst_abs(path, time):
 
     #===============
     grid = dict['grid']
-    dxfo, dyfo = cf.get_grad_3d(grid, fo)
-    rho = rA
     omega = Bz * rA
     rho_vyx = extend_grid_xy_to_vxy(nv, ny, nx, rA)
     Bz_vyx = extend_grid_xy_to_vxy(nv, ny, nx, Bz)
-    omega_vyx = extend_grid_xy_to_vxy(nv, ny, nx, omega)
     #------ NERNST -----------------------------------------------------
     v_nx, v_ny = get_v_N(grid, rho_vyx, Bz_vyx, fo)
     v_nx_classical, v_ny_classical, v_nx_hf, v_ny_hf = get_vN_from_path(path, fpre(path), time)
 
     v_nx_c = np.transpose(v_nx_classical)
-    v_ny_c = np.transpose(v_ny_classical)    #np.transpoe(v_ny_classical)#[:,::-1]
+    v_ny_c = np.transpose(v_ny_classical)
     v_nx_k = np.transpose(v_nx)
-    v_ny_k = np.transpose(v_ny)    #np.transpose(v_ny)#[:,::-1]
+    v_ny_k = np.transpose(v_ny)
 
     return v_nx_k, v_ny_k, v_nx_c, v_ny_c
 
@@ -1106,22 +986,12 @@ def get_Nernst_abs_c(path, time):
     dict = cf.load_data_all(path, fpre(path), time)
     ne = dict['ne']
     Te = dict['Te']
-    qx = dict['qx']
-    qy = dict['qy']
-    jx = dict['jx']
-    jy = dict['jy']
-    dxT = dict['dxT']
-    dyT = dict['dyT']
     Bz = dict['Bz']
-    x_grid = dict['x_grid']
-    y_grid = dict['y_grid']
     Z2ni = dict['Z2ni']
-    prof_Z = dict['Z']
-    fo = dict['fo']
+
     nv = dict['nv']
     ny = dict['ny']
     nx = dict['nx']
-    rA = (Z2ni)**-1
 
     dict_fo = cf.load_dict(path, fpre(path), 'fo', time)
     fo = dict_fo['mat']
@@ -1130,12 +1000,9 @@ def get_Nernst_abs_c(path, time):
 
     # ===============
     grid = dict['grid']
-    dxfo, dyfo = cf.get_grad_3d(grid, fo)
-    rho = rA
-    omega = Bz * rA
+
     rho_vyx = extend_grid_xy_to_vxy(nv, ny, nx, rA)
     Bz_vyx = extend_grid_xy_to_vxy(nv, ny, nx, Bz)
-    omega_vyx = extend_grid_xy_to_vxy(nv, ny, nx, omega)
     Te_vyx = extend_grid_xy_to_vxy(nv, ny, nx, Te)
     ne_vyx = extend_grid_xy_to_vxy(nv, ny, nx, ne)
 
@@ -1187,9 +1054,6 @@ def get_Nernst_ratio(path, time):
     #Z2ni = ne
 
     dict_te = cf.load_dict(path, fpre(path), 'Te', time)
-    Te = dict_te['mat']
-    x_grid = dict_te['x_grid']
-    y_grid = dict_te['y_grid']
     dict_fo = cf.load_dict(path, fpre(path), 'fo', time)
     fo = dict_fo['mat']
 
@@ -1212,12 +1076,9 @@ def get_Nernst_ratio(path, time):
 
     #===============
     grid = dict_fo
-    dxfo, dyfo = cf.get_grad_3d(grid, fo)
-    rho = rA
     omega = Bz * rA
     rho_vyx = extend_grid_xy_to_vxy(nv, ny, nx, rA)
     Bz_vyx = extend_grid_xy_to_vxy(nv, ny, nx, Bz)
-    omega_vyx = extend_grid_xy_to_vxy(nv, ny, nx, omega)
 
     v_nx, v_ny = get_v_N(grid, rho_vyx, Bz_vyx, fo)
 
@@ -1400,9 +1261,8 @@ def get_q_abs_c(path, time):
     omega = Bz * rA
     rho_vyx = extend_grid_xy_to_vxy(nv, ny, nx, rA)
     Bz_vyx = extend_grid_xy_to_vxy(nv, ny, nx, Bz)
-    omega_vyx = extend_grid_xy_to_vxy(nv, ny, nx, omega)
+
     #--- constructing fo maxw
-    ##########
     # extra extensions requried for maxwellian f0
     Te_vyx = extend_grid_xy_to_vxy(nv, ny, nx, Te)
     ne_vyx = extend_grid_xy_to_vxy(nv, ny, nx, ne)
@@ -1463,8 +1323,8 @@ def get_q_abs_c(path, time):
     dict_c['E y'] = q_TE_y + q_E_y[:, :]
 
     dict_k = {}
-    dict_k['tot x'] = q_KSH_x + q_KRL_x + q_KTE_x + q_KE_x    #q_x_VFP[time_int,:,:]
-    dict_k['tot y'] = q_KSH_y + q_KRL_y + q_KTE_y + q_KE_y    #q_y_VFP[time_int,:,:]
+    dict_k['tot x'] = q_KSH_x + q_KRL_x + q_KTE_x + q_KE_x    # VFP q_x
+    dict_k['tot y'] = q_KSH_y + q_KRL_y + q_KTE_y + q_KE_y    # VFP q_y
 
     dict_k['SH x'] = q_KSH_x    #q_SH_x[time_int,:x_lim,:]
     dict_k['SH y'] = q_KSH_y    #q_SH_y[time_int,:x_lim,:]
@@ -1913,8 +1773,7 @@ def get_alpha_perp_path(path, time):
     Te = dict_te['mat']
     x_grid = dict_te['x_grid']
     y_grid = dict_te['y_grid']
-    #x_grid_SI = x_grid*xstep_factor
-    #y_grid_SI = y_grid*xstep_factor
+
     time_col = dict_te['time'] * tstep_factor
     dict_fo = cf.load_dict(path, fprefix, 'fo', time)
     fo = dict_fo['mat']
@@ -1962,9 +1821,7 @@ def get_alpha_perp_path(path, time):
             Te_loc = T_data[iy, ix]
             ne_loc = n_data[iy, ix]
             w_loc = Bz_data[iy, ix]
-            #v_nx[iy-1,ix-1],v_ny[iy-1,ix-1] = get_v_N_classical(Z2ni,n_data[iy,ix],T_data[iy,ix],Bz_data[iy-1,ix-1],dxT[iy-1,ix-1],dyT[iy-1,ix-1])
-            #v_nx_hf[iy-1,ix-1] = q_xc[iy-1,ix-1]/(2.5*n_data[iy,ix]*T_data[iy,ix])
-            #v_ny_hf[iy-1,ix-1] = q_yc[iy-1,ix-1]/(2.5*n_data[iy,ix]*T_data[iy,ix])
+
 
             vte = (2.0 * Te_loc)**0.5
             rho = Z2ni_loc**-1
