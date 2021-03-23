@@ -99,23 +99,27 @@ class run_obj_list:
             self.run_obj_dict['%i' % run_obj_loc.bz] = run_obj_loc
             self.tags.append(tag)
             self.save_tag = self.save_tag + 'LT' + str(scale_length) + '_'
-
         # find maximum simulation dump time in obj_list
         self.tmax_index = None
         self.get_max_time()
-
         self.save_tag = self.save_tag + str(kwargs.get("time", self.tmax_index))
 
     def get_max_time(self):
+        """Check all IMPACT runs in paths find the latest time dump in each sim.
+        return the highest time step that exists in all simulations.
+
+        :return:
+        """
         time_in_list = []
         for path in self.paths:
             t_list, tc_list = cf.get_t_list(path, var='Te')
-            time_in_list.append(int(t_list[-1]))
+            time_in_list.append(np.max(list(map(int, t_list))))
 
-        self.time_in_list = time_in_list
-        time_in = int(np.max(time_in_list))
-        self.tmax_index = '%02i' % (time_in)
-        self.tmax_col = tc_list[time_in]
+        tmax_index = int(np.max(time_in_list))
+        self.tmax_index = '%02i' % (tmax_index)
+        # time in collision times
+        self.tmax_col = tc_list[tmax_index]
+
 
 
 class run_obj:
