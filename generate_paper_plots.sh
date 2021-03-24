@@ -5,7 +5,7 @@ source activate pop_env
 python PLOTTERS_PAPER/plot_onedim_2col_POP.py
 
 # Fig 2 f0 
-
+python PLOTTERS_PAPER/plot_f_log.py
 # Fig 3 a-d
 # 3a
 python PLOTTERS_PAPER/plot_qRL_abs_1D_POP.py 'SH x' 'Te' $save_dir
@@ -22,6 +22,6 @@ python PLOTTERS_PAPER/plot_dT_4plot.py
 python PLOTTERS_PAPER/plot_dqy_contour.py
 
 # Fig. 6 - Hall-parameter contour plot + self-generated magnetic field generation
-python PLOTTERS_PAPER/plot_dqy_contour.py
+python PLOTTERS_PAPER/plot_dqy_contour.py -v "bier"
 # Fig 7 - dqy lineouts
-python PLOTTERS_PAPER/plot_dqy_3plots.py
+python PLOTTERS_PAPER/plot_dqy_3plots.py -v "RL"
