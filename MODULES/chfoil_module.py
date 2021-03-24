@@ -1754,8 +1754,8 @@ def load_data_all(path, fprefix, time):
 
 
 def load_mat_1D(path_in, fprefix, time, var, nx, ny):
-    dict_te = load_dict_1D(path_in, fprefix, var, time)
-    mat = dict_te['mat']
+    dict_var = load_dict_1D(path_in, fprefix, var, time)
+    mat = dict_var['mat']
     return np.transpose(trim_array_1D(mat, nx, ny))
 
 
