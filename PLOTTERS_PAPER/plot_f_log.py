@@ -16,9 +16,7 @@ import MODULES.figure_prl_twocol as fprl
 
 
 def get_fo_M(v_grid,ne,Te):
-    
-    fo_un_norm = np.exp(-(v_grid**2))
-    
+
     fo_un_norm = np.exp(-(v_grid**2)*(0.5/Te))
     dv = abs(v_grid[1:]-v_grid[:-1])
     vstep = dv[0]     
@@ -95,5 +93,4 @@ if __name__=="__main__":
 
     print('---> saving as: %s' % (save_name))
     fig.savefig(save_name)
-    plt.show()
 
