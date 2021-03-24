@@ -373,10 +373,7 @@ def plot_dBdt_bier(fig, ax, cax, path, time):
     multtemp = 0.9
     vmin, vmax = np.min(MULT * dyqy[:, cl_index:c_index]) * multtemp, np.max(
         MULT * dyqy[:, cl_index:c_index]) * multtemp
-    print ' vmin, vmax = ', vmin, vmax
-    print ' np.shape(dyqy) = ', np.shape(dyqy)
-    #sys.exit()
-    #vmin, vmax =  -0.00189426831011, 0.000207009514978
+
     lims_im = [y_grid_SI[0], y_grid_SI[-1], x_grid_SI[cl_index], x_grid_SI[c_index]]    #
     lims_rev = [y_grid_SI[0], y_grid_SI[-1], x_grid_SI[c_index], x_grid_SI[cl_index]]
     lims_im = [x_grid_SI[cl_index], x_grid_SI[c_index], y_grid_SI[0], y_grid_SI[-1]]    #

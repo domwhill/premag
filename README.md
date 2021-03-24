@@ -17,3 +17,9 @@ Names of simulation runs (for different scale lengths/applied field strengths)
 
 #Environment
 Environment: python2.7
+
+
+# todo:
+check development branch for missing scripts.
+- gen_dyqyRL looks like it is more upt otd ate tehere.
+- plot_f_log.py - looks like it will be needed.

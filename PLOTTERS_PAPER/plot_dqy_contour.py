@@ -11,6 +11,7 @@ import matplotlib.gridspec as GS
 import MODULES.kinetic_ohmslaw_module_varZ as kohb
 import MODULES.figure_prl_twocol as fprl
 import MODULES.chfoil_module as cf
+from MODULES.plot_utils import run_obj, run_obj_list
 import MODULES.house_keeping as hk
 import PLOTTERS.gen_dyqy_RL_varZ as qrl
 from matplotlib import ticker
@@ -103,92 +104,6 @@ def convert_lists_to_set(a_list, b_list, c_list, d_list):
     var_list = set((a, b, c, d) for a in ensure_list(a_list) for b in ensure_list(b_list)
                    for c in ensure_list(c_list) for d in ensure_list(d_list))
     return var_list
-
-
-class run_obj_list:
-
-    def __init__(self, var_type, scale_length=1, bz_in=50.0, lambda_p=5, pert_amp='1p', **kwargs):
-        # --> defaults
-        self.lambda_p = lambda_p
-        self.scale_length = scale_length
-        self.bz_in = bz_in
-        self.lambda_p = lambda_p
-        self.pert_amp = pert_amp
-        self.var_type = var_type
-        self.var_list = convert_lists_to_set(self.scale_length, self.bz_in, self.lambda_p,
-                                             self.pert_amp)
-
-        #--->
-        self.path_list = {}
-        paths = hk.directory_paths()
-        run_name = sys.argv[0].split('/')[-1].split('.')[0]
-        self.save_tag = '%s%s_' % (paths.save_dir, run_name)
-        self.t_max_col = 0
-
-        self.paths = []
-        self.tags = []
-
-        self.run_objs = []
-        self.paths = []
-        for ib, var in enumerate(self.var_list):
-
-            run_obj_loc = run_obj(*var)
-            self.run_objs.append(run_obj_loc)
-            self.paths.append(run_obj_loc.path)
-            tag = run_obj_loc.get_tag()
-            self.tags.append(tag)
-            self.save_tag = self.save_tag + 'LT' + str(scale_length) + '_'
-        # find maximum simulation dump time in obj_list
-        self.tmax_index = '00'
-        self.get_max_time()
-        self.save_tag = self.save_tag + str(self.tmax_index)
-
-    def get_max_time(self):
-        """Check all IMPACT runs in paths find the latest time dump in each sim.
-        return the highest time step that exists in all simulations.
-
-        :return:
-        """
-        time_in_list = []
-        for path in self.paths:
-            t_list, tc_list = cf.get_t_list(path, var='Te')
-            time_in_list.append(np.max(list(map(int, t_list))))
-
-        tmax_index = int(np.max(time_in_list))
-        self.tmax_index = '%02i' % (tmax_index)
-        # time in collision times
-        self.tmax_col = tc_list[tmax_index]
-
-
-class run_obj:
-
-    def __init__(self, scale_length=1, bz_in=400.0, lambda_p=5, pert_amp='0p'):
-        paths = hk.directory_paths()
-        self.path = paths.get_path(scale_length, bz_in, lambda_p, pert_amp=pert_amp)
-        self.bz = bz_in
-        self.scale_length = scale_length
-        self.lambda_p = lambda_p
-        self.pert_amp = pert_amp
-
-        # --->  getting path ->
-        t_list, tc_list = cf.get_t_list(self.path, var='Te')
-        self.time_max = t_list[-1]
-        self.tag = self.get_tag()
-        self.save_tag = 'LT%i_%i_%s_%s' % (self.scale_length, self.bz, self.pert_amp, self.time_max)
-
-        norm_dir = paths.norm_dir
-        log_file = norm_dir + 'norm.log'
-        [T_ref, n_ref, Z_ref, Bz_ref] = np.loadtxt(log_file)
-        self.norm = cf.conv_factors_custom(norm_dir, Z_ref, Ar=6.51)
-        self.save_path = paths.save_dir
-        self.Te_factor = 2.0 * T_ref * 1e-3
-
-    def get_tag(self, **kwargs):
-        if self.bz == '-1':
-            tag = 'no B'
-        else:
-            tag = r'$%i \, [\si{T}]$' % self.bz
-        return tag
 
 
 class PlotContour():
@@ -303,7 +218,6 @@ def main():
     # Generate run obj list
     obj_list = run_obj_list(var_type='bz', scale_length=1, bz_in=bz_list, lambda_p=5, pert_amp='1p')
 
-    #fig = fprl.newfig_generic_twinx(1.0, scale_width=1.0, scale_ratio=1.0)
     fig = fprl.newfig_generic(1.4, 0.9)
     plt.subplots_adjust(left=0.10, right=0.88, bottom=0.18, top=0.9, wspace=0.1)
     gs1 = GS.GridSpec(1, 3, width_ratios=[1.0, 1.0, 0.08])
