@@ -1,9 +1,14 @@
 '''
-27/08/2019
-- Rehash of plot_q_lineout.py
+Plot of div.qRL or Biermann contours overlayed on the perturbed Hall parameter image plot.
 
+Usage:
+# plto biermann
+python PLOTTERS_PAPER/plot_dqy_contour.py -v "bier"
+# plot RL
+python PLOTTERS_PAPER/plot_dqy_contour.py -v "RL"
 
 '''
+import argparse
 import sys
 sys.path.extend(["./"])
 from pylab import *
@@ -24,6 +29,18 @@ m_e = 9.11e-31
 #-----
 # functions
 fpre = lambda path_in: path_in.split('/')[-1]
+
+def get_command_line_args():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "-v", "--variable",
+        default="RL",
+        help="Transport term to plot RL x = x component of Righi-Leduc, SH y = y component of Spitzer-HArm/diffusive heat flow,"
+        "vN y = y-component of Nernst")
+    args = parser.parse_args()
+    if args.variable not in ("RL", "bier"):
+        raise ValueError("Input arg -v must be either RL or bier")
+    return args.variable
 
 
 def clear_yax(ax):
@@ -209,6 +226,8 @@ class PlotContour():
 
 
 def main():
+    #  transport_opt can be 'RL' = Righi-Leduc heat flow divergence or 'bier' = biermann
+    transport_opt = get_command_line_args()
 
     #<<<--- transport inputs
     time = "06"
@@ -227,7 +246,6 @@ def main():
 
     # for obj in run_obj list
     # plot contour
-    transport_opt = 'RL'    # can be 'RL' = Righi-Leduc heat flow divergence or 'bier' = biermann
     cont1 = PlotContour(obj_list.run_objs[0],
                         time=time,
                         var='wt',
