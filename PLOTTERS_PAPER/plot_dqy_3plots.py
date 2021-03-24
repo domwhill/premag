@@ -4,9 +4,9 @@
  Plots Phase shift of kinetic/classical heat flows
 
 '''
-import sys, re
+import sys
+import os
 sys.path.extend(["./"])
-import matplotlib.pyplot as plt
 
 from pylab import *
 import MODULES.kinetic_ohmslaw_module_varZ as q_mod
@@ -41,7 +41,8 @@ bz_in = 0.0    # selected magnetic field [Tesla]
 
 #--- generating  path_list
 s_list = [2]
-save_tag = '%s_%iT_' % (sys.argv[0].split('.')[0], bz_in)
+file_name_without_path = (__file__.split('/')[-1]).split('.')[0]
+save_tag = '%s_%iT_' % (file_name_without_path, bz_in)
 for ip in range(len(s_list)):
     path_loc = paths.get_path(s_list[ip], bz_in, lambda_p)
     path_list.append(path_loc)
@@ -49,7 +50,7 @@ for ip in range(len(s_list)):
 
 #aesthetics
 xmin, xmax = -10, 30.0    # max/min of x axis on plot
-cmap = cm.viridis
+var = 'tot y'
 style_list = ['--', '--', ':', '-', '--', ':']
 mstyle_list = [None, None, None, 'x', '^', 'o']
 
@@ -61,14 +62,8 @@ time = '07'    #t_list[-1]
 iy = 20
 xmin, xmax = 0.0, 40.0
 thresh_N_ratio = 5e-2
-if len(sys.argv) > 1:
-    var = sys.argv[1]
-else:
-    var = 'tot y'
-if len(sys.argv) > 2:
-    save_path = save_path + sys.argv[-1] + '/'
 
-save_name = '%sdeltaqy_amps_%s_%s_%s' % (save_path, save_tag, re.sub(' ', '', var), time)
+save_name = '%sdeltaqy_amps_%s_%s' % (save_path, save_tag, time)
 phase_tag = '_phase_'
 
 plot_amp_var_on = True
@@ -107,8 +102,6 @@ var_dict = {
     'vN x': r'$v_{N,x}$',
     'vN ,': r'$v_{N,y}$'
 }
-
-ylab = lab_list[var_list.index(var)]
 
 add_str = ''
 if plot_amp_var_on:
@@ -187,105 +180,106 @@ def conv_phase(phase):
     return (phase - np.pi) / (2.0 * np.pi)
 
 
-slice_array_y = lambda array: array[iy, :]
+if __name__=="__main__":
+    slice_array_y = lambda array: array[iy, :]
 
-fig1 = fprl.newfig_generic_2yscale(
-    1.4, scale_width=1.2, scale_ratio=0.5)    #(1.1,scale_width=1.5,scale_ratio=0.5)#plt.figure()
-ax2 = np.array([fig1.add_subplot(131), fig1.add_subplot(132), fig1.add_subplot(133)])
-fig1.subplots_adjust(left=0.1, right=0.9, wspace=0.6, top=0.9, bottom=0.28)
+    fig1 = fprl.newfig_generic_2yscale(
+        1.4, scale_width=1.2, scale_ratio=0.5)    #(1.1,scale_width=1.5,scale_ratio=0.5)#plt.figure()
+    ax2 = np.array([fig1.add_subplot(131), fig1.add_subplot(132), fig1.add_subplot(133)])
+    fig1.subplots_adjust(left=0.1, right=0.9, wspace=0.6, top=0.9, bottom=0.28)
 
-#------------------->>>
-pp = path
-save_name_npy_c = pp.split('/')[-1] + phase_tag + '_dict_c.npy'
-save_name_npy_k = pp.split('/')[-1] + phase_tag + '_dict_k.npy'
+    #------------------->>>
+    pp = path
+    save_name_npy_c = pp.split('/')[-1] + phase_tag + '_dict_c.npy'
+    save_name_npy_k = pp.split('/')[-1] + phase_tag + '_dict_k.npy'
 
-if os.path.isfile(save_name_npy_c) and os.path.isfile(save_name_npy_k) and False:
-    dict_c = np.load(save_name_npy_c, allow_pickle=True).any()
-    dict_k = np.load(save_name_npy_k, allow_pickle=True).any()
-else:
-    dict_c, dict_k = q_mod.repack_2D(pp, time, recompute_q_c=True)
-x_grid = dict_k['x_grid']
-y_grid = dict_k['y_grid']
-data_k = dict_k[var]
+    if os.path.isfile(save_name_npy_c) and os.path.isfile(save_name_npy_k) and False:
+        dict_c = np.load(save_name_npy_c, allow_pickle=True).any()
+        dict_k = np.load(save_name_npy_k, allow_pickle=True).any()
+    else:
+        dict_c, dict_k = q_mod.repack_2D(pp, time, recompute_q_c=True)
+    x_grid = dict_k['x_grid']
+    y_grid = dict_k['y_grid']
+    data_k = dict_k[var]
 
-# te_amp
-nx, ny = np.shape(dict_k['Te'])
+    # te_amp
+    nx, ny = np.shape(dict_k['Te'])
 
-pT50, = ax2[2].plot(x_grid * cd5.xstep_factor,
-                    dict_k['Te'][:, ny // 2] * Te_factor,
-                    c='k',
-                    linestyle='-')
-axwt = ax2[2].twinx()
-pT50, = axwt.plot(x_grid * cd5.xstep_factor, dict_k['wt'][:, ny // 2], c='k', linestyle='--')
-axwt.set_ylabel(r'$\omega \tau_{ei}$')
+    pT50, = ax2[2].plot(x_grid * cd5.xstep_factor,
+                        dict_k['Te'][:, ny // 2] * Te_factor,
+                        c='k',
+                        linestyle='-')
+    axwt = ax2[2].twinx()
+    pT50, = axwt.plot(x_grid * cd5.xstep_factor, dict_k['wt'][:, ny // 2], c='k', linestyle='--')
+    axwt.set_ylabel(r'$\omega \tau_{ei}$')
 
-pT50 = ax2[2].scatter(x_grid[idx_list] * cd5.xstep_factor,
-                      dict_k['Te'][idx_list, ny // 2] * Te_factor,
-                      c='r',
-                      marker='x')
+    pT50 = ax2[2].scatter(x_grid[idx_list] * cd5.xstep_factor,
+                          dict_k['Te'][idx_list, ny // 2] * Te_factor,
+                          c='r',
+                          marker='x')
 
-#--->
-var = 'tot y'
-color = 'b'
-c_list = ['k', 'b', 'r', 'g']
-var_list = ['tot y', 'SH y', 'RL y', 'E y']
-p_list = []
-lab_list = []
-
-# plot
-for iax in [0, 1]:
-    ix = idx_list[iax]
+    #--->
+    var = 'tot y'
+    color = 'b'
+    c_list = ['k', 'b', 'r', 'g']
+    var_list = ['tot y', 'SH y', 'RL y', 'E y']
     p_list = []
     lab_list = []
-    for ic, var in enumerate(var_list):
-        color = c_list[ic]
 
-        p1, = ax2[iax].plot(y_grid * cd5.xstep_factor,
-                            get_amp1(y_grid, dict_k[var][ix, :]),
-                            c=color,
-                            linestyle='-')
-        ax2[iax].plot(y_grid * cd5.xstep_factor,
-                      get_amp1(y_grid, dict_c[var][ix, :]),
-                      c=color,
-                      linestyle='--')
-        p_list.append(p1)
-        lab_list.append(var_dict[var])
+    # plot
+    for iax in [0, 1]:
+        ix = idx_list[iax]
+        p_list = []
+        lab_list = []
+        for ic, var in enumerate(var_list):
+            color = c_list[ic]
 
-if not os.path.isfile(save_name_npy_c) and not os.path.isfile(save_name_npy_k):
-    np.save(save_name_npy_c, dict_c, allow_pickle=True)
-    np.save(save_name_npy_k, dict_k, allow_pickle=True)
+            p1, = ax2[iax].plot(y_grid * cd5.xstep_factor,
+                                get_amp1(y_grid, dict_k[var][ix, :]),
+                                c=color,
+                                linestyle='-')
+            ax2[iax].plot(y_grid * cd5.xstep_factor,
+                          get_amp1(y_grid, dict_c[var][ix, :]),
+                          c=color,
+                          linestyle='--')
+            p_list.append(p1)
+            lab_list.append(var_dict[var])
 
-ax2[2].set_ylabel(r'$T_e$ [\si{keV}]')
-#----->
-ymin, ymax = y_grid[1] * cd5.xstep_factor, y_grid[-2] * cd5.xstep_factor
+    if not os.path.isfile(save_name_npy_c) and not os.path.isfile(save_name_npy_k):
+        np.save(save_name_npy_c, dict_c, allow_pickle=True)
+        np.save(save_name_npy_k, dict_k, allow_pickle=True)
 
-ax2[0].grid(c='gray')
-ax2[1].grid(c='gray')
-ax2[2].grid(c='gray')
+    ax2[2].set_ylabel(r'$T_e$ [\si{keV}]')
+    #----->
+    ymin, ymax = y_grid[1] * cd5.xstep_factor, y_grid[-2] * cd5.xstep_factor
 
-ax2[0].set_xlim(ymin, ymax)
-ax2[1].set_xlim(ymin, ymax)
-ax2[2].set_xlim(xmin, xmax)
+    ax2[0].grid(c='gray')
+    ax2[1].grid(c='gray')
+    ax2[2].grid(c='gray')
 
-ax2[0].ticklabel_format(style='sci', scilimits=(-2, 2))
-ax2[1].ticklabel_format(style='sci', scilimits=(-2, 2))
-ax2[2].ticklabel_format(axis='y', style='sci', scilimits=(-1, 1))
-if int(bz_in) == 0:
-    axwt.ticklabel_format(axis='y', style='sci', scilimits=(-1, 1))
+    ax2[0].set_xlim(ymin, ymax)
+    ax2[1].set_xlim(ymin, ymax)
+    ax2[2].set_xlim(xmin, xmax)
 
-#--- labels
-ypos_lab = r'y [$\si{\micro\meter}$]'
-ax2[0].set_xlabel(ypos_lab)
-ax2[1].set_xlabel(ypos_lab)
-ax2[2].set_xlabel(cd5.xlab_rel)
+    ax2[0].ticklabel_format(style='sci', scilimits=(-2, 2))
+    ax2[1].ticklabel_format(style='sci', scilimits=(-2, 2))
+    ax2[2].ticklabel_format(axis='y', style='sci', scilimits=(-1, 1))
+    if int(bz_in) == 0:
+        axwt.ticklabel_format(axis='y', style='sci', scilimits=(-1, 1))
 
-ax2[0].set_ylabel(ylab)
-ax2[1].set_ylabel(ylab)
-for ax in ax2:
-    ax.tick_params(which='both', direction='in')
+    #--- labels
+    ypos_lab = r'y [$\si{\micro\meter}$]'
+    ax2[0].set_xlabel(ypos_lab)
+    ax2[1].set_xlabel(ypos_lab)
+    ax2[2].set_xlabel(cd5.xlab_rel)
 
-ax2[1].legend(p_list, lab_list)
+    ax2[0].set_ylabel(ylab)
+    ax2[1].set_ylabel(ylab)
+    for ax in ax2:
+        ax.tick_params(which='both', direction='in')
 
-fig1.savefig(save_name + '.png', dpi=600)
-plt.show()
-print('\n copy and paste: open -a preview ' + save_name + '.png')
+    ax2[1].legend(p_list, lab_list)
+
+    fig1.savefig(save_name + '.png', dpi=600)
+    plt.show()
+    print('\n copy and paste: open -a preview ' + save_name + '.png')
