@@ -51,28 +51,12 @@ maxwidth = 1
 minwidth = 0.7
 minorsize = 1
 majorsize = 2
-'''
-    plt.rcParams.update(
-        {'lines.linewidth':1,
-         'legend.fontsize':8,
-         'axes.titlesize':8,
-         'axes.linewidth':1,
-         'axes.labelsize':8,
-         'axes.labelpad':1,
-         'xtick.major.size':2,
-         'ytick.major.size':2,
-         'xtick.major.width':1,
-         'ytick.major.width':1,
-         'ytick.minor.width':0.7,
-         'ytick.minor.size':1,
-         'xtick.labelsize':7,
-         'ytick.labelsize':7})
-'''
+
 
 pgf_with_latex = {    # setup matplotlib to use latex for output
     "pgf.texsystem": "pdflatex",    # change this if using xetex or lautex
     "text.usetex": True,    # use LaTeX to write all text
-    "font.family": "serif",
+    #"font.family": "serif",
     "font.serif": [],    # blank entries should cause plots to inherit fonts from the document
     "font.sans-serif": [],
     "font.monospace": [],
@@ -109,7 +93,7 @@ pgf_with_latex = {    # setup matplotlib to use latex for output
 pgf_with_latex_2scale = {    # setup matplotlib to use latex for output
     "pgf.texsystem": "pdflatex",    # change this if using xetex or lautex
     "text.usetex": True,    # use LaTeX to write all text
-    "font.family": "serif",
+    #"font.family": "serif",
     "font.serif": [],    # blank entries should cause plots to inherit fonts from the document
     "font.sans-serif": [],
     "font.monospace": [],
@@ -140,7 +124,7 @@ pgf_with_latex_2scale = {    # setup matplotlib to use latex for output
 pgf_with_latex_nofontsize = {    # setup matplotlib to use latex for output
     "pgf.texsystem": "pdflatex",    # change this if using xetex or lautex
     "text.usetex": True,    # use LaTeX to write all text
-    "font.family": "serif",
+    #"font.family": "serif",
     "font.serif": [],    # blank entries should cause plots to inherit fonts from the document
     "font.sans-serif": [],
     "font.monospace": [],

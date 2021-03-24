@@ -54,14 +54,14 @@ cd5 = cf.conv_factors_custom(norm_dir, Z_ref, Ar=6.51)
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument(
     "transport_component",
-    description=
+    help=
     "Transport term to plot RL x = x component of Righi-Leduc, SH y = y component of Spitzer-HArm/diffusive heat flow,"
     "vN y = y-component of Nernst")
 parser.add_argument("thermodynamic_variable",
-                    description="string for impact variable: Te, ne, Bz, Cx (ion velocity)")
+                    help="string for impact variable: Te, ne, Bz, Cx (ion velocity)")
 parser.add_argument("output_directory",
                     default="",
-                    description="output directory path (relative to root)")
+                    help="output directory path (relative to root)")
 args = parser.parse_args()
 var1 = args.transport_component    # eg. 'RL y' for y component of Righi-Leduc heat flow, '
 var2 = args.thermodynamic_variable

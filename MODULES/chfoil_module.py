@@ -2351,28 +2351,6 @@ def get_path_style(final_lab, h_lab, B_lab):
     return lstyle, marker
 
 
-def get_path_style_path(fprefix):
-    '''
-        lstyle,marker = get_path_style(h_lab,B_lab)
-    '''
-    lstyle = '-'
-    marker = None
-    if B_lab == 'no B':
-        marker = 'o'
-    #if B_lab[-1] == 'T':
-    #    marker = 'x'
-
-    else:
-        marker = None
-    if h_lab == 'static':
-        lstyle = ':'
-    elif h_lab == 'no$ $C_y':
-        lstyle = ':'
-        marker = 'x'
-    elif B_lab[-2:] == 'MW':
-        lstyle = '--'    # Maxwellian run
-    return lstyle, marker
-
 
 def get_q_over_qFS(path, fprefix, time):
     '''
