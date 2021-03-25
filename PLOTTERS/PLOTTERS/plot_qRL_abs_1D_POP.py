@@ -26,7 +26,7 @@ norm_path = '/Users/' + userid + '/Dropbox/York/Pre-magnetised/gorgon_import-11.
 log_file = '/Users/' + userid + '/Dropbox/York/Pre-magnetised/gorgon_import-11.10.17/' + norm_name + 'norm.log'
 [T0, n0, Z0, Bz0] = np.loadtxt(log_file)
 
-cd5 = cf.conv_factors_custom(norm_path, Z0, Ar=6.51)
+cd5 = cf.ConversionFactors(norm_path, Z0, Ar=6.51)
 print 'Z0 = ', Z0
 print 'T0 = ', T0
 print 'n0 = ', n0

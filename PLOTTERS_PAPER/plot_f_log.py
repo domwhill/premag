@@ -7,7 +7,7 @@ import sys
 from pylab import *
 sys.path.extend(["./"])
 
-from MODULES.plot_utils import run_obj
+from MODULES.plot_utils import RunInfo
 from MODULES.plot_utils import GetSimData
 import MODULES.figure_prl_twocol as fprl
 
@@ -36,7 +36,7 @@ def plot_f0(ax,v_grid,fo,ne,Te):
 
 if __name__=="__main__":
     lambda_p = 5.0
-    sim_obj = run_obj(scale_length=1, bz_in=50.0, lambda_p=lambda_p, pert_amp='1p',dim='1D')
+    sim_obj = RunInfo(scale_length=1, bz_in=50.0, lambda_p=lambda_p, pert_amp='1p', dim='1D')
     sim_data_obj = GetSimData(sim_obj,time='15')
     save_name = '%s%s_%i_f0.png' % (sim_obj.save_path, sim_obj.save_tag, int(sim_data_obj.time))
 

@@ -4,7 +4,11 @@
 
 
 '''
-import numpy as np, sys, os, getpass, site, re
+import sys
+import os
+import numpy as np
+import re
+
 sys.path.extend(["./"])
 import MODULES.figure_prl_twocol as fprl
 from pylab import *
@@ -13,7 +17,6 @@ import MODULES.house_keeping as hk
 from matplotlib import ticker
 import impact_norms as inorm
 import tsi_module as tsi
-import pdb
 
 #---> constants...
 c = 3e8
@@ -64,7 +67,10 @@ def absmaxND(a, axis=None):
     return np.where(-amin > amax, amin, amax)
 
 
-class run_obj_list:
+class RunInfoList:
+    """Container for information on a seris
+
+    """
 
     def __init__(self, var_type, scale_length=1, bz_in=50.0, lambda_p=5, pert_amp='1p', **kwargs):
         # --> defaults
@@ -91,7 +97,7 @@ class run_obj_list:
         self.run_obj_dict = {}
         for ib, var in enumerate(self.var_list):
 
-            run_obj_loc = run_obj(*var)
+            run_obj_loc = RunInfo(*var)
             self.run_objs.append(run_obj_loc)
             self.paths.append(run_obj_loc.path)
             tag = run_obj_loc.get_tag()
@@ -122,7 +128,7 @@ class run_obj_list:
 
 
 
-class run_obj:
+class RunInfo:
 
     def __init__(self, scale_length=1, bz_in=400.0, lambda_p=5, pert_amp='0p', dim='2D'):
         paths = hk.directory_paths()
@@ -142,7 +148,7 @@ class run_obj:
         norm_dir = paths.norm_dir
         log_file = norm_dir + 'norm.log'
         [T_ref, n_ref, Z_ref, Bz_ref] = np.loadtxt(log_file)
-        self.norm = cf.conv_factors_custom(norm_dir, Z_ref, Ar=6.51)
+        self.norm = cf.ConversionFactors(norm_dir, Z_ref, Ar=6.51)
         self.save_path = paths.save_dir
         self.Te_factor = 2.0 * T_ref * 1e-3
 

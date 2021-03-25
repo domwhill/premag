@@ -20,7 +20,7 @@ import MODULES.chfoil_module as cf
 import MODULES.house_keeping as hk
 import MODULES.tsi_module as tsi
 import MODULES.impact_norms as inorm
-from MODULES.plot_utils import run_obj
+from MODULES.plot_utils import RunInfo
 import EH_poly_coeff_module as ep
 # ---> constants...
 c = 3e8
@@ -39,7 +39,7 @@ save_path = paths.save_dir
 norm_dir = paths.norm_dir
 log_file = norm_dir + 'norm.log'
 [T_ref, n_ref, Z_ref, Bz_ref] = np.loadtxt(log_file)
-cd5 = cf.conv_factors_custom(norm_dir, Z_ref, Ar=6.51)
+cd5 = cf.ConversionFactors(norm_dir, Z_ref, Ar=6.51)
 
 # ---- user inputs
 # aesthetics
@@ -457,7 +457,7 @@ class SimCoeffs:
 
 
 lambda_p = 5.0
-sim_obj = run_obj(scale_length=1, bz_in=50.0, lambda_p=lambda_p, pert_amp='1p')
+sim_obj = RunInfo(scale_length=1, bz_in=50.0, lambda_p=lambda_p, pert_amp='1p')
 sim_data_obj = GetSimData(sim_obj)
 
 k = (2.0 * np.pi / lambda_p)

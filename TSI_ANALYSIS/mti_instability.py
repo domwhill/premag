@@ -27,7 +27,7 @@ norm_path = '/Users/' + userid + '/Dropbox/York/Pre-magnetised/gorgon_import-11.
 log_file = '/Users/' + userid + '/Dropbox/York/Pre-magnetised/gorgon_import-11.10.17/' + norm_name + '/norm.log'
 [Te_ref, ne_ref, Z_ref, Bz_ref] = np.loadtxt(log_file)
 Te_ref *= q_e    # convert to Joules
-cd5 = cf.conv_factors_custom(norm_path, Z_ref, Ar=6.51)
+cd5 = cf.ConversionFactors(norm_path, Z_ref, Ar=6.51)
 cB = 3.0 * np.sqrt(np.pi) / 4.0
 lambda_mfp_ref = cd5.lambda_mfp
 v_th_ref = cd5.v_te

@@ -26,7 +26,7 @@ save_path = paths.save_dir
 norm_dir = paths.norm_dir
 log_file = norm_dir + 'norm.log'
 [Te_ref, n_ref, Z_ref, Bz_ref] = np.loadtxt(log_file)
-cd5 = cf.conv_factors_custom(norm_dir, Z_ref, Ar=6.51)
+cd5 = cf.ConversionFactors(norm_dir, Z_ref, Ar=6.51)
 scale_length = 1
 lambda_p = 5
 

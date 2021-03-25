@@ -162,7 +162,7 @@ if __name__ == "__main__":
     ax2 = plt.subplot(gs[1, 1])
     ax3 = plt.subplot(gs[1, 2])
 
-    run_obj_list = utils.run_obj_list('bz', scale_length=1, bz_in=bz_list, pert_amp='1p', time=time_to_plot)
+    run_obj_list = utils.RunInfoList('bz', scale_length=1, bz_in=bz_list, pert_amp='1p', time=time_to_plot)
     # sort by bz - note plot_dT_vs_x expects a list of times)
     PlotdTx(run_obj_list, [time_to_plot]).plot(ax_t)
     PlotdTy(run_obj_list.run_obj_dict['0']).plot(ax1, time_to_plot)

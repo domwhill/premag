@@ -73,7 +73,7 @@ norm_name = 'p400nFL_5v37/'
 norm_path = '/Users/' + userid + '/Dropbox/York/Pre-magnetised/gorgon_import-11.10.17/p400nFL_5v37'
 log_file = '/Users/' + userid + '/Dropbox/York/Pre-magnetised/gorgon_import-11.10.17/' + norm_name + 'norm.log'
 [T0, n0, Z0, Bz0] = np.loadtxt(log_file)
-cd5 = cf.conv_factors_custom(norm_path, Z0, Ar=6.51)
+cd5 = cf.ConversionFactors(norm_path, Z0, Ar=6.51)
 cl_index = cd5.cl_index
 c_index = cd5.c_index
 SI_on = cd5.SI_on

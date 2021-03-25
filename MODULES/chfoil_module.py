@@ -143,9 +143,9 @@ class cd5_switches(object):
     marker_on = False
 
 
-class conv_factors_custom(object):
-    # --- arguments given to the class are passed straight to init...
-    #
+class ConversionFactors(object):
+    """Class to convert from IMPACT normalised units to SI & provide labels/ run configs for graphs.
+    """
     def __init__(self, norm_path=paths.norm_dir, Z=5.954127788543701172, Ar=6.51):
         self.norm_name = self.search_path_class('norm.txt', norm_path)
         print 'self.norm_name = ', self.norm_name, norm_path
@@ -177,17 +177,10 @@ class conv_factors_custom(object):
 
         self.yi = 10
         self.lineout_list = [20, 40, 50, 73]
-        #self.lineout_list = [20,47,73]
-        #self.lineout_list = [110,144,190]
         self.lineout_list = map(int, np.linspace(self.cl_index, self.c_index, 3))
         self.lineout_list = [90, 120, 140]
 
         interval = self.c_index - self.cl_index
-        #self.lineout_list = map(int,[self.cl_index+0.1*interval,self.cl_index+0.3*interval,self.c_index*0.7])
-        print 'lineout list = ', self.lineout_list
-
-        self.color_lineout = cm.bone(np.linspace(0.0, 1, len(self.lineout_list) + 1))
-        self.color_lineout = self.color_lineout[:-1]
         self.color_lineout = ['b', 'g', 'r']
 
         self.lh_style = 'None'
@@ -231,7 +224,6 @@ class conv_factors_custom(object):
 
         return
 
-    #-------------------------------------------------------------------
     def search_path_class(self, regexp, path):
         '''
             out_name = search_path(regexp,path)
@@ -249,7 +241,6 @@ class conv_factors_custom(object):
         return out_name
 
 
-#-------------------------------------------------------------------====
 def fpre(path):
     return path.split('/')[-1]
 
@@ -1134,7 +1125,7 @@ def get_hallparam(Bz_norm, vte_norm, Z2ni_norm):
     return chi
 
 
-def calc_norms(var, sample=0.0, forced_power=[], normal_class=conv_factors_custom):
+def calc_norms(var, sample=0.0, forced_power=[], normal_class=ConversionFactors):
     '''
         norm_const, ylab = calc_norms(var)
     '''
@@ -1347,7 +1338,7 @@ def calc_norms(var, sample=0.0, forced_power=[], normal_class=conv_factors_custo
     return norm_const, title, c_fmt
 
 
-def calc_norms_2(var, sample=0.0, SI_on=True, normal_class=conv_factors_custom(), forced_power=[]):
+def calc_norms_2(var, sample=0.0, SI_on=True, normal_class=ConversionFactors(), forced_power=[]):
     '''
         dict = calc_norms(var)
         

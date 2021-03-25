@@ -49,7 +49,7 @@ save_path = paths.save_dir
 norm_dir = paths.norm_dir
 log_file = norm_dir + 'norm.log'
 [Te_ref, n_ref, Z_ref, Bz_ref] = np.loadtxt(log_file)
-cd5 = cf.conv_factors_custom(norm_dir, Z_ref, Ar=6.51)
+cd5 = cf.ConversionFactors(norm_dir, Z_ref, Ar=6.51)
 #---> USER inputs
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument(
@@ -280,7 +280,6 @@ if __name__ == "__main__":
     vmin = np.min(data_k[np.abs(x_grid - xmin) <= xmax]) * 0.8
     vmax = np.max(data_k[np.abs(x_grid - xmin) <= xmax]) * 1.2
 
-    #p0, = ax.plot(x_grid,rat_0T,c='g')
 
     p50, = ax.plot(x_grid, dict_50T_k[var1] * v1_labs.factor, c='r')
     p50, = ax.plot(x_grid, dict_50T_c[var1] * v1_labs.factor, c='r', linestyle='--')
@@ -301,7 +300,7 @@ if __name__ == "__main__":
     ax.set_xlabel(xlab)
     ax.set_ylabel(v1_labs.lab)
     ax2.set_ylabel(v2_labs.lab)
-    #ax.set_ylim(-0.15*v1_labs.factor,0.01*v1_labs.factor)#(-0.1,0.01) - Nernst
+
     if var_lim_400:
         set_ylim_max_2data(ax,
                            x_grid,
@@ -317,7 +316,6 @@ if __name__ == "__main__":
                            dict_50T_k[var1] * v1_labs.factor,
                            y_mult=[1.0, 1.0],
                            xlim=[xmin, xmax])
-    #ax2.set_ylim(0.0,1000.0)
 
     ax.set_xlim(xmin, xmax)
     plt.savefig(save_name, dpi=600)

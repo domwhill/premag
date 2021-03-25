@@ -154,7 +154,7 @@ class run_obj:
         norm_dir = paths.norm_dir
         log_file = norm_dir + 'norm.log'
         [T_ref, n_ref, Z_ref, Bz_ref] = np.loadtxt(log_file)
-        self.norm = cf.conv_factors_custom(norm_dir, Z_ref, Ar=6.51)
+        self.norm = cf.ConversionFactors(norm_dir, Z_ref, Ar=6.51)
         self.save_path = paths.save_dir
         self.Te_factor = 2.0 * T_ref * 1e-3
 

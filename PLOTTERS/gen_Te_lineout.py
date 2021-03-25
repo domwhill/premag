@@ -24,7 +24,7 @@ MSIZE = 4
 init_path = os.getcwd()
 
 norm_path = hk.directory_paths().norm_dir
-cd5 = cfoil.conv_factors_custom(norm_path)
+cd5 = cfoil.ConversionFactors(norm_path)
 
 cl_index = int(cd5.cl_index)
 c_index = int(cd5.c_index)

@@ -73,7 +73,7 @@ time_glb = get_tmax(path_list)
 print('time_glb = ', time_glb)
 time_list = ['02', time_glb]
 cwdpath = hk.directory_paths().norm_dir
-cd5 = cf.conv_factors_custom(cwdpath)
+cd5 = cf.ConversionFactors(cwdpath)
 
 cl_index = cd5.cl_index
 c_index = cd5.c_index

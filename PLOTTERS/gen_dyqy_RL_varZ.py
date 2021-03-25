@@ -11,14 +11,8 @@ import MODULES.house_keeping as hk
 from matplotlib import ticker
 
 
-
-#path_tag = cfoil.retrieve_path_tag(path_list[0])
-
-
-
-
 norm_path = hk.directory_paths().norm_dir
-cfg = cf.conv_factors_custom(norm_path)
+cfg = cf.ConversionFactors(norm_path)
 
 
 #---------
@@ -406,7 +400,6 @@ def plot_dBdt_bier(fig,ax,cax,path,time,cfg=cfg):
 
     #levels= [-0.001]
     for ll in range(len(levels)):
-        #print 'levels ll = ', ll, levels[ll]
         levels[ll] *= cfg.divq_factor
 
     #

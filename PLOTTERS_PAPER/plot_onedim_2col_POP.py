@@ -19,7 +19,7 @@ import matplotlib as mpl
 
 paths = hk.directory_paths()
 norm_path = paths.norm_dir
-cfg = cf.conv_factors_custom(norm_path)
+cfg = cf.ConversionFactors(norm_path)
 
 q_e = 1.602e-19
 m_e = 9.11e-31

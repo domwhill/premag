@@ -16,7 +16,7 @@ import matplotlib.gridspec as GS
 import MODULES.kinetic_ohmslaw_module_varZ as kohb
 import MODULES.figure_prl_twocol as fprl
 import MODULES.chfoil_module as cf
-from MODULES.plot_utils import run_obj, run_obj_list
+from MODULES.plot_utils import RunInfo, RunInfoList
 import MODULES.house_keeping as hk
 import PLOTTERS.gen_dyqy_RL_varZ as qrl
 from matplotlib import ticker
@@ -235,7 +235,7 @@ def main():
     bz_list = [50.0, 400.0]
 
     # Generate run obj list
-    obj_list = run_obj_list(var_type='bz', scale_length=1, bz_in=bz_list, lambda_p=5, pert_amp='1p')
+    obj_list = RunInfoList(var_type='bz', scale_length=1, bz_in=bz_list, lambda_p=5, pert_amp='1p')
 
     fig = fprl.newfig_generic(1.4, 0.9)
     plt.subplots_adjust(left=0.10, right=0.88, bottom=0.18, top=0.9, wspace=0.1)

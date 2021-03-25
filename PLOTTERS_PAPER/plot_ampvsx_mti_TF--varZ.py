@@ -61,7 +61,7 @@ time_list = ['03', t_list[-1]]
 
 time_glb = time_list[-1]
 cwdpath = hk.directory_paths().norm_dir
-cd5 = cf.conv_factors_custom(cwdpath)
+cd5 = cf.ConversionFactors(cwdpath)
 
 cl_index = cd5.cl_index
 c_index = cd5.c_index

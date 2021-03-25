@@ -13,7 +13,6 @@ import MODULES.kinetic_ohmslaw_module_varZ as q_mod
 import MODULES.figure_prl_twocol as fprl
 import MODULES.chfoil_module as cf
 import MODULES.house_keeping as hk
-import MODULES.tsi_module as tsi
 
 #---> constants...
 c = 3e8
@@ -30,7 +29,7 @@ save_path = paths.save_dir
 norm_dir = paths.norm_dir
 log_file = norm_dir + 'norm.log'
 [T_ref, n_ref, Z_ref, Bz_ref] = np.loadtxt(log_file)
-cd5 = cf.conv_factors_custom(norm_dir, Z_ref, Ar=6.51)
+cd5 = cf.ConversionFactors(norm_dir, Z_ref, Ar=6.51)
 
 Te_factor = 2.0 * T_ref * 1e-3
 #--->  getting path ->

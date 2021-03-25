@@ -18,7 +18,7 @@ horizontal_on = cd5_switches.horizontal_on
 separate_plots_on = cd5_switches.separate_plots_on
 
 cwdpath = os.getcwd()
-cd5 = cf.conv_factors_custom(cwdpath)
+cd5 = cf.ConversionFactors(cwdpath)
 Z0 = cd5.Z
 T0 = cd5.T0
 n0 = cd5.n0
