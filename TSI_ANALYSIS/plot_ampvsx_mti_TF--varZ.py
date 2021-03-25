@@ -4,16 +4,14 @@
      + the Biermann + the div.q_RL - i.e. where dyqyrl intersect and have same sign? We have TS instability...
 '''
 
-import numpy as np, sys, os, getpass, site
+import sys
+
 sys.path.extend(["./"])
 
-import matplotlib.pyplot as plt
-import PLOTTERS.gen_Te_lineout as TEL
+import MODULES.gen_Te_lineout as TEL
 import gen_dyqy_RL_varZ as dyqy
-import gen_dBdt_bier_varZ as gdBdt
 import figure as fprl
 import matplotlib.gridspec as GS
-import matplotlib.ticker as ticker
 from pylab import *
 import MODULES.chfoil_module as cf
 import MODULES.house_keeping as hk

@@ -16,9 +16,8 @@ import matplotlib.gridspec as GS
 import MODULES.kinetic_ohmslaw_module_varZ as kohb
 import MODULES.figure_prl_twocol as fprl
 import MODULES.chfoil_module as cf
-from MODULES.plot_utils import RunInfo, RunInfoList
-import MODULES.house_keeping as hk
-import PLOTTERS.gen_dyqy_RL_varZ as qrl
+from MODULES.plot_utils import RunInfoList
+import MODULES.gen_dyqy_RL_varZ as qrl
 from matplotlib import ticker
 
 #---> constants...
