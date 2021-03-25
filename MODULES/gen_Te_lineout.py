@@ -270,7 +270,8 @@ def plot_custom_xlineout_amp_tevol(fig,
                                    style_list=('-', '--', ':', '-', '--', ':'),
                                    mstyle_list=(None, None, None, 'x', '^', 'o'),
                                    leg_dict=(),
-                                   axleg=(), **kwargs):
+                                   axleg=(),
+                                   **kwargs):
     '''
         p2 = plot_custom_xlineout(fig,ax,path_list,var_amp='Te')
     '''
@@ -282,10 +283,10 @@ def plot_custom_xlineout_amp_tevol(fig,
     # ---- loop over paths
     if cmap is None:
         c_list = cm.plasma(np.linspace(0, 1, len(time_list)))
-    elif isinstance(cmap, (list,tuple)):
+    elif isinstance(cmap, (list, tuple)):
         c_list = cmap
     else:
-        c_list = cmap(np.linspace(0,1,len(time_list)))
+        c_list = cmap(np.linspace(0, 1, len(time_list)))
 
     for pp in range(len(path_list)):
         p_list = []

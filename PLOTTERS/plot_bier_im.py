@@ -56,6 +56,7 @@ ylab_bier = r'$\partial_t \mathbf{B}|_{B}$ [$\si{Ts^{-1}}$]'
 xmin, xmax = 0.0, 20.0
 time = "06"
 
+
 def custom_im(fig, ax, xgrid, ygrid, data, lab, **kwargs):
     vmin = kwargs.pop('vmin', None)
     vmax = kwargs.pop('vmax', None)
@@ -80,7 +81,7 @@ def fpre(path):
     return path.split('/')[-1]
 
 
-if __name__=="__main__":
+if __name__ == "__main__":
     log_on = True
     lab_list = []
     plot_list = []

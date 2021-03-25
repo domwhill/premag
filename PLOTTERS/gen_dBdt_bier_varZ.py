@@ -82,7 +82,6 @@ def extract_ohms(path, time, x_limit=73):
     fprefix = fpre(path)
     dict_kinetic = kohb.get_kinetic_E(path, fprefix, time, xlim=73)
 
-
     dict = {}
     dict['E_betawedge_x'] = {}
     dict['E_betawedge_x']['data'] = dict_kinetic['E_TEwedge_x']

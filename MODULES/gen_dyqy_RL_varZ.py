@@ -10,10 +10,8 @@ import MODULES.kinetic_ohmslaw_module_varZ as kohb
 import MODULES.house_keeping as hk
 from matplotlib import ticker
 
-
 norm_path = hk.directory_paths().norm_dir
 cfg = cf.ConversionFactors(norm_path)
-
 
 #---------
 '''
@@ -24,10 +22,10 @@ path1_speckle_tc5 = loc_nspace.speckle_B
 path1_speckle_tc5_noB = loc_nspace.speckle_noB
 save_path = loc_nspace.save_path
 '''
-save_path = './'
+save_path = '../PLOTTERS/'
 
 
-def repack_2D(path,time,cfg=cfg):
+def repack_2D(path, time, cfg=cfg):
     '''
         dict_c,dict_k = repack_2D(path,time)
     '''
@@ -61,7 +59,8 @@ def repack_2D(path,time,cfg=cfg):
     dict_out_k['x_grid'] = dict_qk['x_grid']
     return dict_out_c, dict_out_k
 
-def load_qdata(path,time='10',cfg=cfg):
+
+def load_qdata(path, time='10', cfg=cfg):
     #-------- LOAD q data ----------------------------------------------
     kohnew = {}
 
@@ -74,7 +73,8 @@ def load_qdata(path,time='10',cfg=cfg):
 
     return kohnew
 
-def get_divqRL(path,time,cfg=cfg,**kwargs):
+
+def get_divqRL(path, time, cfg=cfg, **kwargs):
     '''
         dyqy, qlab = get_divqRL(path,time,cfg=cfg,**kwargs)
     :param path:
@@ -101,15 +101,16 @@ def get_divqRL(path,time,cfg=cfg,**kwargs):
     data_y = data_yc * 1.0
 
     dxqy, dyqy = cf.get_grad(x_grid_SI, y_grid_SI, data_y)
-    dyqy = np.transpose(dyqy)  # q_SH_y[path][tt,:,:]
+    dyqy = np.transpose(dyqy)    # q_SH_y[path][tt,:,:]
     MULT = -1.0
 
-    dyqy *= MULT*cfg.divq_factor * 0.1
+    dyqy *= MULT * cfg.divq_factor * 0.1
     qlab = r'-$\partial_y q_{y,RL,%s}$ %s' % (kc_str, cfg.divq_unit)
 
     return dyqy, qlab
 
-def extract_ohms(path,time,x_limit=73,cfg=cfg):
+
+def extract_ohms(path, time, x_limit=73, cfg=cfg):
     '''
     dict = extract_ohms(path,time)
     '''
@@ -124,8 +125,7 @@ def extract_ohms(path,time,x_limit=73,cfg=cfg):
     #E_P_c_x, E_P_c_y = E_P_classical['E_P_x'],E_P_classical['E_P_y']
     #E_P_k_x, E_P_k_y = E_P_kinetic['E_P_x'],E_P_kinetic['E_P_y']
     fprefix = fpre(path)
-    dict_kinetic = kbier.get_kinetic_E(path,fprefix,time,xlim=73)
-
+    dict_kinetic = kbier.get_kinetic_E(path, fprefix, time, xlim=73)
 
     dict = {}
     dict['E_betawedge_x'] = {}
@@ -171,48 +171,49 @@ def fpre(path):
     return path.split('/')[-1]
 
 
+def plot_dyqy_RL(fig, ax, cax, path, time, cfg=cfg):
 
-def plot_dyqy_RL(fig,ax,cax,path,time,cfg=cfg):
+    kohnew = load_qdata(path, time)
+    data_y = np.transpose(kohnew[path]["q RL" + '_y']['data'])    #q_SH_y[path][tt,:,:]
 
-    kohnew = load_qdata(path,time)
-    data_y = np.transpose(kohnew[path]["q RL" + '_y']['data'])#q_SH_y[path][tt,:,:]
-
-    x_grid_SI = kohnew[path]['x_grid']*cfg.xstep_factor
-    y_grid_SI = kohnew[path]['y_grid']*cfg.xstep_factor
-    time_col = kohnew[path]['time']*cfg.tstep_factor
+    x_grid_SI = kohnew[path]['x_grid'] * cfg.xstep_factor
+    y_grid_SI = kohnew[path]['y_grid'] * cfg.xstep_factor
+    time_col = kohnew[path]['time'] * cfg.tstep_factor
     asp = 'auto'
     lab_dict = {}
-    lab_dict['figsize'] = (8,8) # x,y inches
-    lab_dict['lims'] = [y_grid_SI[0],y_grid_SI[-1],x_grid_SI[cfg.c_index],x_grid_SI[0]]
+    lab_dict['figsize'] = (8, 8)    # x,y inches
+    lab_dict['lims'] = [y_grid_SI[0], y_grid_SI[-1], x_grid_SI[cfg.c_index], x_grid_SI[0]]
     lab_dict['colormap'] = 'RdBu_r'
-    lab_dict['xlab'],lab_dict['ylab'] = cfg.xlab,cfg.ylab
+    lab_dict['xlab'], lab_dict['ylab'] = cfg.xlab, cfg.ylab
     lab_dict['cbar_title'] = '   '
     lab_dict['title'] = '   '
-    cmap = 'RdBu_r'#'hot'
+    cmap = 'RdBu_r'    #'hot'
     var = 'q_RL'
     tt = int(time)
 
     #--- do everything in units of 10 eV/ps
-    dxqy,dyqy =  cf.get_grad(x_grid_SI,y_grid_SI,data_y)
-    dyqy = np.transpose(dyqy)#q_SH_y[path][tt,:,:]
+    dxqy, dyqy = cf.get_grad(x_grid_SI, y_grid_SI, data_y)
+    dyqy = np.transpose(dyqy)    #q_SH_y[path][tt,:,:]
 
-
-    dyqy *= cfg.divq_factor*0.1
-
+    dyqy *= cfg.divq_factor * 0.1
 
     MULT = -1.0
     #vmin,vmax = np.min(MULT*dyqy),np.max(MULT*dyqy)
     #vmin,vmax = -1,2
-    multtemp=0.9
-    vmin,vmax = np.min(MULT*dyqy[:,cfg.cl_index:cfg.c_index])*multtemp,np.max(MULT*dyqy[:,cfg.cl_index:cfg.c_index])*multtemp
-    lims_im = [x_grid_SI[cfg.cl_index],x_grid_SI[cfg.c_index],y_grid_SI[0],y_grid_SI[-1]]#
+    multtemp = 0.9
+    vmin, vmax = np.min(MULT * dyqy[:, cfg.cl_index:cfg.c_index]) * multtemp, np.max(
+        MULT * dyqy[:, cfg.cl_index:cfg.c_index]) * multtemp
+    lims_im = [x_grid_SI[cfg.cl_index], x_grid_SI[cfg.c_index], y_grid_SI[0], y_grid_SI[-1]]    #
 
     norm = cf.MidPointNorm(0.0)
-    imy = ax.imshow(MULT*dyqy[:,cfg.cl_index:cfg.c_index],
-                    cmap=cmap,vmin=vmin,vmax=vmax,
+    imy = ax.imshow(MULT * dyqy[:, cfg.cl_index:cfg.c_index],
+                    cmap=cmap,
+                    vmin=vmin,
+                    vmax=vmax,
                     norm=norm,
-                    aspect=asp,extent=lims_im)
-    levels = np.arange(vmin,vmax,(vmax-vmin)/4.0)
+                    aspect=asp,
+                    extent=lims_im)
+    levels = np.arange(vmin, vmax, (vmax - vmin) / 4.0)
     levels = levels.tolist()
 
     #levels= [-0.001]
@@ -223,7 +224,10 @@ def plot_dyqy_RL(fig,ax,cax,path,time,cfg=cfg):
     #
     levels = [0.0]
     claby = r'-$\partial_y q_{y,RL}$ ' + cfg.divq_unit
-    CSy = ax.contour(MULT*dyqy[::-1,cfg.cl_index:cfg.c_index]*cfg.divq_factor,levels=levels,colors=('k'),extent=lims_im)
+    CSy = ax.contour(MULT * dyqy[::-1, cfg.cl_index:cfg.c_index] * cfg.divq_factor,
+                     levels=levels,
+                     colors=('k'),
+                     extent=lims_im)
     #ax.clabel(CSy,[0.0],inline=True,fmt='%1.1f')
     #ax.clabel(CSy,levels,inline=True,fmt='%3.4f')
 
@@ -231,8 +235,13 @@ def plot_dyqy_RL(fig,ax,cax,path,time,cfg=cfg):
 
     #--- plot hlines
     lim = ax.get_ylim()
-    if not cfg.lh_style=='None':
-        cf.plot_xvlines(ax,x_grid_SI,lim,cfg.lineout_list,linestyle=cfg.lh_style,dashes=cfg.dashes)
+    if not cfg.lh_style == 'None':
+        cf.plot_xvlines(ax,
+                        x_grid_SI,
+                        lim,
+                        cfg.lineout_list,
+                        linestyle=cfg.lh_style,
+                        dashes=cfg.dashes)
 
     ax.set_xlabel(cfg.xlab_rel)
     ax.set_ylabel(cfg.ylab)
@@ -246,35 +255,33 @@ def plot_dyqy_RL(fig,ax,cax,path,time,cfg=cfg):
 
     c2.add_lines(CSy)
 
-
-
     save_dict = {}
     save_dict['x_grid_SI'] = x_grid_SI[cfg.cl_index:cfg.c_index]
     save_dict['y_grid_SI'] = y_grid_SI
     save_dict['lab'] = claby
-    save_dict['data'] = dyqy[::-1,cfg.cl_index:cfg.c_index]*cfg.divq_factor
-    np.save('test_dyqy.npy',save_dict)
+    save_dict['data'] = dyqy[::-1, cfg.cl_index:cfg.c_index] * cfg.divq_factor
+    np.save('test_dyqy.npy', save_dict)
     return imy
 
 
-def plot_dyqy_RL_c(fig,ax,cax,path,time,cfg=cfg,**kwargs):
+def plot_dyqy_RL_c(fig, ax, cax, path, time, cfg=cfg, **kwargs):
     switch_kinetic_on = kwargs.pop('switch_kinetic_on', True)
 
-    kohnew = load_qdata(path,time)
-    dict_c, dict_k = repack_2D(path,time)
+    kohnew = load_qdata(path, time)
+    dict_c, dict_k = repack_2D(path, time)
 
-    x_grid_SI = kohnew[path]['x_grid']*cfg.xstep_factor
-    y_grid_SI = kohnew[path]['y_grid']*cfg.xstep_factor
-    time_col = kohnew[path]['time']*cfg.tstep_factor
+    x_grid_SI = kohnew[path]['x_grid'] * cfg.xstep_factor
+    y_grid_SI = kohnew[path]['y_grid'] * cfg.xstep_factor
+    time_col = kohnew[path]['time'] * cfg.tstep_factor
     asp = 'auto'
     lab_dict = {}
-    lab_dict['figsize'] = (8,8) # x,y inches
-    lab_dict['lims'] = [y_grid_SI[0],y_grid_SI[-1],x_grid_SI[cfg.c_index],x_grid_SI[0]]
+    lab_dict['figsize'] = (8, 8)    # x,y inches
+    lab_dict['lims'] = [y_grid_SI[0], y_grid_SI[-1], x_grid_SI[cfg.c_index], x_grid_SI[0]]
     lab_dict['colormap'] = 'RdBu_r'
-    lab_dict['xlab'],lab_dict['ylab'] = cfg.xlab,cfg.ylab
+    lab_dict['xlab'], lab_dict['ylab'] = cfg.xlab, cfg.ylab
     lab_dict['cbar_title'] = '   '
     lab_dict['title'] = '   '
-    cmap = 'RdBu_r'#'hot'
+    cmap = 'RdBu_r'    #'hot'
     var = 'q_RL'
     print ' shape = ', np.shape(kohnew[path][var + '_x']['data'])
     tt = int(time)
@@ -286,28 +293,29 @@ def plot_dyqy_RL_c(fig,ax,cax,path,time,cfg=cfg,**kwargs):
 
     else:
         data_yc = dict_c['RL y']
-    data_y = data_yc*1.0
-    dxqy,dyqy =  cf.get_grad(x_grid_SI,y_grid_SI,data_y)
-    dyqy = np.transpose(dyqy)#q_SH_y[path][tt,:,:]
+    data_y = data_yc * 1.0
+    dxqy, dyqy = cf.get_grad(x_grid_SI, y_grid_SI, data_y)
+    dyqy = np.transpose(dyqy)    #q_SH_y[path][tt,:,:]
 
-
-    dyqy *= cfg.divq_factor*0.1
-
+    dyqy *= cfg.divq_factor * 0.1
 
     MULT = -1.0
-    multtemp=0.9
-    vmin,vmax = np.min(MULT*dyqy[:,cfg.cl_index:cfg.c_index])*multtemp,np.max(MULT*dyqy[:,cfg.cl_index:cfg.c_index])*multtemp
+    multtemp = 0.9
+    vmin, vmax = np.min(MULT * dyqy[:, cfg.cl_index:cfg.c_index]) * multtemp, np.max(
+        MULT * dyqy[:, cfg.cl_index:cfg.c_index]) * multtemp
 
-    lims_im = [y_grid_SI[0],y_grid_SI[-1],x_grid_SI[cfg.cl_index],x_grid_SI[cfg.c_index]]#
-    lims_rev = [y_grid_SI[0],y_grid_SI[-1],x_grid_SI[cfg.c_index],x_grid_SI[cfg.cl_index]]
-    lims_im = [x_grid_SI[cfg.cl_index],x_grid_SI[cfg.c_index],y_grid_SI[0],y_grid_SI[-1]]#
+    lims_im = [y_grid_SI[0], y_grid_SI[-1], x_grid_SI[cfg.cl_index], x_grid_SI[cfg.c_index]]    #
+    lims_rev = [y_grid_SI[0], y_grid_SI[-1], x_grid_SI[cfg.c_index], x_grid_SI[cfg.cl_index]]
+    lims_im = [x_grid_SI[cfg.cl_index], x_grid_SI[cfg.c_index], y_grid_SI[0], y_grid_SI[-1]]    #
 
     norm = cf.MidPointNorm(0.0)
-    imy = ax.imshow(MULT*dyqy[:,cfg.cl_index:cfg.c_index],
-                    cmap=cmap,#vmin=vmin,vmax=vmax,
-                    norm=norm,
-                    aspect=asp,extent=lims_im)
-    levels = np.arange(vmin,vmax,(vmax-vmin)/4.0)
+    imy = ax.imshow(
+        MULT * dyqy[:, cfg.cl_index:cfg.c_index],
+        cmap=cmap,    #vmin=vmin,vmax=vmax,
+        norm=norm,
+        aspect=asp,
+        extent=lims_im)
+    levels = np.arange(vmin, vmax, (vmax - vmin) / 4.0)
     levels = levels.tolist()
 
     #levels= [-0.001]
@@ -322,7 +330,10 @@ def plot_dyqy_RL_c(fig,ax,cax,path,time,cfg=cfg,**kwargs):
     else:
         kc_str = 'c'
     claby = r'-$\partial_y q_{y,RL,%s}$ %s' % (kc_str, cfg.divq_unit)
-    CSy = ax.contour(MULT*dyqy[::-1,cfg.cl_index:cfg.c_index]*cfg.divq_factor,levels=levels,colors=('k'),extent=lims_im)
+    CSy = ax.contour(MULT * dyqy[::-1, cfg.cl_index:cfg.c_index] * cfg.divq_factor,
+                     levels=levels,
+                     colors=('k'),
+                     extent=lims_im)
     #ax.clabel(CSy,[0.0],inline=True,fmt='%1.1f')
     #ax.clabel(CSy,levels,inline=True,fmt='%3.4f')
 
@@ -330,8 +341,13 @@ def plot_dyqy_RL_c(fig,ax,cax,path,time,cfg=cfg,**kwargs):
 
     #--- plot hlines
     lim = ax.get_ylim()
-    if not cfg.lh_style=='None':
-        cf.plot_xvlines(ax,x_grid_SI,lim,cfg.lineout_list,linestyle=cfg.lh_style,dashes=cfg.dashes)
+    if not cfg.lh_style == 'None':
+        cf.plot_xvlines(ax,
+                        x_grid_SI,
+                        lim,
+                        cfg.lineout_list,
+                        linestyle=cfg.lh_style,
+                        dashes=cfg.dashes)
 
     ax.set_xlabel(cfg.xlab_rel)
     ax.set_ylabel(cfg.ylab)
@@ -341,61 +357,60 @@ def plot_dyqy_RL_c(fig,ax,cax,path,time,cfg=cfg,**kwargs):
 
     c2.add_lines(CSy)
 
-
-
     return imy
 
 
-
-def plot_dBdt_bier(fig,ax,cax,path,time,cfg=cfg):
+def plot_dBdt_bier(fig, ax, cax, path, time, cfg=cfg):
 
     #kohnew = load_qdata(path,time)
-    kohnew = kbier.get_kinetic_E(path,fpre(path),time,xlim=73)
-    x_grid_SI = kohnew[path]['x_grid']*cfg.xstep_factor
-    y_grid_SI = kohnew[path]['y_grid']*cfg.xstep_factor
-    time_col = kohnew[path]['time']*cfg.tstep_factor
+    kohnew = kbier.get_kinetic_E(path, fpre(path), time, xlim=73)
+    x_grid_SI = kohnew[path]['x_grid'] * cfg.xstep_factor
+    y_grid_SI = kohnew[path]['y_grid'] * cfg.xstep_factor
+    time_col = kohnew[path]['time'] * cfg.tstep_factor
     asp = 'auto'
     lab_dict = {}
-    lab_dict['figsize'] = (8,8) # x,y inches
-    lab_dict['lims'] = [y_grid_SI[0],y_grid_SI[-1],x_grid_SI[cfg.c_index],x_grid_SI[0]]
+    lab_dict['figsize'] = (8, 8)    # x,y inches
+    lab_dict['lims'] = [y_grid_SI[0], y_grid_SI[-1], x_grid_SI[cfg.c_index], x_grid_SI[0]]
     lab_dict['colormap'] = 'RdBu_r'
-    lab_dict['xlab'],lab_dict['ylab'] = cfg.xlab,cfg.ylab
+    lab_dict['xlab'], lab_dict['ylab'] = cfg.xlab, cfg.ylab
     lab_dict['cbar_title'] = '   '
     lab_dict['title'] = '   '
-    cmap = 'RdBu_r'#'hot'
+    cmap = 'RdBu_r'    #'hot'
     var = 'q_RL'
     print ' shape = ', np.shape(kohnew[path][var + '_x']['data'])
     tt = int(time)
 
     #--- do everything in units of 10 eV/ps
     #data_x = np.transpose(kohnew[path][var +'_x']['data'])#q_SH_x[path][tt,:,:]
-    data_y = np.transpose(kohnew[path][var + '_y']['data'])#q_SH_y[path][tt,:,:]
-    dxqy,dyqy =  cf.get_grad(x_grid_SI,y_grid_SI,data_y)
-    dyqy = np.transpose(dyqy)#q_SH_y[path][tt,:,:]
+    data_y = np.transpose(kohnew[path][var + '_y']['data'])    #q_SH_y[path][tt,:,:]
+    dxqy, dyqy = cf.get_grad(x_grid_SI, y_grid_SI, data_y)
+    dyqy = np.transpose(dyqy)    #q_SH_y[path][tt,:,:]
 
-
-    dyqy *= cfg.divq_factor*0.1
-
+    dyqy *= cfg.divq_factor * 0.1
 
     MULT = -1.0
     #vmin,vmax = np.min(MULT*dyqy),np.max(MULT*dyqy)
     #vmin,vmax = -1,2
-    multtemp=0.9
-    vmin,vmax = np.min(MULT*dyqy[:,cfg.cl_index:cfg.c_index])*multtemp,np.max(MULT*dyqy[:,cfg.cl_index:cfg.c_index])*multtemp
+    multtemp = 0.9
+    vmin, vmax = np.min(MULT * dyqy[:, cfg.cl_index:cfg.c_index]) * multtemp, np.max(
+        MULT * dyqy[:, cfg.cl_index:cfg.c_index]) * multtemp
     print ' vmin, vmax = ', vmin, vmax
     print ' np.shape(dyqy) = ', np.shape(dyqy)
     #sys.exit()
     #vmin, vmax =  -0.00189426831011, 0.000207009514978
-    lims_im = [y_grid_SI[0],y_grid_SI[-1],x_grid_SI[cfg.cl_index],x_grid_SI[cfg.c_index]]#
-    lims_rev = [y_grid_SI[0],y_grid_SI[-1],x_grid_SI[cfg.c_index],x_grid_SI[cfg.cl_index]]
-    lims_im = [x_grid_SI[cfg.cl_index],x_grid_SI[cfg.c_index],y_grid_SI[0],y_grid_SI[-1]]#
+    lims_im = [y_grid_SI[0], y_grid_SI[-1], x_grid_SI[cfg.cl_index], x_grid_SI[cfg.c_index]]    #
+    lims_rev = [y_grid_SI[0], y_grid_SI[-1], x_grid_SI[cfg.c_index], x_grid_SI[cfg.cl_index]]
+    lims_im = [x_grid_SI[cfg.cl_index], x_grid_SI[cfg.c_index], y_grid_SI[0], y_grid_SI[-1]]    #
 
     norm = cf.MidPointNorm(0.0)
-    imy = ax.imshow(MULT*dyqy[:,cfg.cl_index:cfg.c_index],
-                    cmap=cmap,vmin=vmin,vmax=vmax,
+    imy = ax.imshow(MULT * dyqy[:, cfg.cl_index:cfg.c_index],
+                    cmap=cmap,
+                    vmin=vmin,
+                    vmax=vmax,
                     norm=norm,
-                    aspect=asp,extent=lims_im)
-    levels = np.arange(vmin,vmax,(vmax-vmin)/4.0)
+                    aspect=asp,
+                    extent=lims_im)
+    levels = np.arange(vmin, vmax, (vmax - vmin) / 4.0)
     levels = levels.tolist()
 
     #levels= [-0.001]
@@ -404,8 +419,11 @@ def plot_dBdt_bier(fig,ax,cax,path,time,cfg=cfg):
 
     #
     levels = [0.0]
-    claby = r'-$\partial_y q_{y,RL}$ ' #+ cfg.divq_unit
-    CSy = ax.contour(MULT*dyqy[::-1,cfg.cl_index:cfg.c_index]*cfg.divq_factor,levels=levels,colors=('k'),extent=lims_im)
+    claby = r'-$\partial_y q_{y,RL}$ '    #+ cfg.divq_unit
+    CSy = ax.contour(MULT * dyqy[::-1, cfg.cl_index:cfg.c_index] * cfg.divq_factor,
+                     levels=levels,
+                     colors=('k'),
+                     extent=lims_im)
     #ax.clabel(CSy,[0.0],inline=True,fmt='%1.1f')
     #ax.clabel(CSy,levels,inline=True,fmt='%3.4f')
 
@@ -413,14 +431,17 @@ def plot_dBdt_bier(fig,ax,cax,path,time,cfg=cfg):
 
     #--- plot hlines
     lim = ax.get_ylim()
-    if not cfg.lh_style=='None':
-        cf.plot_xvlines(ax,x_grid_SI,lim,cfg.lineout_list,linestyle=cfg.lh_style,dashes=cfg.dashes)
+    if not cfg.lh_style == 'None':
+        cf.plot_xvlines(ax,
+                        x_grid_SI,
+                        lim,
+                        cfg.lineout_list,
+                        linestyle=cfg.lh_style,
+                        dashes=cfg.dashes)
 
     ax.set_xlabel(cfg.xlab_rel)
     ax.set_ylabel(cfg.ylab)
-    c2 = fig.colorbar(imy,cax=cax,ax=ax,
-                        format= '%1i',
-                        label=claby)
+    c2 = fig.colorbar(imy, cax=cax, ax=ax, format='%1i', label=claby)
     c2.add_lines(CSy)
 
     tick_locator = ticker.MaxNLocator(nbins=3)
@@ -429,26 +450,32 @@ def plot_dBdt_bier(fig,ax,cax,path,time,cfg=cfg):
     return imy
 
 
-
-def plot_ylineout_qRLy_custom(fig,axy,path_list,var_amp='Te',time='15',mstyle_list = [None,None,None,'x','^','o'],style_list = ['-','--',':','-','--',':'],leg_on=True, dict_list = [],cfg=cfg):
+def plot_ylineout_qRLy_custom(fig,
+                              axy,
+                              path_list,
+                              var_amp='Te',
+                              time='15',
+                              mstyle_list=[None, None, None, 'x', '^', 'o'],
+                              style_list=['-', '--', ':', '-', '--', ':'],
+                              leg_on=True,
+                              dict_list=[],
+                              cfg=cfg):
     # --- init stuff
-    if len(dict_list)!=0:
+    if len(dict_list) != 0:
         cfg.color_lineout = dict_list['color_lineout']
         cfg.lineout_list = dict_list['lineout_list']
 
     leg_list = []
     lab_list = []
     lim_data = 0.01
-    min,max = 0.0, lim_data
+    min, max = 0.0, lim_data
     take_amp_on = True
     lab_type = 'B'
-    n =4 # number of ks
-
-
+    n = 4    # number of ks
 
     #===
 
-    cmap = 'RdBu_r'#'hot'
+    cmap = 'RdBu_r'    #'hot'
     var = 'q_RL'
     tt = int(time)
 
@@ -470,34 +497,31 @@ def plot_ylineout_qRLy_custom(fig,axy,path_list,var_amp='Te',time='15',mstyle_li
         fprefix = path_list[pp].split('/')[-1]
         print('--- path = ', path, fprefix)
         ##-------------->>
-        kohnew = load_qdata(path,time)
-        x_grid_SI = kohnew[path]['x_grid']*cfg.xstep_factor
-        y_grid_SI = kohnew[path]['y_grid']*cfg.xstep_factor
-        time_col = kohnew[path]['time']*cfg.tstep_factor
+        kohnew = load_qdata(path, time)
+        x_grid_SI = kohnew[path]['x_grid'] * cfg.xstep_factor
+        y_grid_SI = kohnew[path]['y_grid'] * cfg.xstep_factor
+        time_col = kohnew[path]['time'] * cfg.tstep_factor
         asp = 'auto'
 
-        dict_c, dict_k = repack_2D(path,time)
+        dict_c, dict_k = repack_2D(path, time)
         T_data_c = dict_c['RL y']
 
-        cmap = 'RdBu_r'#'hot'
+        cmap = 'RdBu_r'    #'hot'
         var = 'q_RL'
         tt = int(time)
 
         #--- do everything in units of 10 eV/ps
-        T_data = np.transpose(kohnew[path][var + '_y']['data'])#q_SH_y[path][tt,:,:]
+        T_data = np.transpose(kohnew[path][var + '_y']['data'])    #q_SH_y[path][tt,:,:]
         #<<<<---------------------
 
         MULT = -1.0
-        multtemp=0.9
+        multtemp = 0.9
 
-
-
-        dict_T = cf.load_dict(path,fprefix,'Te',time)
-        time_col = float(dict_T['time'])*cfg.tstep_factor
-        print '\n --> time = ',time_col, ' ps  = ', dict_T['time'], ' tcol <-----\n'
-        x_c_grid =dict_T['x_grid']*cfg.xstep_factor
-        y_c_grid = dict_T['y_grid'][1:-1]*cfg.xstep_factor
-
+        dict_T = cf.load_dict(path, fprefix, 'Te', time)
+        time_col = float(dict_T['time']) * cfg.tstep_factor
+        print '\n --> time = ', time_col, ' ps  = ', dict_T['time'], ' tcol <-----\n'
+        x_c_grid = dict_T['x_grid'] * cfg.xstep_factor
+        y_c_grid = dict_T['y_grid'][1:-1] * cfg.xstep_factor
 
         min_data = np.min(T_data)
         dict = cf.calc_norms_2(var, min_data)
@@ -512,49 +536,57 @@ def plot_ylineout_qRLy_custom(fig,axy,path_list,var_amp='Te',time='15',mstyle_li
         lstyle = style_list[pp]
         mstyle = mstyle_list[pp]
         take_amp_on = True
-        print( ' shape qrL = ',np.shape(y_c_grid))
-        print( ' shape qrL = ',np.shape(T_data))
+        print(' shape qrL = ', np.shape(y_c_grid))
+        print(' shape qrL = ', np.shape(T_data))
         for xl in range(len(cfg.lineout_list)):
             x_lineout = cfg.lineout_list[xl]
             cfg.ylab_lineout = r'$%3.1f$' % x_c_grid[x_lineout]
             if take_amp_on:
-                T_dev = T_data[cfg.lineout_list[xl],:]*norm_const - np.average(T_data[cfg.lineout_list[xl],:]*norm_const)*np.ones(len(T_data[cfg.lineout_list[xl],:]))
+                T_dev = T_data[cfg.lineout_list[xl], :] * norm_const - np.average(
+                    T_data[cfg.lineout_list[xl], :] * norm_const) * np.ones(
+                        len(T_data[cfg.lineout_list[xl], :]))
 
-                T_dev_c = T_data_c[cfg.lineout_list[xl],:]*norm_const - np.average(T_data_c[cfg.lineout_list[xl],:]*norm_const)*np.ones(len(T_data_c[cfg.lineout_list[xl],:]))
-
-
+                T_dev_c = T_data_c[cfg.lineout_list[xl], :] * norm_const - np.average(
+                    T_data_c[cfg.lineout_list[xl], :] * norm_const) * np.ones(
+                        len(T_data_c[cfg.lineout_list[xl], :]))
 
             else:
-                T_dev = T_data[cfg.lineout_list[xl],:]*norm_const
-                T_dev_c = T_data_c[cfg.lineout_list[xl],:]*norm_const
+                T_dev = T_data[cfg.lineout_list[xl], :] * norm_const
+                T_dev_c = T_data_c[cfg.lineout_list[xl], :] * norm_const
 
-            p2, = axy.plot(y_c_grid,T_dev,
+            p2, = axy.plot(y_c_grid,
+                           T_dev,
                            linestyle=lstyle,
                            c=cfg.color_lineout[xl],
-                           marker=mstyle,markersize=cfg.MSIZE, markevery=3)
-            p2c, = axy.plot(y_c_grid,T_dev_c,
-                           linestyle='--',
-                           c=cfg.color_lineout[xl],
-                           marker=mstyle,markersize=cfg.MSIZE, markevery=3)
+                           marker=mstyle,
+                           markersize=cfg.MSIZE,
+                           markevery=3)
+            p2c, = axy.plot(y_c_grid,
+                            T_dev_c,
+                            linestyle='--',
+                            c=cfg.color_lineout[xl],
+                            marker=mstyle,
+                            markersize=cfg.MSIZE,
+                            markevery=3)
 
-            p2.set_linewidth=2
+            p2.set_linewidth = 2
             leg2_list.append(p2)
             lab_lineout_list.append(cfg.ylab_lineout)
         leg_list.append(p2)
         lab_list.append(final_lab)
 
     if take_amp_on:
-        ydifflab = var_name  + r'$ - \langle $' + var_name + r'$ \rangle$ ' + units
+        ydifflab = var_name + r'$ - \langle $' + var_name + r'$ \rangle$ ' + units
         ydifflab = r'$\delta q_{y,RL}$'
     else:
         ydifflab = final_lab
     axy.set_ylabel(ydifflab)
     axy.set_xlabel(cfg.ylab)
     if leg_on:
-        leg_list = [p2c,p2]
+        leg_list = [p2c, p2]
         lab_list = [r'$\delta q_{y,RL,c}$', r'$\delta q_{y,RL,k}$']
         #axy.legend(leg_list,lab_list,numpoints=1)
-    axy.grid(color='0.5',linestyle='-')
+    axy.grid(color='0.5', linestyle='-')
 
     return p2
 
@@ -571,4 +603,3 @@ if __name__ == "__main__":
     cax = []
     imy = plot_dyqy_RL(fig, ax, cax, path, time)
     plt.show()
-

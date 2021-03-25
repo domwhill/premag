@@ -30,7 +30,6 @@ from pylab import *
 
 Z = 6.51
 
-
 Y1_weight = 4.0 * np.pi / 3.0
 Y0_weight = 4.0 * np.pi
 
@@ -527,7 +526,6 @@ def get_Biermann_gradncrossgradT(grid, ne, Te):
     dxTe, dyTe = cf.get_grad(x_grid, y_grid, Te)
     dxne, dyne = cf.get_grad(x_grid, y_grid, ne)
 
-
     biermann = (1.0 / ne[1:-1, 1:-1]) * (dyTe * dyne - dyTe * dxne)
     return biermann
 
@@ -827,7 +825,6 @@ def get_vN_from_path(path, fprefix, time):
     v_ny = np.zeros((ny, nx))
     v_nx_hf = np.zeros((ny, nx))
     v_ny_hf = np.zeros((ny, nx))
-
 
     for ix in range(nx):
         for iy in range(ny):
@@ -1821,7 +1818,6 @@ def get_alpha_perp_path(path, time):
             Te_loc = T_data[iy, ix]
             ne_loc = n_data[iy, ix]
             w_loc = Bz_data[iy, ix]
-
 
             vte = (2.0 * Te_loc)**0.5
             rho = Z2ni_loc**-1

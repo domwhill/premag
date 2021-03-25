@@ -127,7 +127,6 @@ class RunInfoList:
         self.tmax_col = tc_list[tmax_index]
 
 
-
 class RunInfo:
 
     def __init__(self, scale_length=1, bz_in=400.0, lambda_p=5, pert_amp='0p', dim='2D'):
