@@ -146,6 +146,7 @@ class cd5_switches(object):
 class ConversionFactors(object):
     """Class to convert from IMPACT normalised units to SI & provide labels/ run configs for graphs.
     """
+
     def __init__(self, norm_path=paths.norm_dir, Z=5.954127788543701172, Ar=6.51):
         self.norm_name = self.search_path_class('norm.txt', norm_path)
         print 'self.norm_name = ', self.norm_name, norm_path
@@ -2340,7 +2341,6 @@ def get_path_style(final_lab, h_lab, B_lab):
     elif B_lab[-2:] == 'MW':
         lstyle = '--'    # Maxwellian run
     return lstyle, marker
-
 
 
 def get_q_over_qFS(path, fprefix, time):

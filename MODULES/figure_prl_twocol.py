@@ -52,7 +52,6 @@ minwidth = 0.7
 minorsize = 1
 majorsize = 2
 
-
 pgf_with_latex = {    # setup matplotlib to use latex for output
     "pgf.texsystem": "pdflatex",    # change this if using xetex or lautex
     "text.usetex": True,    # use LaTeX to write all text

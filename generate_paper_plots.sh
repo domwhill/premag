@@ -1,5 +1,7 @@
 #!/bin/bash
 source activate pop_env
+save_dir=output
+mkdir -p $save_dir
 
 # Fig. 1 lineouts from IMPACT profiles
 python PLOTTERS_PAPER/plot_onedim_2col_POP.py
