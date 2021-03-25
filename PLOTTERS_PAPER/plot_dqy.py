@@ -257,7 +257,8 @@ if __name__ == "__main__":
         ax.set_xlabel(xlab)
         ax.set_xlabel(xlab)
 
-    plt.show()
+    #plt.show()
     print('saving as: ', save_name + '.png')
+    plt.savefig(save_name + '.png')
     print('\n copy and paste: open -a preview ' + save_name + '_1.png')
     print('\n copy and paste: open -a preview ' + save_name + '_2.png')
