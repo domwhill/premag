@@ -13,7 +13,6 @@ from matplotlib import ticker
 norm_path = hk.directory_paths().norm_dir
 cfg = cf.ConversionFactors(norm_path)
 
-
 save_path = '../PLOTTERS/'
 
 
@@ -100,4 +99,3 @@ def get_divqRL(path, time, cfg=cfg, **kwargs):
     qlab = r'-$\partial_y q_{y,RL,%s}$ %s' % (kc_str, cfg.divq_unit)
 
     return dyqy, qlab
-

@@ -59,9 +59,7 @@ parser.add_argument(
     "vN y = y-component of Nernst")
 parser.add_argument("thermodynamic_variable",
                     help="string for impact variable: Te, ne, Bz, Cx (ion velocity)")
-parser.add_argument("output_directory",
-                    default="",
-                    help="output directory path (relative to root)")
+parser.add_argument("output_directory", default="", help="output directory path (relative to root)")
 args = parser.parse_args()
 var1 = args.transport_component    # eg. 'RL y' for y component of Righi-Leduc heat flow, '
 var2 = args.thermodynamic_variable
@@ -279,7 +277,6 @@ if __name__ == "__main__":
 
     vmin = np.min(data_k[np.abs(x_grid - xmin) <= xmax]) * 0.8
     vmax = np.max(data_k[np.abs(x_grid - xmin) <= xmax]) * 1.2
-
 
     p50, = ax.plot(x_grid, dict_50T_k[var1] * v1_labs.factor, c='r')
     p50, = ax.plot(x_grid, dict_50T_c[var1] * v1_labs.factor, c='r', linestyle='--')

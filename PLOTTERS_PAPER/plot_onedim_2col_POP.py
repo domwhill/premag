@@ -48,7 +48,7 @@ def get_save_name():
     save_suffix = 'one_dim_2col' + time
     if len(sys.argv) > 1:
         save_folder = sys.argv[1]
-        if save_folder[-1] !='/':
+        if save_folder[-1] != '/':
             save_folder = save_folder + '/'
     else:
         save_folder = ''

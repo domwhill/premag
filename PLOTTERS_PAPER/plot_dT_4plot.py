@@ -23,7 +23,6 @@ c_list = ['r', 'g', 'b']
 
 #<<<--- transport inputs
 
-
 fpre = lambda path_in: path_in.split('/')[-1]
 
 
@@ -44,6 +43,7 @@ class PlotdTx:
     """Class to plot a line out dTe vs spatial coordinate along the x direction.
 
     """
+
     def __init__(self, run_obj_list, time_list):
         self.style_list = [':', '--', '-', '-', '--', ':']
         self.mstyle_list = [None, None, None, 'x', '^', 'o']
@@ -55,17 +55,16 @@ class PlotdTx:
 
     def plot(self, ax_t):
         ax_Te = ax_t.twinx()
-        p1dt = TEL.plot_custom_xlineout_amp_tevol(
-            fig,
-            ax_t,
-            self.path_list,
-            var_amp='Te',
-            time_list=self.time_list,
-            style_list=self.style_list,
-            mstyle_list=self.mstyle_list,
-            cmap=['gray', 'b', 'k'],
-            axleg=ax_t,
-            leg_dict=[])
+        p1dt = TEL.plot_custom_xlineout_amp_tevol(fig,
+                                                  ax_t,
+                                                  self.path_list,
+                                                  var_amp='Te',
+                                                  time_list=self.time_list,
+                                                  style_list=self.style_list,
+                                                  mstyle_list=self.mstyle_list,
+                                                  cmap=['gray', 'b', 'k'],
+                                                  axleg=ax_t,
+                                                  leg_dict=[])
 
         var = 'Te'
         p_list = []
@@ -106,6 +105,7 @@ class PlotdTy:
     """Plot a lineout of dT (perturbed electron temperature) along the y axis
 
     """
+
     def __init__(self, run_obj, **kwargs):
         # assuming norms are the same for all run objs which is the case for all premag runs.
         self.run_obj = run_obj
@@ -162,7 +162,11 @@ if __name__ == "__main__":
     ax2 = plt.subplot(gs[1, 1])
     ax3 = plt.subplot(gs[1, 2])
 
-    run_obj_list = utils.RunInfoList('bz', scale_length=1, bz_in=bz_list, pert_amp='1p', time=time_to_plot)
+    run_obj_list = utils.RunInfoList('bz',
+                                     scale_length=1,
+                                     bz_in=bz_list,
+                                     pert_amp='1p',
+                                     time=time_to_plot)
     # sort by bz - note plot_dT_vs_x expects a list of times)
     PlotdTx(run_obj_list, [time_to_plot]).plot(ax_t)
     PlotdTy(run_obj_list.run_obj_dict['0']).plot(ax1, time_to_plot)

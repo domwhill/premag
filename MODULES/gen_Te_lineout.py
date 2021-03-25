@@ -16,7 +16,6 @@ import MODULES.house_keeping as hk
 import MODULES.figure_prl_twocol as fprl
 from pylab import *
 
-
 SI_on = cd5_switches.SI_on
 save_on = cd5_switches.save_on
 hlines_on = cd5_switches.hlines_on
@@ -53,6 +52,7 @@ dashes = cd5.dashes
 
 def fpre(pathy):
     return pathy.split('/')[-1]
+
 
 def plot_custom_xlineout_amp_tevol(fig,
                                    ax,

@@ -29,12 +29,15 @@ m_e = 9.11e-31
 # functions
 fpre = lambda path_in: path_in.split('/')[-1]
 
+
 def get_command_line_args():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        "-v", "--variable",
+        "-v",
+        "--variable",
         default="RL",
-        help="Transport term to plot RL x = x component of Righi-Leduc, SH y = y component of Spitzer-HArm/diffusive heat flow,"
+        help=
+        "Transport term to plot RL x = x component of Righi-Leduc, SH y = y component of Spitzer-HArm/diffusive heat flow,"
         "vN y = y-component of Nernst")
     args = parser.parse_args()
     if args.variable not in ("RL", "bier"):
@@ -245,14 +248,8 @@ def main():
 
     # for obj in run_obj list
     # plot contour
-    cont1 = PlotContour(obj_list.run_objs[0],
-                        time=time,
-                        var='wt',
-                        transport_opt=transport_opt)
-    cont2 = PlotContour(obj_list.run_objs[1],
-                        time=time,
-                        var='wt',
-                        transport_opt=transport_opt)
+    cont1 = PlotContour(obj_list.run_objs[0], time=time, var='wt', transport_opt=transport_opt)
+    cont2 = PlotContour(obj_list.run_objs[1], time=time, var='wt', transport_opt=transport_opt)
     cont1.run(fig, ax1)
     cont2.run(fig, ax2)
 
@@ -268,5 +265,6 @@ def main():
     fig.savefig(save_name)
     print(' copy and paste:\n open -a preview ' + save_name)
 
-if __name__=="__main__":
+
+if __name__ == "__main__":
     main()

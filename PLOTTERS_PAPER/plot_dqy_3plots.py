@@ -179,11 +179,12 @@ def conv_phase(phase):
     return (phase - np.pi) / (2.0 * np.pi)
 
 
-if __name__=="__main__":
+if __name__ == "__main__":
     slice_array_y = lambda array: array[iy, :]
 
     fig1 = fprl.newfig_generic_2yscale(
-        1.4, scale_width=1.2, scale_ratio=0.5)    #(1.1,scale_width=1.5,scale_ratio=0.5)#plt.figure()
+        1.4, scale_width=1.2,
+        scale_ratio=0.5)    #(1.1,scale_width=1.5,scale_ratio=0.5)#plt.figure()
     ax2 = np.array([fig1.add_subplot(131), fig1.add_subplot(132), fig1.add_subplot(133)])
     fig1.subplots_adjust(left=0.1, right=0.9, wspace=0.6, top=0.9, bottom=0.28)
 
