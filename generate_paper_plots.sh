@@ -21,9 +21,9 @@ python PLOTTERS_PAPER/plot_qRL_abs_1D_POP.py 'E y' 'Bz' $save_dir
 # Fig. 4 - dT along x and y at different point in conduction zone
 python PLOTTERS_PAPER/plot_dT_4plot.py
 # Fig. 5 - Hall-parameter contour plot + Righi-Leduc heating 
-python PLOTTERS_PAPER/plot_dqy_contour.py
+python PLOTTERS_PAPER/plot_dqy_contour.py -v "RL"
 
 # Fig. 6 - Hall-parameter contour plot + self-generated magnetic field generation
 python PLOTTERS_PAPER/plot_dqy_contour.py -v "bier"
 # Fig 7 - dqy lineouts
-python PLOTTERS_PAPER/plot_dqy_3plots.py -v "RL"
+python PLOTTERS_PAPER/plot_dqy_3plots.py
