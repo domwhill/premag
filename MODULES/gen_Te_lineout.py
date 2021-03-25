@@ -1,9 +1,14 @@
 '''
+    Module to plot lineouts of variables along y/x directions.
 
-    Te line out --- 
 '''
 
-import numpy as np, re, os, sys, getpass, matplotlib.pyplot as plt, site
+import numpy as np
+import re
+import os
+import sys
+import matplotlib.pyplot as plt
+
 sys.path.extend(["./"])
 import MODULES.chfoil_module as cfoil
 from MODULES.chfoil_module import cd5_switches
@@ -11,7 +16,6 @@ import MODULES.house_keeping as hk
 import MODULES.figure_prl_twocol as fprl
 from pylab import *
 
-#path_tag = cfoil.retrieve_path_tag(path_list[0])
 
 SI_on = cd5_switches.SI_on
 save_on = cd5_switches.save_on
@@ -61,17 +65,6 @@ def plot_Te_xlineout(fig, ax, path_list, var_amp='Te', time='15', vert_lines='Fa
         lineout_list = dict_list['lineout_list']
 
     # --- init stuff
-    leg_list = []
-    lab_list = []
-    lim_data = 0.01
-    min, max = 0.0, lim_data
-    #yi = 20
-    #xi = 60 # arbitrary x index to plot at
-    #c_index = 200
-
-    # ---- loop over paths
-    leg2_list = []
-    lab_lineout_list = []
     leg_list_x = []
     lab_list_x = []
     save_name = '2D1_' + var_amp + 'amp'
@@ -109,14 +102,8 @@ def plot_Te_xlineout(fig, ax, path_list, var_amp='Te', time='15', vert_lines='Fa
 
         dashes = (4, 2)
 
-        print 'lstyle = ', lstyle, mstyle
-        #if h_lab == 'static':
-        #   lstyle=':'
-
         if ~marker_on:
             mstyle = None
-        #lstyle='-'
-        yminax, ymaxax = ax.get_ylim()
 
         p1, = ax.plot(x_c_grid[cl_index:c_index],
                       T_data[cl_index:c_index, yi] * norm_const,
@@ -136,30 +123,13 @@ def plot_Te_xlineout(fig, ax, path_list, var_amp='Te', time='15', vert_lines='Fa
                                custom_cmap=color_lineout,
                                linestyle=lh_style,
                                dashes=dashes)
-            #self.color_lineout
-        '''
-        for xl in range(len(lineout_list)):
-            x_lineout = lineout_list[xl]
-            #ylab_lineout = r'$%3.1f$' % x_grid_im[x_lineout]
-            ylab_lineout = r'$%3.1f$' % x_c_grid[x_lineout]
-            
-            if hlines_on:
-                #ax.axvline(x_grid_im[x_lineout],yminax,ymaxax,
-                ax.axvline(x_c_grid[x_lineout],yminax,ymaxax,
-                            c=color_lineout[xl],
-                            linewidth=0.9,
-                            linestyle=lh_style,
-                            dashes=dashes)
-        '''
+
 
     ax.grid(color='0.5', linestyle='-')
 
     ax.set_xlabel(xlab)
     ax.set_ylabel(c_title)
     return p1
-
-
-#plot_custom_xlineout_amp
 
 
 def plot_custom_xlineout_amp(fig,
@@ -174,27 +144,11 @@ def plot_custom_xlineout_amp(fig,
     '''
         p2 = plot_custom_xlineout(fig,ax,path_list,var_amp='Te')
     '''
-    #SI_on = True
-    #norm_name = '/Users/' + userid + '/Dropbox/IMPACT_dir/chfoil_d5/chfoil_default5_norm.txt'
-    #cd5 = cfoil.conv_factors_cd5(SI_on,norm_name)
-    # --- init stuff
-    leg_list = []
-    lab_list = []
     lim_data = 0.01
-    min, max = 0.0, lim_data
-    #yi = 20
-    #xi = 60 # arbitrary x index to plot at
-    #c_index = 200
 
-    # ---- loop over paths
-    leg2_list = []
-    lab_lineout_list = []
-    leg_list_x = []
-    lab_list_x = []
     p_list = []
-    save_name = '2D1_' + var_amp + 'amp'
-    #style_list = ['-','--',':','-','--',':']
-    #mstyle_list = [None,None,None,'x','^','o']
+
+
     for pp in range(len(path_list)):
         var = var_amp
         fname = cfoil.construct_fname(path_list[pp], fpre(path_list[pp]), var, time)
@@ -216,27 +170,20 @@ def plot_custom_xlineout_amp(fig,
         else:
             T_data = dict_T['mat']
 
-        time_col = float(dict_T['time']) * tstep_factor
         x_c_grid = dict_T['x_grid'] * xstep_factor
-        y_c_grid = dict_T['y_grid'] * xstep_factor
         min_data = np.min(T_data[cl_index:c_index, :])
         dict = cfoil.calc_norms_2(var, min_data, normal_class=cd5, forced_power=[0])
         norm_const = dict['norm_const']
         c_title = r'$\delta$ ' + dict['title']
-        c_fmt = dict['c_fmt']
-        var_name = dict['var_name']
-        units = dict['units']
+
 
         final_lab, k_lab, h_lab, B_lab = cfoil.construct_label(fname)
         final_lab = r'$' + final_lab + '$'
-        #lstyle,marker = cfoil.get_path_style(final_lab,h_lab,B_lab)
 
         dashes = (4, 2)
 
         lstyle = style_list[pp]
         mstyle = mstyle_list[pp]
-        print 'lstyle = ', lstyle, mstyle
-        yminax, ymaxax = ax.get_ylim()
         data_amp_2D = cfoil.get_U_dev_abs(T_data[cl_index:c_index, :])
         data_amp = np.max(data_amp_2D, axis=1)
 
@@ -365,22 +312,9 @@ def plot_custom_xlineout(fig,
         p2 = plot_custom_xlineout(fig,ax,path_list,var_amp='Te')
     '''
     # --- init stuff
-    leg_list = []
-    lab_list = []
     lim_data = 0.01
-    min, max = 0.0, lim_data
-    #yi = 20
-    #xi = 60 # arbitrary x index to plot at
-    #c_index = 200
 
     # ---- loop over paths
-    leg2_list = []
-    lab_lineout_list = []
-    leg_list_x = []
-    lab_list_x = []
-    save_name = '2D1_' + var_amp + 'amp'
-    style_list = ['-', '--', ':', '-', '--', ':']
-    mstyle_list = [None, None, None, 'x', '^', 'o']
     for pp in range(len(path_list)):
 
         var = var_amp
@@ -403,27 +337,16 @@ def plot_custom_xlineout(fig,
             T_data = hmat / Z2ni
         else:
             T_data = dict_T['mat']
-        time_col = float(dict_T['time']) * tstep_factor
         x_c_grid = dict_T['x_grid'] * xstep_factor
-        #x_c_grid = x_c_grid[:len(T_data[cl_index:c_index,0])]
-        y_c_grid = dict_T['y_grid'] * xstep_factor
-        print ' x_c_grid shape = ', np.shape(x_c_grid), np.shape(T_data[cl_index:c_index])
 
-        #ax.yaxis.set_ticks(np.array([0.6,0.8,1.0]))
         min_data = np.min(T_data[cl_index:c_index, :])
         dict = cfoil.calc_norms_2(var, min_data, normal_class=cd5, forced_power=[0])
         norm_const = dict['norm_const']
         c_title = dict['title']
-        c_fmt = dict['c_fmt']
-        var_name = dict['var_name']
-        units = dict['units']
-
         final_lab, k_lab, h_lab, B_lab = cfoil.construct_label(fname)
         final_lab = r'$' + final_lab + '$'
-        #lstyle,marker = cfoil.get_path_style(final_lab,h_lab,B_lab)
 
         dashes = (4, 2)
-        yminax, ymaxax = ax.get_ylim()
 
         p1, = ax.plot(x_c_grid[cl_index:c_index],
                       T_data[cl_index:c_index, yi] * norm_const,
@@ -452,9 +375,7 @@ def plot_Te_ylineout(fig, axy, path_list, var_amp='Te', time='15', dict_list=[])
     if len(dict_list) != 0:
         color_lineout = dict_list['color_lineout']
         lineout_list = dict_list['lineout_list']
-    #SI_on = True
-    #norm_name = '/Users/' + userid + '/Dropbox/IMPACT_dir/chfoil_d5/chfoil_default5_norm.txt'
-    #cd5 = cfoil.conv_factors_cd5(SI_on,norm_name)
+
     # --- init stuff
     leg_list = []
     lab_list = []
@@ -468,11 +389,10 @@ def plot_Te_ylineout(fig, axy, path_list, var_amp='Te', time='15', dict_list=[])
     # ---- loop over paths
     leg2_list = []
     lab_lineout_list = []
-    leg_list_x = []
-    lab_list_x = []
+
     style_list = ['-', '--', ':', '-', '--', ':']
     mstyle_list = [None, None, None, 'x', '^', 'o']
-    save_name = '2D1_' + var_amp + 'amp'
+
     for pp in range(len(path_list)):
 
         var = var_amp
@@ -483,41 +403,24 @@ def plot_Te_ylineout(fig, axy, path_list, var_amp='Te', time='15', dict_list=[])
         time_col = float(dict_T['time']) * tstep_factor
         print '\n --> time = ', time_col, ' ps  = ', dict_T['time'], ' tcol <-----\n'
         x_c_grid = dict_T['x_grid'] * xstep_factor
-        #x_c_grid = x_c_grid[:len(T_data[cl_index:c_index,0])]
         y_c_grid = dict_T['y_grid'] * xstep_factor
 
         min_data = np.min(T_data)
         dict = cfoil.calc_norms_2(var, min_data)
         norm_const = dict['norm_const']
         c_title = dict['title']
-        c_fmt = dict['c_fmt']
         var_name = dict['var_name']
         units = dict['units']
 
         final_lab, k_lab, h_lab, B_lab = cfoil.construct_label(fname)
         final_lab = r'$' + final_lab + '$'
-        lstyle, marker = cfoil.get_path_style(final_lab, h_lab, B_lab)
-        b00 = re.search('=0$', B_lab)
-        #if B_lab == 'B' or B_lab== '0H':
         lstyle = style_list[pp]
         mstyle = mstyle_list[pp]
         if lstyle == '--':
             dashes = (4, 2)
         else:
             dashes = (1, 0)
-        print 'lstyle = ', lstyle, mstyle
-        '''
-        if B_lab == 'B' or b00:
-           lstyle='-'
-           mstyle = '^'
-           
-        else:
-           lstyle='--'
-           mstyle = 'x'
-           dashes=(4,2)
-        #if h_lab == 'static':
-        #   lstyle=':'
-        '''
+
         if not marker_on:
             mstyle = None
             print ' ---- no markesr on---- \n\n'
@@ -531,8 +434,7 @@ def plot_Te_ylineout(fig, axy, path_list, var_amp='Te', time='15', dict_list=[])
                         len(T_data[lineout_list[xl], :]))
             else:
                 T_dev = T_data[lineout_list[xl], :] * norm_const
-            #p2, = axy.plot(y_c_grid,T_dev,c=color_lineout[xl],
-            #                linestyle=lstyle,label=ylab_lineout)
+
             p2, = axy.plot(y_c_grid,
                            T_dev,
                            linestyle=lstyle,
@@ -546,6 +448,7 @@ def plot_Te_ylineout(fig, axy, path_list, var_amp='Te', time='15', dict_list=[])
             leg2_list.append(p2)
             lab_lineout_list.append(ylab_lineout)
         leg_list.append(p2)
+
         if lab_type == 'B':
             if B_lab == 'B':
                 lab_out = r'$B$'
@@ -665,22 +568,16 @@ def plot_ylineout_custom(fig,
     return p2
 
 
-def fpre(path_in):
-    return path_in.split('/')[-1]
-
-
 if __name__ == "__main__":
 
     fig, ax = fprl.newfig(1.0)
     plt.rcParams.update({'font.sans-serif': 'Arial', 'font.family': 'sans-serif'})
-
+    time_glb = "06" # time to plot
     path1 = 'insert_test_path'
     path2 = 'insert_test_path'
     path_list = [path1, path2]
-    #p1 = plot_Te_xlineout(fig,ax,path_list,var_amp='Te',time=loc_nspace.time_glb)
 
-    if True:
-        figy, axy = fprl.newfig(1.0)
-        p2 = plot_Te_ylineout(figy, axy, path_list, var_amp='Te', time=loc_nspace.time_glb)
+    figy, axy = fprl.newfig(1.0)
+    p2 = plot_Te_ylineout(figy, axy, path_list, var_amp='Te', time=time_glb)
 
     plt.show()
