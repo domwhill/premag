@@ -57,7 +57,7 @@ mstyle_list = [None, None, None, 'x', '^', 'o']
 path = path_list[-1]
 t_list, tc_list = cf.get_t_list(path, var='Te')
 time = '07'
-#'07'
+
 iy = 20
 xmin, xmax = -10.0, 60.0
 thresh_N_ratio = 5e-2
@@ -261,6 +261,3 @@ if __name__ == "__main__":
     print('saving as: ', save_name + '.png')
     print('\n copy and paste: open -a preview ' + save_name + '_1.png')
     print('\n copy and paste: open -a preview ' + save_name + '_2.png')
-
-    #plt.show()
-    #plt.close()

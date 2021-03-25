@@ -11,6 +11,15 @@ from MODULES.plot_utils import RunInfo
 from MODULES.plot_utils import GetSimData
 import MODULES.figure_prl_twocol as fprl
 
+def get_save_folder():
+    if len(sys.argv) > 1:
+        save_folder = sys.argv[1]
+        if save_folder[-1] != '/':
+            save_folder = save_folder + '/'
+    else:
+        save_folder = ''
+    return save_folder
+
 
 def get_fo_M(v_grid, ne, Te):
 
@@ -32,10 +41,12 @@ def plot_f0(ax, v_grid, fo, ne, Te):
 
 
 if __name__ == "__main__":
+    save_path = get_save_folder()
+
     lambda_p = 5.0
     sim_obj = RunInfo(scale_length=1, bz_in=50.0, lambda_p=lambda_p, pert_amp='1p', dim='1D')
     sim_data_obj = GetSimData(sim_obj, time='15')
-    save_name = '%s%s_%i_f0.png' % (sim_obj.save_path, sim_obj.save_tag, int(sim_data_obj.time))
+    save_name = '%sfigure2_%s_%i_f0.png' % (save_path, sim_obj.save_tag, int(sim_data_obj.time))
 
     v_grid = sim_data_obj.v_grid
     fo = sim_data_obj.fo
@@ -53,7 +64,7 @@ if __name__ == "__main__":
     if plot_Te_on:
         fig = fprl.newfig_generic_2yscale(
             1.4, scale_width=1.2,
-            scale_ratio=0.5)    #(1.1,scale_width=1.5,scale_ratio=0.5)#plt.figure()
+            scale_ratio=0.5)
         fig.subplots_adjust(left=0.1, right=0.9, wspace=0.4, top=0.9, bottom=0.28)
         ax1 = fig.add_subplot(131)
         ax2 = fig.add_subplot(132)

@@ -39,10 +39,18 @@ def get_command_line_args():
         help=
         "Transport term to plot RL x = x component of Righi-Leduc, SH y = y component of Spitzer-HArm/diffusive heat flow,"
         "vN y = y-component of Nernst")
+    parser.add_argument(
+        "-o",
+        "--output_folder",
+        default="",
+        required=False,
+        help="path to output folder to save image."
+    )
+
     args = parser.parse_args()
     if args.variable not in ("RL", "bier"):
         raise ValueError("Input arg -v must be either RL or bier")
-    return args.variable
+    return args.variable, args.output_folder
 
 
 def clear_yax(ax):
@@ -229,7 +237,7 @@ class PlotContour():
 
 def main():
     #  transport_opt can be 'RL' = Righi-Leduc heat flow divergence or 'bier' = biermann
-    transport_opt = get_command_line_args()
+    transport_opt, save_path = get_command_line_args()
 
     #<<<--- transport inputs
     time = "06"
@@ -261,7 +269,7 @@ def main():
     clear_yax(ax2)
     format_yax(ax1)
 
-    save_name = '%s_%s_bier.png' % (obj_list.save_tag, obj_list.run_objs[0].save_tag)
+    save_name = '%s/%s_%s_bier.png' % (save_path, obj_list.save_tag, obj_list.run_objs[0].save_tag)
     fig.savefig(save_name)
     print(' copy and paste:\n open -a preview ' + save_name)
 

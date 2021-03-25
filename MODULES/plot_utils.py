@@ -86,7 +86,7 @@ class RunInfoList:
         self.path_list = {}
         paths = hk.directory_paths()
         run_name = sys.argv[0].split('/')[-1].split('.')[0]
-        self.save_tag = '%s%s_' % (paths.save_dir, run_name)
+        self.save_tag = '%s_' % (run_name)
         self.t_max_col = 0
 
         self.paths = []

@@ -25,6 +25,15 @@ c_list = ['r', 'g', 'b']
 
 fpre = lambda path_in: path_in.split('/')[-1]
 
+def get_save_folder():
+    if len(sys.argv) > 1:
+        save_folder = sys.argv[1]
+        if save_folder[-1] != '/':
+            save_folder = save_folder + '/'
+    else:
+        save_folder = ''
+    return save_folder
+
 
 def get_amp(data):
     return data - np.average(data)
@@ -149,10 +158,12 @@ class PlotdTy:
 
 
 if __name__ == "__main__":
+    save_path = get_save_folder()
     # times to plot - 06 is IMPACT time dump number 6
     time_to_plot = '06'
     # magnetic field strengths (T) being plot
     bz_list = [0.0, 50.0, 400.0]
+
 
     fig = fprl.newfig_generic_twinx(1.0, scale_width=1.0, scale_ratio=1.4)
     gs = GS.GridSpec(2, 3, height_ratios=[1.0, 0.4])
@@ -175,8 +186,7 @@ if __name__ == "__main__":
 
     ax2.set_ylabel('')
     ax3.set_ylabel('')
-    save_name = '%s_%s.png' % (run_obj_list.save_tag, '4plotdT')
-
+    save_name = '%s%s_%s.png' % (save_path, run_obj_list.save_tag, '4plotdT')
     plt.savefig(save_name, dpi=600)
     print('saving as: ', save_name)
     print(' copy and paste: open -a preview ' + save_name)
