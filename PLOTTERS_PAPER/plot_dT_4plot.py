@@ -25,6 +25,7 @@ c_list = ['r', 'g', 'b']
 
 fpre = lambda path_in: path_in.split('/')[-1]
 
+
 def get_save_folder():
     if len(sys.argv) > 1:
         save_folder = sys.argv[1]

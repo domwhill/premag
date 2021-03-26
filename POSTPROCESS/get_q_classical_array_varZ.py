@@ -14,9 +14,9 @@ import subprocess as sp
 import matplotlib.pyplot as plt
 import numpy as np
 from pylab import *
-userid = getpass.getuser()
-site.addsitedir('/Users/' + userid + '/Dropbox/IMPACT_dir/chfoil_d5/MODULES')
-import EH_poly_coeff_module as sv
+
+sys.path.extend(["./"])
+import MODULES.EH_poly_coeff_module as sv
 import MODULES.chfoil_module as cf
 import matplotlib as mpl
 
@@ -148,8 +148,6 @@ def construct_fname(path, fprefix, var, time):
     else:
         suffix = '.xy'
 
-    #fprefix = 'thydro_hi'
-    #time = '00'
     fname = path + '/' + fprefix + '_' + var + '_' + time + suffix
     return fname
 
@@ -165,9 +163,6 @@ def get_startline(fname):
         if re.match(r'\n', f_list[i]):
 
             out_line = i
-            #else:
-            #out_line = 9
-            #continue
             break
 
     return out_line
@@ -245,11 +240,8 @@ def get_v2dv(v_grid):
 def maxw_dist(v, vte):
 
     # --- hang on a sec here ... v should already be normalised with respect to vte?
-    #sys.exit()
     #f_om = ((np.pi*(vte**2))**(-1.5)) * np.exp(-(v/vte)**2)
     f_om = ((np.pi * (vte**2))**(-1.5)) * np.exp(-((v)**2) * (vte**-2))
-    #f_om =  np.exp(-((v)**2))
-    #f_om =  ((np.pi*(vte**2))**(-1.5)) * np.exp(-((v)**2))
 
     return f_om
 
@@ -691,9 +683,6 @@ if __name__ == "__main__":
     #ax2.plot(x_grid,Bz_data[:,ny/2],c='b')
 
     q_x = q_SH_x + q_RL_x + q_E_x
-    #q_x = q_SH_x
-    #q_xp = q_SH_xp + q_RL_xp
-    #q_y = q_SH_y
     q_y = q_SH_y + q_RL_y + q_E_y
     #q_yp = q_SH_yp + q_RL_yp
 
@@ -723,13 +712,9 @@ if __name__ == "__main__":
                    q_yY[tt, xi, :-1] / q_y[tt, xi, :],
                    c=c,
                    label=r'\textit{$' + str(leg_list[tt]) + '$}')
-        #ax.plot(y_grid[1:-1],q_yY[tt,xi,:-1]/q_yp[tt,xi,:])
-
-        #ax.plot(x_grid[1:-1],q_F_x[1:-1,ny/2],linestyle=':')
 
     ax[1].set_ylabel('$q_y/q_{y,Braginskii}$')
     ax[1].set_xlabel('y')
-    #plt.show()
 
     fig, ax = plt.subplots(1, 2)
     for tt in range(len(t_list)):

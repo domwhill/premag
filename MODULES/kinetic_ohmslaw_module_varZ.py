@@ -724,11 +724,8 @@ def get_kappa_wedge(w, rho, ne, Te, F0, v_grid):
 
     omega = w * rZZni
     v_mom_7_5 = get_v_mom_m_n(v_grid, omega, F0, 7, 5)
-    #v_mom_8_5 = get_v_mom_m_n(v_grid,omega,F0,8,5)
     v_mom_10_5 = get_v_mom_m_n(v_grid, omega, F0, 10, 5)
-    #v_mom_10_8 = get_v_mom_m_n(v_grid,omega,F0,10,8)
 
-    #v_mom_5 = get_v_mom_m(v_grid,omega,F0,5)
     v_mom_7 = get_v_mom_m(v_grid, omega, F0, 7)
     v_mom_8 = get_v_mom_m(v_grid, omega, F0, 8)
     v_mom_12 = get_v_mom_m(v_grid, omega, F0, 12)
