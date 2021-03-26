@@ -281,5 +281,5 @@ if __name__ == "__main__":
     ax2[1].legend(p_list, lab_list)
 
     fig1.savefig(save_name + '.png', dpi=600)
-    plt.show()
     print('\n copy and paste: open -a preview ' + save_name + '.png')
+    plt.close()

@@ -222,3 +222,4 @@ if __name__ == "__main__":
 
     axn.cla()
     ax2.cla()
+    plt.close()

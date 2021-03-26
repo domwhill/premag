@@ -318,4 +318,4 @@ if __name__ == "__main__":
     plt.savefig(save_name, dpi=600)
     print('saving as: ', save_name)
     print(' copy and paste: open -a preview ' + save_name)
-    os.system('open -a preview ' + save_name)
+    plt.close()

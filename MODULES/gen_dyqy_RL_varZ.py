@@ -13,7 +13,6 @@ from matplotlib import ticker
 norm_path = hk.directory_paths().norm_dir
 cfg = cf.ConversionFactors(norm_path)
 
-save_path = '../PLOTTERS/'
 
 
 def repack_2D(path, time, cfg=cfg):
@@ -52,7 +51,7 @@ def repack_2D(path, time, cfg=cfg):
 
 
 def load_qdata(path, time='10', cfg=cfg):
-    #-------- LOAD q data ----------------------------------------------
+    """Load heat flow terms from simulation located at path."""
     kohnew = {}
 
     tt = int(time)

@@ -62,7 +62,7 @@ def figsize_custom(width_scale, height_scale):
 pgf_with_latex = {    # setup matplotlib to use latex for output
     "pgf.texsystem": "pdflatex",    # change this if using xetex or lautex
     "text.usetex": True,    # use LaTeX to write all text
-    "font.family": "serif",
+    #"font.family": "serif",
     "font.serif": [],    # blank entries should cause plots to inherit fonts from the document
     "font.sans-serif": [],
     "font.monospace": [],
@@ -89,7 +89,7 @@ pgf_with_latex = {    # setup matplotlib to use latex for output
 pgf_with_latex = {    # setup matplotlib to use latex for output
     "pgf.texsystem": "pdflatex",    # change this if using xetex or lautex
     "text.usetex": True,    # use LaTeX to write all text
-    "font.family": "serif",
+    #"font.family": "serif",
     "font.serif": [],    # blank entries should cause plots to inherit fonts from the document
     "font.sans-serif": [],
     "font.monospace": [],

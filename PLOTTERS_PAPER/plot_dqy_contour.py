@@ -272,7 +272,7 @@ def main():
     save_name = '%s/%s_%s_bier.png' % (save_path, obj_list.save_tag, obj_list.run_objs[0].save_tag)
     fig.savefig(save_name)
     print(' copy and paste:\n open -a preview ' + save_name)
-
+    plt.close()
 
 if __name__ == "__main__":
     main()

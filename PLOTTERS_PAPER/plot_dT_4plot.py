@@ -11,7 +11,7 @@ sys.path.extend(["./"])
 import MODULES.figure_prl_twocol as fprl
 import matplotlib.gridspec as GS
 from pylab import *
-import MODULES.gen_Te_lineout as TEL
+import MODULES.lineout_plotting as TEL
 import MODULES.chfoil_module as cf
 import MODULES.plot_utils as utils
 

@@ -102,3 +102,4 @@ if __name__ == "__main__":
 
     print('---> saving as: %s' % (save_name))
     fig.savefig(save_name)
+    plt.close()
