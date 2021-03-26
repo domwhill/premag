@@ -8,7 +8,7 @@ plot lineouts of dTe (the perturbed electron temperature).
 '''
 import sys
 sys.path.extend(["./"])
-import MODULES.figure_prl_twocol as fprl
+import MODULES.figure_latex as fprl
 import matplotlib.gridspec as GS
 from pylab import *
 import MODULES.lineout_plotting as TEL

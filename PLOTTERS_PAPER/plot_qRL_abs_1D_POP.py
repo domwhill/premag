@@ -32,7 +32,7 @@ from matplotlib.legend_handler import HandlerBase
 import argparse
 sys.path.extend(["./"])
 import MODULES.chfoil_module as cf
-import MODULES.figure_prl_twocol as fprl
+import MODULES.figure_latex as fprl
 import MODULES.house_keeping as hk
 import MODULES.kinetic_ohmslaw_module_1D_varZ as q_mod
 q_e = 1.602e-19

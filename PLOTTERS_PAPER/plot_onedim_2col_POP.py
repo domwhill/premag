@@ -15,7 +15,7 @@ sys.path.extend(["./"])
 from pylab import *
 import MODULES.house_keeping as hk
 import MODULES.chfoil_module as cf
-import MODULES.figure_prl_twocol as fprl
+import MODULES.figure_latex as fprl
 import matplotlib as mpl
 
 paths = hk.directory_paths()

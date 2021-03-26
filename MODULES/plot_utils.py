@@ -10,7 +10,7 @@ import numpy as np
 import re
 
 sys.path.extend(["./"])
-import MODULES.figure_prl_twocol as fprl
+import MODULES.figure_latex as fprl
 from pylab import *
 import MODULES.chfoil_module as cf
 import MODULES.house_keeping as hk

@@ -5,7 +5,7 @@ import numpy as np, re, os, sys, matplotlib.pyplot as plt
 
 sys.path.extend(["./"])
 import MODULES.chfoil_module as cf
-import MODULES.figure_prl_twocol as fprl
+import MODULES.figure_latex as fprl
 import MODULES.kinetic_ohmslaw_module_varZ as kohb
 import MODULES.house_keeping as hk
 from matplotlib import ticker
