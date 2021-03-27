@@ -7,9 +7,9 @@ import sys
 from pylab import *
 sys.path.extend(["./"])
 
-from MODULES.plot_utils import RunInfo
-from MODULES.plot_utils import GetSimData
-import MODULES.figure_latex as fprl
+from modules.plot_utils import RunInfo
+from modules.plot_utils import GetSimData
+import modules.figure_latex as fprl
 
 def get_save_folder():
     if len(sys.argv) > 1:

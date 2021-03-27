@@ -16,8 +16,8 @@ import numpy as np
 from pylab import *
 
 sys.path.extend(["./"])
-import MODULES.EH_poly_coeff_module as sv
-import MODULES.chfoil_module as cf
+import modules.EH_poly_coeff_module as sv
+import modules.chfoil_module as cf
 import matplotlib as mpl
 
 q_e = 1.602e-19

@@ -4,10 +4,10 @@
 import numpy as np, re, os, sys, matplotlib.pyplot as plt
 
 sys.path.extend(["./"])
-import MODULES.chfoil_module as cf
-import MODULES.figure_latex as fprl
-import MODULES.kinetic_ohmslaw_module_varZ as kohb
-import MODULES.house_keeping as hk
+import modules.chfoil_module as cf
+import modules.figure_latex as fprl
+import modules.kinetic_ohmslaw_module_varZ as kohb
+import modules.house_keeping as hk
 from matplotlib import ticker
 
 norm_path = hk.directory_paths().norm_dir

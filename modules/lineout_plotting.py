@@ -10,10 +10,10 @@ import sys
 import matplotlib.pyplot as plt
 
 sys.path.extend(["./"])
-import MODULES.chfoil_module as cfoil
-from MODULES.chfoil_module import cd5_switches
-import MODULES.house_keeping as hk
-import MODULES.figure_latex as fprl
+import modules.chfoil_module as cfoil
+from modules.chfoil_module import cd5_switches
+import modules.house_keeping as hk
+import modules.figure_latex as fprl
 from pylab import *
 
 SI_on = cd5_switches.SI_on

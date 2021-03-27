@@ -13,7 +13,7 @@ import matplotlib.ticker as ticker
 import matplotlib as mpl
 from scipy import interpolate as SI
 import pdb
-import MODULES.house_keeping as hk
+import modules.house_keeping as hk
 import impact_norms as INN
 
 userid = getpass.getuser()

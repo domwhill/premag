@@ -4,7 +4,7 @@ RUN_ENV=source activate pop_env
 python_files=$(shell git ls-files *.py)
 
 install_environment:
-	cd ENVIRONMENT;\
+	cd environment;\
 	conda env create -f environment.yml
 
 run_tests:

@@ -5,7 +5,7 @@
 
     Usage instructions
 
-        python PLOTTERS_PAPER/plot_initial_profile_lineouts.py output_folder_to_save_plot/
+        python plotters/plot_initial_profile_lineouts.py output_folder_to_save_plot/
 '''
 import os
 import sys
@@ -14,9 +14,9 @@ import matplotlib as mpl
 
 sys.path.extend(["./"])
 
-import MODULES.house_keeping as hk
-import MODULES.chfoil_module as cf
-import MODULES.figure_latex as fprl
+import modules.house_keeping as hk
+import modules.chfoil_module as cf
+import modules.figure_latex as fprl
 
 paths = hk.directory_paths()
 norm_path = paths.norm_dir

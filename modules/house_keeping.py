@@ -28,7 +28,7 @@ class directory_paths(object):
 
         n2s = lambda num: str(int(num))
 
-        filename = self.src_dir + 'MODULES/paths.json'
+        filename = self.src_dir + 'modules/paths.json'
         with open(filename, "r") as f:
             data = json.loads(f.read())
         if dim == '1D' or str(dim) == '1':

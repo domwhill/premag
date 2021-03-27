@@ -8,12 +8,12 @@ plot lineouts of dTe (the perturbed electron temperature).
 '''
 import sys
 sys.path.extend(["./"])
-import MODULES.figure_latex as fprl
+import modules.figure_latex as fprl
 import matplotlib.gridspec as GS
 from pylab import *
-import MODULES.lineout_plotting as TEL
-import MODULES.chfoil_module as cf
-import MODULES.plot_utils as utils
+import modules.lineout_plotting as TEL
+import modules.chfoil_module as cf
+import modules.plot_utils as utils
 
 #aesthetics
 cmap = cm.viridis

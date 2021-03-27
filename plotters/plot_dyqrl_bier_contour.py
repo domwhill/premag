@@ -3,9 +3,9 @@ Plot of div.qRL or Biermann contours overlayed on the perturbed Hall parameter i
 
 Usage:
 # plto biermann
-python PLOTTERS_PAPER/plot_dyqrl_bier_contour.py -v "bier"
+python plotters/plot_dyqrl_bier_contour.py -v "bier"
 # plot RL
-python PLOTTERS_PAPER/plot_dyqrl_bier_contour.py -v "RL"
+python plotters/plot_dyqrl_bier_contour.py -v "RL"
 
 '''
 import argparse
@@ -17,11 +17,11 @@ from matplotlib import ticker, cm
 import matplotlib.pyplot as plt
 
 sys.path.extend(["./"])
-import MODULES.kinetic_ohmslaw_module_varZ as kohb
-import MODULES.figure_latex as fprl
-import MODULES.chfoil_module as cf
-from MODULES.plot_utils import RunInfoList
-import MODULES.get_heatflow_divergence as qrl
+import modules.kinetic_ohmslaw_module_varZ as kohb
+import modules.figure_latex as fprl
+import modules.chfoil_module as cf
+from modules.plot_utils import RunInfoList
+import modules.get_heatflow_divergence as qrl
 
 #---> constants...
 c = 3e8

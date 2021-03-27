@@ -2,9 +2,9 @@
 
 Usage example:
 
-    python PLOTTERS_PAPER/plot_transport_lineouts_vs_x.py <transport_component> <impact variable to plot> <save_directory>
+    python plotters/plot_transport_lineouts_vs_x.py <transport_component> <impact variable to plot> <save_directory>
 eg.
- $  python2 PLOTTERS_PAPER/plot_transport_lineouts_vs_x.py 'RL y' 'Bz' 'OUTPUT/'
+ $  python2 plotters/plot_transport_lineouts_vs_x.py 'RL y' 'Bz' 'OUTPUT/'
 
 Transport components that can be plotted:
     'SH x':  diffusive heat flow x component
@@ -30,10 +30,10 @@ from pylab import *
 from matplotlib.legend_handler import HandlerBase
 import argparse
 sys.path.extend(["./"])
-import MODULES.chfoil_module as cf
-import MODULES.figure_latex as fprl
-import MODULES.house_keeping as hk
-import MODULES.kinetic_ohmslaw_module_1D_varZ as q_mod
+import modules.chfoil_module as cf
+import modules.figure_latex as fprl
+import modules.house_keeping as hk
+import modules.kinetic_ohmslaw_module_1D_varZ as q_mod
 q_e = 1.602e-19
 m_e = 9.11e-31
 m_p = 1.67e-27

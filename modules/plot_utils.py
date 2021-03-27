@@ -10,10 +10,10 @@ import numpy as np
 import re
 
 sys.path.extend(["./"])
-import MODULES.figure_latex as fprl
+import modules.figure_latex as fprl
 from pylab import *
-import MODULES.chfoil_module as cf
-import MODULES.house_keeping as hk
+import modules.chfoil_module as cf
+import modules.house_keeping as hk
 from matplotlib import ticker
 
 #---> constants...

@@ -20,7 +20,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import sys, re, os
 sys.path.extend(["./"])
-import MODULES.chfoil_module as cf
+import modules.chfoil_module as cf
 
 from pylab import *
 

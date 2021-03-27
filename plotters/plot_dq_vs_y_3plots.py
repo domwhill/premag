@@ -9,10 +9,10 @@ import os
 sys.path.extend(["./"])
 
 from pylab import *
-import MODULES.kinetic_ohmslaw_module_varZ as q_mod
-import MODULES.figure_latex as fprl
-import MODULES.chfoil_module as cf
-import MODULES.house_keeping as hk
+import modules.kinetic_ohmslaw_module_varZ as q_mod
+import modules.figure_latex as fprl
+import modules.chfoil_module as cf
+import modules.house_keeping as hk
 
 #---> constants...
 c = 3e8
