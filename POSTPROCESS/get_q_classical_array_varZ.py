@@ -704,7 +704,6 @@ if __name__ == "__main__":
     ax[0].set_ylabel('$q_x/q_{x,Braginskii}$')
     ax[0].set_xlabel(xlab)
 
-    #fig,ax = plt.subplots(1,1)
     color = iter(cm.seismic(np.linspace(0, 1, n)))
     for tt in range(len(t_list)):
         c = next(color)

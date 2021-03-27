@@ -1699,7 +1699,7 @@ def load_data_all(path, fprefix, time):
 
     #-------
 
-    #pdb.set_trace()
+
     dxT, dyT = get_grad(x_grid, y_grid, Te)
     ne = np.transpose(trim_array(ne, nx, ny))
     Cx = np.transpose(trim_array(Cx, nx, ny))

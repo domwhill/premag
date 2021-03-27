@@ -1,3 +1,4 @@
+''' Module containing matplotlib figure sizing parameters'''
 import numpy as np, getpass
 import matplotlib as mpl
 import pylab
@@ -6,14 +7,6 @@ from matplotlib import ticker
 import re
 userid = getpass.getuser()
 mpl.use('pgf')
-
-
-def thesis_picpath():
-    '''
-        pic_path = thesis_picpath()
-    '''
-    pic_path = '/Users/' + userid + '/Dropbox/PhD/Reports/THESIS/THESIS_TEX/PICS_THESIS'
-    return pic_path
 
 
 def figsize(scale, scale_width=1.0, scale_ratio=1.0):
@@ -158,13 +151,8 @@ def newfig_generic(width, scale_width=1.0, scale_ratio=1.0):
     '''
       fig, ax = newfig(width)  
     '''
-    #plt.clf()
-    #fig = plt.figure(figsize=figsize(width,scale_width))
     fig = plt.figure()
     fig.set_size_inches(figsize(width, scale_width, scale_ratio), forward=True)
-    print ' fig size = ', figsize(width, scale_width)
-    #pylab.axes([0.125,0.2,0.95-0.125,0.95-0.2])
-    #pylab.axes([0.125,0.3,0.95-0.125,0.95-0.3])
 
     return fig
 
@@ -176,15 +164,9 @@ def newfig_generic_twinx(width, scale_width=1.0, scale_ratio=1.0):
         left and right hand side y axes. Used for 1 subplot only.
       fig = newfig_generic_twinx(width)  
     '''
-    #plt.clf()
-    #fig = plt.figure(figsize=figsize(width,scale_width))
     fig = plt.figure()
     plt.subplots_adjust(left=0.16, right=0.85, bottom=0.16)
     fig.set_size_inches(figsize(width, scale_width, scale_ratio), forward=True)
-    print ' fig size = ', figsize(width, scale_width)
-    #pylab.axes([0.125,0.2,0.95-0.125,0.95-0.2])
-    #pylab.axes([0.125,0.3,0.95-0.125,0.95-0.3])
-
     return fig
 
 
@@ -195,11 +177,8 @@ def newfig_generic_2yscale(width, scale_width=1.0, scale_ratio=1.0):
     '''
     mpl.rcParams.update(pgf_with_latex_2scale)
     import matplotlib.pyplot as plt
-    #plt.clf()
-    #fig = plt.figure(figsize=figsize(width,scale_width))
     fig = plt.figure()
     fig.set_size_inches(figsize(width, scale_width, scale_ratio), forward=True)
-    print ' fig size = ', figsize(width, scale_width)
 
     return fig
 
@@ -252,7 +231,6 @@ def custom_fmt_lab(x, lab):
     :return:
     '''
     pow = int(('%1.1e' % (x)).split('e')[-1])
-    #pdb.set_trace()
     a = re.search(r'\[\$', lab)
     b = re.search(r'\[', lab)
 
@@ -277,9 +255,7 @@ def newfig_generic_3lineouts(width=1.0):
 
 
 def newfig_4implot(grid, data_in, out_file='im.png', cmap='RdBu_r', vmin=0, vmax=0, **kwargs):
-    '''
-
-    '''
+    '''Create tiled image plot (2x2 rows/cols)'''
     data1 = data_in['data1']
     data2 = data_in['data2']
     data3 = data_in['data3']
@@ -337,7 +313,8 @@ def newfig_4implot(grid, data_in, out_file='im.png', cmap='RdBu_r', vmin=0, vmax
 
 
 def sci_fmt_colorbar(fig, im, ax, cax='', lab=[]):
-    '''
+    '''Colorbar with axes labels in scitific format.
+
         NOTE: This function CANNOT be used with c2.update_ticks() (afterwards) as
         this will reset the tick labels to the previous format
         :param fig:
@@ -430,12 +407,6 @@ def savefig(filename):
     plt.savefig('{}.pdf'.format(filename))
 
 
-def savefig_thesis(filename):
-    pic_path = thesis_picpath()
-    fname = pic_path + '/' + filename
-    plt.savefig('{}.pgf'.format(fname))
-    plt.savefig('{}.pdf'.format(fname))
-
 
 def fmt_axticker(ax, axis_type='y', fmt='%i'):
     '''
@@ -459,8 +430,6 @@ def set_ylim_max(ax_in, grid, data, y_mult=[1.0, 1.0], xlim=[-5.0, 20.0]):
         ax_in.set_ylim(ymin - dy * y_mult[0], ymax + dy * y_mult[1])
     else:
         print('error ymin = ymax data all the same!')
-    print('ymin = %4.4e ymax = %4.4e ' % (ymin, ymax))
-
     return
 
 
@@ -480,14 +449,14 @@ def get_ylim_max(grid, data, y_mult=[1.0, 1.0], xlim=[-5.0, 20.0]):
 
 
 def get_fig_3plots(**kwargs):
-    fig = newfig_generic_2yscale(
-        1.4, scale_width=1.2,
-        scale_ratio=0.5)    #(1.1,scale_width=1.5,scale_ratio=0.5)#plt.figure()
+    ''' Generate figure with sizing for 3 side by side plots'''
+    fig = newfig_generic_2yscale(1.4, scale_width=1.2, scale_ratio=0.5)
     fig.subplots_adjust(left=0.1, right=0.9, wspace=0.6, top=0.9, bottom=0.28)
     return fig
 
 
 def get_fig_2plots(**kwargs):
+    '''Generate figure with sizing for 2 subplots side by side'''
     fig = newfig_generic(1.4, 0.9)
     plt.subplots_adjust(left=0.15, right=0.9, bottom=0.18, top=0.9, wspace=0.1)
     return fig
