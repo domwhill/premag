@@ -9,14 +9,14 @@
 '''
 import os
 import sys
+import matplotlib.pyplot as plt
+import matplotlib as mpl
 
 sys.path.extend(["./"])
 
-from pylab import *
 import MODULES.house_keeping as hk
 import MODULES.chfoil_module as cf
 import MODULES.figure_latex as fprl
-import matplotlib as mpl
 
 paths = hk.directory_paths()
 norm_path = paths.norm_dir
@@ -124,7 +124,6 @@ if __name__ == "__main__":
                                                                      (C_mult**-1))
             Bz_lab = r'$B_z$ [\SI{%1.1e}{T}]' % ((cfg.Bz0**-1) * (B_mult**-1))
 
-            ###n_crit_norm_oneplot = n_crit_norm*n_mult
             ne_norm = n_data[cfg.cl_index:cfg.c_index, cfg.yi] * n_mult
             Te_norm = T_data[cfg.cl_index:cfg.c_index, cfg.yi] * T_mult
             C_norm = Cx_data[cfg.cl_index:cfg.c_index, cfg.yi] * C_mult

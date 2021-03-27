@@ -25,7 +25,7 @@ Bz: magnetic field (z/out of plane) component
 
 """
 
-import sys, re, os, getpass, site, pdb
+import sys, re, os
 from pylab import *
 from matplotlib.legend_handler import HandlerBase
 import argparse
@@ -189,9 +189,6 @@ class AnyObjectHandler(HandlerBase):
                         color='k')
         l2 = plt.Line2D([x0, y0 + width], [0.3 * height, 0.3 * height], color=orig_handle[0])
         return [l1, l2]
-
-
-#--- functions
 
 
 def repack(path, time):

@@ -40,34 +40,14 @@ def impact_inputs(ne, Te, Z, Bz, Ar):
     # IMPACT inputs
     wpe_by_nu_ei = 0.4618 * (Te**(1.5)) / (Z * np.sqrt(ne) * log_lambda)
     # for tau_B instead of tau_ei as in IMPACTA - note that ln_lam will be
-    # different too
+    # different too: require the factor (3 sqrt{pi}/4)
     #wpe_by_nu_ei = 0.4618 * (Te**(3/2)) / (Z * sqrt(ne) * log_lambda) * (3*sqrt(pi)/4)
     c_by_v0 = 1.0 / ((1.9784e-3) * np.sqrt(Te))
     prof_Bz_ave = (1.756e11) * Bz * t0
 
     # Display
 
-    print '\nINPUT QUANTITIES'
-    print 'Density \t', ne * 1e21, '[cm**3]'
-
-    print 'Temperature \t', Te, '[eV]'
-    print 'Ionisation \t', Z, '[ ]'
-    print 'Bz \t\t', Bz, '[T]'
-
-    print '\n IMPACT VARIABLES'
-    print 'log_lambda \t', log_lambda
-
-    print 'wpe_by_nu_ei \t', wpe_by_nu_ei
-
-    print 'c / v0 \t\t', c_by_v0
-    print 'prof_Bz_ave \t', prof_Bz_ave
-
-    #clear arry
-    print '\n\nPLASMA REFERENCE VARIABLES'
-    print 'Reference thermal velocity \t %1.5e [m/s]' % (v0)
-    print 'Reference collision time \t %1.5e [s]' % (t0)
-    print 'Reference collision frequency \t%1.5e [s**-1]' % (nu0)
-    print 'Reference mfp \t\t \t %1.5e [m]\n' % (l0)
+    print_normalisations(Bz, Te, Z, c_by_v0, l0, log_lambda, ne, prof_Bz_ave, nu0, t0, v0, wpe_by_nu_ei)
 
     dict = {}
     dict['vte'] = v0
@@ -86,7 +66,25 @@ def impact_inputs(ne, Te, Z, Bz, Ar):
     return dict
 
 
-#=======================================================================
+def print_normalisations(Bz, Te, Z, c_by_v0, l0, log_lambda, ne, prof_Bz_ave, nu0, t0, v0, wpe_by_nu_ei):
+    """Display input quantities."""
+    print '\nINPUT QUANTITIES'
+    print 'Density \t', ne * 1e21, '[cm**3]'
+    print 'Temperature \t', Te, '[eV]'
+    print 'Ionisation \t', Z, '[ ]'
+    print 'Bz \t\t', Bz, '[T]'
+    print '\n IMPACT VARIABLES'
+    print 'log_lambda \t', log_lambda
+    print 'wpe_by_nu_ei \t', wpe_by_nu_ei
+    print 'c / v0 \t\t', c_by_v0
+    print 'prof_Bz_ave \t', prof_Bz_ave
+    print '\n\nPLASMA REFERENCE VARIABLES'
+    print 'Reference thermal velocity \t %1.5e [m/s]' % (v0)
+    print 'Reference collision time \t %1.5e [s]' % (t0)
+    print 'Reference collision frequency \t%1.5e [s**-1]' % (nu0)
+    print 'Reference mfp \t\t \t %1.5e [m]\n' % (l0)
+
+
 def impact_inputs_array(ne, Te, Z, Bz, Ar):
     # Reference density [cm**-3], temperature [eV], ionisation and B-field [T]
 

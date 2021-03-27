@@ -10,15 +10,18 @@ python PLOTTERS_PAPER/plot_dqy_contour.py -v "RL"
 '''
 import argparse
 import sys
-sys.path.extend(["./"])
-from pylab import *
+import numpy as np
+from pylab import MaxNLocator
 import matplotlib.gridspec as GS
+from matplotlib import ticker, cm
+import matplotlib.pyplot as plt
+
+sys.path.extend(["./"])
 import MODULES.kinetic_ohmslaw_module_varZ as kohb
 import MODULES.figure_latex as fprl
 import MODULES.chfoil_module as cf
 from MODULES.plot_utils import RunInfoList
 import MODULES.get_heatflow_divergence as qrl
-from matplotlib import ticker
 
 #---> constants...
 c = 3e8
@@ -87,7 +90,6 @@ def custom_im(ax, xgrid, data, lab, lim, **kwargs):
 
 def colourbar(fig, im, ax, cax, lab):
     cbar = fig.colorbar(im, ax=ax, cax=cax, label=lab)
-    #cbar = fprl.sci_fmt_colorbar(fig, im, ax, cax= cax, lab=lab)
     return cbar
 
 
@@ -97,7 +99,6 @@ def custom_contour(ax, xgrid, data, lab, lim, **kwargs):
     colors = kwargs.pop('colors', 'k')
 
     bool_t = (xgrid >= xmin) * (xgrid < xmax)
-    #treat_data = lambda a: np.sign(data[bool_t,:])*np.log10(np.abs(a[bool_t,:]))
     treat_data = lambda a: a[bool_t]
     std_data = np.std(treat_data(data))
     # set levels
@@ -133,7 +134,7 @@ def convert_lists_to_set(a_list, b_list, c_list, d_list):
     return var_list
 
 
-class PlotContour():
+class PlotContour:
 
     def __init__(self, run_obj, **kwargs):
         # --- generating  path_list
