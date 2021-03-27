@@ -114,13 +114,14 @@ class RunInfoList:
 
         :return:
         """
-        time_in_list = []
+        last_time_dump = []
         for path in self.paths:
             t_list, tc_list = cf.get_t_list(path, var='Te')
-            time_in_list.append(np.max(list(map(int, t_list))))
+            last_time_dump.append(np.max(list(map(int, t_list))))
 
-        tmax_index = int(np.max(time_in_list))
-        self.tmax_index = '%02i' % (tmax_index)
+        # get the maximum time step that exists in both simulations
+        tmax_index = int(np.min(last_time_dump))
+        self.tmax_index = '%02i' % tmax_index
         # time in collision times
         self.tmax_col = tc_list[tmax_index]
 

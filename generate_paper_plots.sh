@@ -1,7 +1,9 @@
-#!/bin/bash
+#!/bin/bash -e
 source activate pop_env
-save_dir=output
-mkdir -p $save_dir
+save_dir="./output_images/"
+echo "saving images in ${save_dir}"
+echo mkdir -p ${save_dir}
+mkdir -p ${save_dir}
 
 # Fig. 1 lineouts from IMPACT profiles
 python PLOTTERS_PAPER/plot_onedim_2col_POP.py $save_dir
@@ -26,4 +28,4 @@ python PLOTTERS_PAPER/plot_dqy_contour.py -v "RL" -o $save_dir
 # Fig. 6 - Hall-parameter contour plot + self-generated magnetic field generation
 python PLOTTERS_PAPER/plot_dqy_contour.py -v "bier" -o $save_dir
 # Fig 7 - dqy lineouts
-python PLOTTERS_PAPER/plot_dqy_3plots.py
+#python PLOTTERS_PAPER/plot_dqy_3plots.py
