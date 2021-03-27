@@ -15,8 +15,6 @@ from pylab import *
 import MODULES.chfoil_module as cf
 import MODULES.house_keeping as hk
 from matplotlib import ticker
-import impact_norms as inorm
-import tsi_module as tsi
 
 #---> constants...
 c = 3e8
@@ -256,57 +254,3 @@ class GetSimData:
         self.Bz *= self.Bz_factor
         self.x_grid *= self.x_factor
         self.y_grid *= self.x_factor
-
-    # ==============================================================================
-    def load_transport(self, wte):
-        # dict_n = inorm.impact_inputs_array(self.ne_ref, self.Te_ref, self.Z_ref, 1.0,
-        #                                self.Ar)  # Bz must be in tesla because this is the units of gorgon data
-        dict_n = inorm.impact_inputs_array(self.ne, self.Te, self.Z, self.Bz, self.Ar)
-        # --------
-        self.wpe_over_nu_ei = dict_n['wpe_over_nu_ei']
-        self.c_over_vte = dict_n['c_over_vte']
-        self.log_lambda = dict_n['log_lambda']
-        self.lambda_T = dict_n['lambda_mfp']
-        self.tau_T = dict_n['tau_ei']
-
-        delta_c_norm = self.c_over_vte / self.wpe_over_nu_ei
-        self.delta = delta_c_norm * self.lambda_T    # m
-        dict_n['delta'] = self.delta
-
-        ref_vals = {}
-        ref_vals['n_e'] = self.ne_ref
-        ref_vals['T_e'] = self.Te_ref
-        ref_vals['tau_B'] = self.tau_T * cB
-
-        if type(wte) != np.ndarray:
-            wte = np.array([wte])
-        self.alpha_para = np.zeros(wte.shape)
-        self.alpha_perp = np.zeros(wte.shape)
-        self.alpha_wedge = np.zeros(wte.shape)
-
-        self.kappa_para = np.zeros(wte.shape)
-        self.dkappawedge_dchi = np.zeros(wte.shape)
-        self.dbetawedge_dchi = np.zeros(wte.shape)
-        self.dbetaperp_dchi = np.zeros(wte.shape)
-        self.dalphawedge_dchi = np.zeros(wte.shape)
-
-        self.beta_wedge = np.zeros(wte.shape)
-        self.psi_wedge = np.zeros(wte.shape)
-        self.kappa_perp = np.zeros(wte.shape)
-
-        for iw, wt_val in enumerate(wte):
-            dict, grad_dict = tsi.get_dimensionful_transport_c(wt_val, self.Z_ref, ref_vals)
-
-            self.alpha_para[iw] = dict['alpha_para']
-            self.alpha_perp[iw] = dict['alpha_perp']
-            self.alpha_wedge[iw] = dict['alpha_wedge']
-
-            self.kappa_para[iw] = dict['kappa_para']
-            self.dkappawedge_dchi[iw] = grad_dict['kappa_wedge']
-            self.dbetawedge_dchi[iw] = grad_dict['beta_wedge']
-            self.dbetaperp_dchi[iw] = grad_dict['beta_perp']
-            self.dalphawedge_dchi[iw] = grad_dict['alpha_wedge']
-
-            self.beta_wedge[iw] = dict['beta_wedge']    # /e?
-            self.psi_wedge[iw] = dict['beta_wedge']    # ettinghausen term
-            self.kappa_perp[iw] = dict['kappa_perp']

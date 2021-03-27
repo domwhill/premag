@@ -17,7 +17,7 @@ import MODULES.kinetic_ohmslaw_module_varZ as kohb
 import MODULES.figure_latex as fprl
 import MODULES.chfoil_module as cf
 from MODULES.plot_utils import RunInfoList
-import MODULES.gen_dyqy_RL_varZ as qrl
+import MODULES.get_heatflow_divergence as qrl
 from matplotlib import ticker
 
 #---> constants...
