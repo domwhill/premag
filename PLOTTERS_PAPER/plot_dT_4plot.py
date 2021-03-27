@@ -187,7 +187,7 @@ if __name__ == "__main__":
 
     ax2.set_ylabel('')
     ax3.set_ylabel('')
-    save_name = '%s%s_%s.png' % (save_path, run_obj_list.save_tag, '4plotdT')
+    save_name = '%sfigure4_%s_%s.png' % (save_path, run_obj_list.save_tag, '4plotdT')
     plt.savefig(save_name, dpi=600)
     print('saving as: ', save_name)
     print(' copy and paste: open -a preview ' + save_name)

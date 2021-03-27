@@ -68,7 +68,7 @@ if save_path[-1] != '/':
     save_path = save_path + '/'
 print("var1 = " + var1 + " var2 = " + var2 + " output_directory = " + save_path)
 
-save_name = '%sqlineout_%s_abs_%s_1d.png' % (save_path, re.sub(' ', '', var1), var2)
+save_name = '%sfigure3_qlineout_%s_abs_%s_1d.png' % (save_path, re.sub(' ', '', var1), var2)
 #----------------
 
 cl_index = int(cd5.cl_index)
