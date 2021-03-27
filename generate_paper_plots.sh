@@ -30,4 +30,4 @@ python plotters/plot_dyqrl_bier_contour.py -v "RL" -o $save_dir
 python plotters/plot_dyqrl_bier_contour.py -v "bier" -o $save_dir
 
 # Fig 7 - dqy lineouts
-python plotters/plot_dq_vs_y_3plots.py
+python plotters/plot_dq_vs_y_3plots.py $save_dir

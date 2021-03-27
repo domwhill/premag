@@ -3,7 +3,7 @@
 '''
 import numpy as np
 import os
-import json, pdb
+import json
 
 
 class DataDirectoryPaths(object):

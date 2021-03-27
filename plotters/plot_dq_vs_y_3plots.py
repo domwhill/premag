@@ -25,7 +25,10 @@ m_e = 9.11e-31
 paths = hk.DataDirectoryPaths()
 src_dir = paths.src_dir
 data_dir = paths.data_dir_2D
-save_path = paths.save_dir
+if len(sys.argv)>1:
+    save_path = sys.argv[1] + "/"
+else:
+    save_path = "./"
 norm_dir = paths.norm_dir
 log_file = norm_dir + 'norm.log'
 [T_ref, n_ref, Z_ref, Bz_ref] = np.loadtxt(log_file)
