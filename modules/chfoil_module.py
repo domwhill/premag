@@ -17,7 +17,7 @@ import modules.house_keeping as hk
 import impact_norms as INN
 
 userid = getpass.getuser()
-paths = hk.directory_paths()
+paths = hk.DataDirectoryPaths()
 
 
 class MidPointNorm(Normalize):

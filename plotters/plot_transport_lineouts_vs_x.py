@@ -41,7 +41,7 @@ k_b = 1.38e-23
 epsilon0 = 8.854e-12
 
 #---> file inputs
-paths = hk.directory_paths()
+paths = hk.DataDirectoryPaths()
 src_dir = paths.src_dir
 data_dir = paths.data_dir_2D
 save_path = paths.save_dir

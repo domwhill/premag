@@ -26,7 +26,7 @@ marker_on = False    #cd5_switches.marker_on
 MSIZE = 4
 init_path = os.getcwd()
 
-norm_path = hk.directory_paths().norm_dir
+norm_path = hk.DataDirectoryPaths().norm_dir
 cd5 = cfoil.ConversionFactors(norm_path)
 
 cl_index = int(cd5.cl_index)

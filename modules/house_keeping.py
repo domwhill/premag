@@ -6,7 +6,7 @@ import os
 import json, pdb
 
 
-class directory_paths(object):
+class DataDirectoryPaths(object):
 
     def __init__(self):
         dirname, filename = os.path.split(os.path.abspath(__file__))
@@ -18,7 +18,6 @@ class directory_paths(object):
         self.save_dir = '%sOUTPUT/' % self.src_dir    # path to normalisation file
         self.norm_dir = self.src_dir
 
-    #-------------------------------------------------------------------
     def get_fprefix(self, dim, scale_length, lambda_p='5', bz_in='50', pert_amp='1p'):
 
         if pert_amp == '1p':
@@ -36,7 +35,6 @@ class directory_paths(object):
         else:
             return data['2D'][n2s(scale_length)][n2s(lambda_p)][n2s(bz_in) + amp_str]
 
-    #-------------------------------------------------------------------
 
     def get_path(self, scale_length, Bz, lambda_p=5, dim='2D', pert_amp='1p'):
         """
@@ -61,7 +59,7 @@ class directory_paths(object):
             if scale_length != 1:
                 print('-- only scale length LT1 runs available in 1D currently --')
 
-            dir_path = directory_paths().data_dir_1D
+            dir_path = DataDirectoryPaths().data_dir_1D
             path = dir_path + fprefix
 
         elif dim == '2D':

@@ -22,7 +22,7 @@ m_e = 9.11e-31
 #-----
 
 #---> file inputs
-paths = hk.directory_paths()
+paths = hk.DataDirectoryPaths()
 src_dir = paths.src_dir
 data_dir = paths.data_dir_2D
 save_path = paths.save_dir

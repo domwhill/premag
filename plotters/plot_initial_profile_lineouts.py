@@ -18,7 +18,7 @@ import modules.house_keeping as hk
 import modules.chfoil_module as cf
 import modules.figure_latex as fprl
 
-paths = hk.directory_paths()
+paths = hk.DataDirectoryPaths()
 norm_path = paths.norm_dir
 cfg = cf.ConversionFactors(norm_path)
 

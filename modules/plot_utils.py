@@ -82,7 +82,7 @@ class RunInfoList:
                                              self.pert_amp)
         #--->
         self.path_list = {}
-        paths = hk.directory_paths()
+        paths = hk.DataDirectoryPaths()
         run_name = sys.argv[0].split('/')[-1].split('.')[0]
         self.save_tag = '%s_' % (run_name)
         self.t_max_col = 0
@@ -129,7 +129,7 @@ class RunInfoList:
 class RunInfo:
 
     def __init__(self, scale_length=1, bz_in=400.0, lambda_p=5, pert_amp='0p', dim='2D'):
-        paths = hk.directory_paths()
+        paths = hk.DataDirectoryPaths()
         self.dim = dim
         self.path = paths.get_path(scale_length, bz_in, lambda_p, pert_amp=pert_amp, dim=self.dim)
         self.bz = bz_in

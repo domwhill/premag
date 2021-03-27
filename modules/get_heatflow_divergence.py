@@ -10,7 +10,7 @@ import modules.kinetic_ohmslaw_module_varZ as kohb
 import modules.house_keeping as hk
 from matplotlib import ticker
 
-norm_path = hk.directory_paths().norm_dir
+norm_path = hk.DataDirectoryPaths().norm_dir
 cfg = cf.ConversionFactors(norm_path)
 
 
