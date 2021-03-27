@@ -1,11 +1,10 @@
 ''' Module containing matplotlib figure sizing parameters'''
-import numpy as np, getpass
+import numpy as np
 import matplotlib as mpl
 import pylab
 import matplotlib.gridspec as GS
 from matplotlib import ticker
 import re
-userid = getpass.getuser()
 mpl.use('pgf')
 
 

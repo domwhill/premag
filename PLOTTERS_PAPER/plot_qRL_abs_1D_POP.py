@@ -26,7 +26,6 @@ Bz: magnetic field (z/out of plane) component
 """
 
 import sys, re, os, getpass, site, pdb
-userid = getpass.getuser()
 from pylab import *
 from matplotlib.legend_handler import HandlerBase
 import argparse

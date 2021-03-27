@@ -4,3 +4,4 @@ THESIS/
 TEST/
 *test*.py
 *.npy
+/DIAGNO/
