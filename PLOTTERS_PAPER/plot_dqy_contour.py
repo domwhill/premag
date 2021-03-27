@@ -270,7 +270,7 @@ def main():
     clear_yax(ax2)
     format_yax(ax1)
 
-    save_name = '%s/%s_%s_bier.png' % (save_path, obj_list.save_tag, obj_list.run_objs[0].save_tag)
+    save_name = '%s/figure5_6_%s_%s_%s.png' % (save_path, obj_list.save_tag, obj_list.run_objs[0].save_tag, transport_opt)
     fig.savefig(save_name)
     print(' copy and paste:\n open -a preview ' + save_name)
     plt.close()

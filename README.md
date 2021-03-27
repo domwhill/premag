@@ -1,25 +1,19 @@
-# ANALYSIS MODULE
+# Premagnetised paper plots 
+## Setup instructions
+Dependencies:
+- [anaconda](https://www.anaconda.com/products/individual#Downloads)
+- [gnu make] - this is supplied with most operating systems
 
-### Scripts for plotting premagnetised IMPACT data
-Most of the plotting scripts may be found in PLOTTERS_PAPER folder
+1. Add input data to folder in root entitled `data/`
+2. Build python environment.  Navigate to the root directory of this repo in command line and execute the following command:
+```
+make install_environment
+```
+this will build the conda based python2.7 environemnt required for generating the figures.
 
-### Setting internal paths to simulation data
-Scripts currently assume test data is located in a folder one level lower than src 
-directory entitled '../TF'. 
+# Generating figures
+Type the following command in the commandline in root directory:
 
+```make build_plots```
 
-This may be modified to path on users computer by modifying variable 'data_path' to point to simulation data location.
-'data_path' is set in class 'directory_paths' of file MODULES/house_keeping.py.
-
-Names of simulation runs (for different scale lengths/applied field strengths)
- are set in json file MODULES/paths.json.
-
-
-#Environment
-Environment: python2.7
-
-
-# todo:
-check development branch for missing scripts.
-- gen_dyqyRL looks like it is more upt otd ate tehere.
-- plot_f_log.py - looks like it will be needed.
+this should run python scripts to build plots which are saved to folder `output_images/`.

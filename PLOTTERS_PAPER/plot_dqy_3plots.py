@@ -62,7 +62,7 @@ iy = 20
 xmin, xmax = 0.0, 40.0
 thresh_N_ratio = 5e-2
 
-save_name = '%sdeltaqy_amps_%s_%s' % (save_path, save_tag, time)
+save_name = '%sfigure7_deltaqy_amps_%s_%s' % (save_path, save_tag, time)
 phase_tag = '_phase_'
 
 plot_amp_var_on = True
