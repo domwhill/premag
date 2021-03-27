@@ -2,9 +2,9 @@
 
 Usage example:
 
-    python PLOTTERS_PAPER/plot_qRL_abs_1D_POP.py <transport_component> <impact variable to plot> <save_directory>
+    python PLOTTERS_PAPER/plot_transport_lineouts_vs_x.py <transport_component> <impact variable to plot> <save_directory>
 eg.
- $  python2 PLOTTERS_PAPER/plot_qRL_abs_1D_POP.py 'RL y' 'Bz' 'OUTPUT/'
+ $  python2 PLOTTERS_PAPER/plot_transport_lineouts_vs_x.py 'RL y' 'Bz' 'OUTPUT/'
 
 Transport components that can be plotted:
     'SH x':  diffusive heat flow x component

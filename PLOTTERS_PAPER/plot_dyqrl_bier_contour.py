@@ -3,9 +3,9 @@ Plot of div.qRL or Biermann contours overlayed on the perturbed Hall parameter i
 
 Usage:
 # plto biermann
-python PLOTTERS_PAPER/plot_dqy_contour.py -v "bier"
+python PLOTTERS_PAPER/plot_dyqrl_bier_contour.py -v "bier"
 # plot RL
-python PLOTTERS_PAPER/plot_dqy_contour.py -v "RL"
+python PLOTTERS_PAPER/plot_dyqrl_bier_contour.py -v "RL"
 
 '''
 import argparse

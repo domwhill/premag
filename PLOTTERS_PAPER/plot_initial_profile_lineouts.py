@@ -5,7 +5,7 @@
 
     Usage instructions
 
-        python PLOTTERS_PAPER/plot_onedim_2col_POP.py output_folder_to_save_plot/
+        python PLOTTERS_PAPER/plot_initial_profile_lineouts.py output_folder_to_save_plot/
 '''
 import os
 import sys
