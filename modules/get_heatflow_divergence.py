@@ -20,7 +20,7 @@ def repack_2D(path, time, cfg=cfg):
 
         dict_c,dict_k = repack_2D(path,time)
     '''
-    dict_qc, dict_qk = kohb.get_q_abs(path, time)
+    dict_qc, dict_qk = kohb.get_q_abs_c(path, time)
     v_nx_k, v_ny_k, v_nx_c, v_ny_c = kohb.get_Nernst_abs(path, time)
 
     dict_out_c = {}

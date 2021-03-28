@@ -1,6 +1,6 @@
 '''
 
-    Computes kinetic ohms law components
+    Computes kinetic/classical ohms law components
     
     formerly : 'kinetic_biermann_compare_lineouts.py'
     
@@ -10,8 +10,10 @@
     18/1/2019 - Adapted to allow for variable Z profiles
       functions changed but not tested: get_Nernst_ratio (dependency on q_SH_Te_tsteps) - probably obsolete anyway
 
-    For full details of defn of integrals see Table 5.2 & Table 5.3 - D. Hill PhD thesis
-    
+    For full details of defn of integrals see Table 5.2 & Table 5.3 - D. Hill PhD thesis:
+                                    https://spiral.imperial.ac.uk/handle/10044/1/67821
+
+
     l 867
         Bz = np.transpose(cf.trim_array(Bz,nx,ny))<-- this may need reflecting in y direction...?
 
@@ -1103,8 +1105,17 @@ def get_ratio_lim(q_yc, q_yk, vmax=1.5):
 
 
 def get_q_abs(path, time):
-    '''
-    dict_ratio = get_q_ratio(path,time)
+    '''Get kinetic and classical transport terms.
+
+
+    This is the same as get_q_abs_c however instead loads in precomputed classical transport terms for speed.
+
+    Ouputs a dictionary:
+        notes on keys:
+        SH x,y = x/y components of diffusive heat flow
+        RL x,y = x/y components of Righi-Leduc heat flow
+        E = Thermoelectric heatflow ( Ettinghausen + other/beta_perp term)
+
     '''
     time_int = int(time)
     dict = cf.load_data_all(path, fpre(path), time)
@@ -1216,8 +1227,14 @@ def get_q_abs(path, time):
 
 
 def get_q_abs_c(path, time):
-    '''
-    dict_ratio = get_q_ratio(path,time)
+    '''Get kinetic and classical transport terms.
+
+    Ouputs a dictionary:
+        notes on keys:
+        SH x,y = x/y components of diffusive heat flow
+        RL x,y = x/y components of Righi-Leduc heat flow
+        E = Thermoelectric heatflow ( Ettinghausen + other/beta_perp term)
+
     '''
     time_int = int(time)
     dict = cf.load_data_all(path, fpre(path), time)
@@ -1283,23 +1300,8 @@ def get_q_abs_c(path, time):
     q_RL_x, q_RL_y = dict_c_in['q_RL_x']['data'], dict_c_in['q_RL_y']['data']
     q_TE_x, q_TE_y = dict_c_in['q_TE_x']['data'], dict_c_in['q_TE_y']['data']
     q_E_x, q_E_y = dict_c_in['q_E_x']['data'], dict_c_in['q_E_y']['data']
+
     #--- classical
-
-    q_dir = path + '/q_dir/'
-    '''
-
-    q_SH_x = np.load(q_dir + 'q_SH_x.txt.npy')
-    q_SH_y = np.load(q_dir + 'q_SH_y.txt.npy')
-    q_RL_x = np.load(q_dir + 'q_RL_x.txt.npy')
-    q_RL_y = np.load(q_dir + 'q_RL_y.txt.npy')
-    q_E_x = np.load(q_dir + 'q_E_x.txt.npy')
-    q_E_y = np.load(q_dir + 'q_E_y.txt.npy')
-    '''
-    q_xX = np.load(q_dir + 'q_xX.txt.npy')
-    q_yY = np.load(q_dir + 'q_yY.txt.npy')
-    #nt,ny,nx
-    q_x_VFP = (q_xX[:, 1:, :] + q_xX[:, :-1, :]) * 0.5
-    q_y_VFP = (q_yY[:, :, 1:] + q_yY[:, :, :-1]) * 0.5
     q_x_B = q_RL_x + q_E_x + q_SH_x + q_TE_x
     q_y_B = q_RL_y + q_E_y + q_SH_y + q_TE_y
 
@@ -2032,7 +2034,7 @@ def get_kinetic_q(path, time):
     return dict
 
 
-def repack_2D(path, time, recompute_q_c=False):
+def repack_2D(path, time, recompute_q_c=True):
     '''
 
         dict_c,dict_k = repack_2D(path,time)
