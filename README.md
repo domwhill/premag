@@ -11,6 +11,10 @@ make install_environment
 ```
 this will build the conda based python2.7 environemnt required for generating the figures.
 
+# Add data
+Scripts expect simulation data to be stored in folder `data/` of root of the repo.
+Lookup data for simulations of diffenet magnetic field strengths/scale lengths is contained in modules/paths.json file.
+
 # Generating figures
 Type the following command in the commandline in root directory:
 
