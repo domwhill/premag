@@ -1,5 +1,11 @@
 #!/bin/bash -e
-source activate pop_env
+# activate conda environment
+environment_name=pop_env
+if [ "${CONDA_DEFAULT_ENV}" != "${environment_name}" ]; then
+  echo "activating conda environment ${environment_name}"
+  source activate ${environment_name}
+fi
+
 save_dir="./output_images/"
 echo "saving images in ${save_dir}"
 echo mkdir -p ${save_dir}

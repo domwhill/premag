@@ -60,7 +60,6 @@ class DataDirectoryPaths(object):
                 print('-- only scale length LT1 runs available in 1D currently --')
 
             dir_path = DataDirectoryPaths().data_dir_1D
-            path = dir_path + fprefix
 
         elif dim == '2D':
             dir_path = self.data_dir_2D
@@ -78,6 +77,7 @@ class DataDirectoryPaths(object):
                 print('chosen = ', scale_length)
             if path == 0:
                 print('no path available for this selection: ', lambda_p, Bz)
+
         path = dir_path + fprefix
 
         return path

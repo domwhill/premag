@@ -27,7 +27,6 @@ def annotate_axis(ax, lett='(a)', dx_mult=1.0, dy_mult=1.0, fontsize=0):
     nunits = 20.0
     dx = (xmax - xmin) / nunits
     dy = (ymax - ymin) / nunits
-    print 'x = ', xmin - dx, 'y = ', ymax
     x_coord = xmin - 5.0 * dx * dx_mult
     y_coord = ymax - dy * dy_mult
     if fontsize != 0:
