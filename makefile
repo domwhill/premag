@@ -1,11 +1,13 @@
-ACTIVATE_ENVIRONMENT=pipenv shell
-RUN_ENV=source activate pop_env
+ENVIRONMENT=pop_env
+RUN_ENV=source activate ${ENVIRONMENT}
 
 python_files=$(shell git ls-files *.py)
 
+all: install_environment build_plots
+
 install_environment:
 	cd environment;\
-	conda env create -f environment.yml
+	./install_environment.sh ${ENVIRONMENT}
 
 run_tests:
 	$(RUN_ENV);\
