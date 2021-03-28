@@ -1,8 +1,7 @@
 '''
 27/08/2019
-- Rehash of plot_q_lineout.py
  Plots Phase shift of kinetic/classical heat flows
-
+    Lineouts of perturbed lateral heatflows (vs. lateral coordinate y) at different points in the conduction zone.
 '''
 import sys
 import os
@@ -247,10 +246,6 @@ if __name__ == "__main__":
                           linestyle='--')
             p_list.append(p1)
             lab_list.append(var_dict[var])
-
-    if not os.path.isfile(save_name_npy_c) and not os.path.isfile(save_name_npy_k):
-        np.save(save_name_npy_c, dict_c, allow_pickle=True)
-        np.save(save_name_npy_k, dict_k, allow_pickle=True)
 
     ax2[2].set_ylabel(r'$T_e$ [\si{keV}]')
     #----->
