@@ -10,7 +10,7 @@ class DataDirectoryPaths(object):
 
     def __init__(self):
         dirname, filename = os.path.split(os.path.abspath(__file__))
-        data_path = os.path.abspath(dirname + '../../../TF/')
+        data_path = os.path.abspath(dirname + '/../data/')
 
         self.src_dir = os.path.abspath(dirname + '/../') + '/'
         self.data_dir_2D = os.path.abspath(data_path + '/2D_RUNS/') + '/'
@@ -79,5 +79,4 @@ class DataDirectoryPaths(object):
                 print('no path available for this selection: ', lambda_p, Bz)
 
         path = dir_path + fprefix
-
         return path
