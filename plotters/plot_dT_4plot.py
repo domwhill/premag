@@ -165,7 +165,6 @@ if __name__ == "__main__":
     # magnetic field strengths (T) being plot
     bz_list = [0.0, 50.0, 400.0]
 
-
     fig = fprl.newfig_generic_twinx(1.0, scale_width=1.0, scale_ratio=1.4)
     gs = GS.GridSpec(2, 3, height_ratios=[1.0, 0.4])
     gs.update(wspace=0.5, hspace=0.5, left=0.15, right=0.88)

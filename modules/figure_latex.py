@@ -405,7 +405,6 @@ def savefig(filename):
     plt.savefig('{}.pdf'.format(filename))
 
 
-
 def fmt_axticker(ax, axis_type='y', fmt='%i'):
     '''
         set the format for the labels 

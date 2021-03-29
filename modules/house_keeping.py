@@ -35,7 +35,6 @@ class DataDirectoryPaths(object):
         else:
             return data['2D'][n2s(scale_length)][n2s(lambda_p)][n2s(bz_in) + amp_str]
 
-
     def get_path(self, scale_length, Bz, lambda_p=5, dim='2D', pert_amp='1p'):
         """
             scale_length = str

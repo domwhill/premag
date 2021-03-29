@@ -1697,9 +1697,6 @@ def load_data_all(path, fprefix, time):
     prof_Z = np.transpose(trim_array(prof_Z, nx, ny))
     Ue = np.transpose(trim_array(Ue, nx, ny))
 
-    #-------
-
-
     dxT, dyT = get_grad(x_grid, y_grid, Te)
     ne = np.transpose(trim_array(ne, nx, ny))
     Cx = np.transpose(trim_array(Cx, nx, ny))

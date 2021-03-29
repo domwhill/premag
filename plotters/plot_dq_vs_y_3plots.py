@@ -24,7 +24,7 @@ m_e = 9.11e-31
 paths = hk.DataDirectoryPaths()
 src_dir = paths.src_dir
 data_dir = paths.data_dir_2D
-if len(sys.argv)>1:
+if len(sys.argv) > 1:
     save_path = sys.argv[1] + "/"
 else:
     save_path = "./"

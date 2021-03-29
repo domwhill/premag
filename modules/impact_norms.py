@@ -47,7 +47,8 @@ def impact_inputs(ne, Te, Z, Bz, Ar):
 
     # Display
 
-    print_normalisations(Bz, Te, Z, c_by_v0, l0, log_lambda, ne, prof_Bz_ave, nu0, t0, v0, wpe_by_nu_ei)
+    print_normalisations(Bz, Te, Z, c_by_v0, l0, log_lambda, ne, prof_Bz_ave, nu0, t0, v0,
+                         wpe_by_nu_ei)
 
     dict = {}
     dict['vte'] = v0
@@ -66,7 +67,8 @@ def impact_inputs(ne, Te, Z, Bz, Ar):
     return dict
 
 
-def print_normalisations(Bz, Te, Z, c_by_v0, l0, log_lambda, ne, prof_Bz_ave, nu0, t0, v0, wpe_by_nu_ei):
+def print_normalisations(Bz, Te, Z, c_by_v0, l0, log_lambda, ne, prof_Bz_ave, nu0, t0, v0,
+                         wpe_by_nu_ei):
     """Display input quantities."""
     print '\nINPUT QUANTITIES'
     print 'Density \t', ne * 1e21, '[cm**3]'

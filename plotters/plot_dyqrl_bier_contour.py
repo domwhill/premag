@@ -42,13 +42,11 @@ def get_command_line_args():
         help=
         "Transport term to plot RL x = x component of Righi-Leduc, SH y = y component of Spitzer-HArm/diffusive heat flow,"
         "vN y = y-component of Nernst")
-    parser.add_argument(
-        "-o",
-        "--output_folder",
-        default="",
-        required=False,
-        help="path to output folder to save image."
-    )
+    parser.add_argument("-o",
+                        "--output_folder",
+                        default="",
+                        required=False,
+                        help="path to output folder to save image.")
 
     args = parser.parse_args()
     if args.variable not in ("RL", "bier"):
@@ -270,10 +268,12 @@ def main():
     clear_yax(ax2)
     format_yax(ax1)
 
-    save_name = '%s/figure5_6_%s_%s_%s.png' % (save_path, obj_list.save_tag, obj_list.run_objs[0].save_tag, transport_opt)
+    save_name = '%s/figure5_6_%s_%s_%s.png' % (save_path, obj_list.save_tag,
+                                               obj_list.run_objs[0].save_tag, transport_opt)
     fig.savefig(save_name)
     print(' copy and paste:\n open -a preview ' + save_name)
     plt.close()
+
 
 if __name__ == "__main__":
     main()

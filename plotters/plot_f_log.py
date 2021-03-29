@@ -11,6 +11,7 @@ from modules.plot_utils import RunInfo
 from modules.plot_utils import GetSimData
 import modules.figure_latex as fprl
 
+
 def get_save_folder():
     if len(sys.argv) > 1:
         save_folder = sys.argv[1]
@@ -62,9 +63,7 @@ if __name__ == "__main__":
     # ---> 2 plots setting
     plot_Te_on = True
     if plot_Te_on:
-        fig = fprl.newfig_generic_2yscale(
-            1.4, scale_width=1.2,
-            scale_ratio=0.5)
+        fig = fprl.newfig_generic_2yscale(1.4, scale_width=1.2, scale_ratio=0.5)
         fig.subplots_adjust(left=0.1, right=0.9, wspace=0.4, top=0.9, bottom=0.28)
         ax1 = fig.add_subplot(131)
         ax2 = fig.add_subplot(132)
