@@ -1,7 +1,7 @@
 # Premagnetised paper plots 
 ## Setup instructions
 Dependencies:
-- [anaconda](https://www.anaconda.com/products/individual#Downloads)
+- [conda](https://docs.conda.io/en/latest/)
 - [gnu make] - this is supplied with most operating systems
 
 1. Copy (or sym link) the input data to a folder in the root directory entitled `data`.
