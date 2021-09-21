@@ -1,4 +1,7 @@
 # Premagnetised paper plots 
+Scripts to generate plots from the paper: [Hill et al, "Vlasov–Fokker–Planck simulations of pre-magnetized ablating planar targets", Physics of Plasmas
+28, 092708 (2021)](https://aip.scitation.org/doi/10.1063/5.0049685)
+
 ## Setup instructions
 Dependencies:
 - [conda](https://docs.conda.io/en/latest/)
